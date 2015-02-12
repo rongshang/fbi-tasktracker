@@ -3,14 +3,13 @@ package task.view.operFuncRes;
 import task.common.enums.EnumResType;
 import task.common.enums.EnumArchivedFlag;
 import task.common.enums.EnumFlowStatus;
-import task.repository.model.CttInfo;
 import org.apache.commons.lang.StringUtils;
 import org.primefaces.event.NodeCollapseEvent;
 import org.primefaces.event.NodeSelectEvent;
 import skyline.util.JxlsManager;
 import skyline.util.MessageUtil;
 import skyline.util.ToolUtil;
-import task.repository.model.OperRes;
+import task.repository.model.WorkorderInfo;
 import task.repository.model.model_show.*;
 import task.service.*;
 import jxl.write.WriteException;
@@ -37,8 +36,6 @@ import java.util.*;
 @ViewScoped
 public class OperFuncBusiResMngAction implements Serializable{
     private static final Logger logger = LoggerFactory.getLogger(OperFuncBusiResMngAction.class);
-    @ManagedProperty(value = "#{operResService}")
-    private OperResService operResService;
     @ManagedProperty(value = "#{deptOperService}")
     private DeptOperService deptOperService;
     @ManagedProperty(value = "#{cttInfoService}")
@@ -52,13 +49,13 @@ public class OperFuncBusiResMngAction implements Serializable{
     private List<OperFuncResShow> operFuncResShowFowExcelList;
     private Map beansMap;
 
-    private CttInfoShow cttInfoShowSel;
-    private CttInfoShow cttInfoShowAdd;
-    private CttInfoShow cttInfoShowUpd;
-    private CttInfoShow cttInfoShowDel;
+    private WorkorderInfoShow workorderInfoShowSel;
+    private WorkorderInfoShow workorderInfoShowAdd;
+    private WorkorderInfoShow workorderInfoShowUpd;
+    private WorkorderInfoShow workorderInfoShowDel;
 
     private List<SelectItem> esInitCttList;
-    private List<CttInfoShow> cttInfoShowList;
+    private List<WorkorderInfoShow> workorderInfoShowList;
     //workorder tree
     private TreeNode resRoot;
     private TreeNode deptOperRoot;
@@ -70,11 +67,11 @@ public class OperFuncBusiResMngAction implements Serializable{
     @PostConstruct
     public void init() {
         beansMap = new HashMap();
-        cttInfoShowAdd=new CttInfoShow();
-        cttInfoShowUpd=new CttInfoShow();
-        cttInfoShowDel=new CttInfoShow();
+        workorderInfoShowAdd =new WorkorderInfoShow();
+        workorderInfoShowUpd =new WorkorderInfoShow();
+        workorderInfoShowDel =new WorkorderInfoShow();
         esInitCttList = new ArrayList<>();
-        cttInfoShowList = new ArrayList<>();
+        workorderInfoShowList = new ArrayList<>();
         deptOperShowSeledList = new ArrayList<>();
         operFuncResShowFowExcelList= new ArrayList<>();
         strBtnRender="false";
@@ -91,7 +88,7 @@ public class OperFuncBusiResMngAction implements Serializable{
         resRoot = new DefaultTreeNode("ROOT", null);
         TreeNode node0 = new DefaultTreeNode(operFuncResShowTemp,resRoot);
         try {
-            recursiveResTreeNode("ROOT", node0);
+            //recursiveResTreeNode("ROOT", node0);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -107,513 +104,7 @@ public class OperFuncBusiResMngAction implements Serializable{
         recursiveOperTreeNode("ROOT", node0);
         node0.setExpanded(true);
     }
-    private void recursiveResTreeNode(String parentPkidPara,TreeNode parentNode)
-            throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
-        List<CttInfoShow> cttInfoShowList=cttInfoService.selectRecordsFromCtt(parentPkidPara);
-        for (int i=0;i<cttInfoShowList.size();i++){
-            CttInfoShow cttInfoShowTemp =cttInfoShowList.get(i);
-            // 总成分
-            OperResShow operResShowTemp=new OperResShow();
-            operResShowTemp.setInfoType(cttInfoShowTemp.getCttType());
-            operResShowTemp.setInfoPkid(cttInfoShowTemp.getPkid());
-            List<OperResShow> operResShowListTemp =
-                    operResService.selectOperaResRecordsByModelShow(operResShowTemp);
-            String strInputOperName="";
-            String strCheckOperName="";
-            String strDoubleCheckOperName="";
-            String strApproveOperName="";
-            String strAccountOperName="";
-            String strPlaceOnFileOperName="";
-            for(OperResShow operResShowUnit:operResShowListTemp){
-                if("0".equals(operResShowUnit.getFlowStatus())){
-                    if(strInputOperName.length()==0){
-                        strInputOperName = ToolUtil.getStrIgnoreNull(operResShowUnit.getOperName());
-                    }else {
-                        strInputOperName = strInputOperName + "," + operResShowUnit.getOperName();
-                    }
-                }else if("1".equals(operResShowUnit.getFlowStatus())){
-                    if(strCheckOperName.length()==0){
-                        strCheckOperName = ToolUtil.getStrIgnoreNull(operResShowUnit.getOperName());
-                    }else {
-                        strCheckOperName = strCheckOperName + "," + operResShowUnit.getOperName();
-                    }
-                }else if("2".equals(operResShowUnit.getFlowStatus())){
-                    if(strDoubleCheckOperName.length()==0){
-                        strDoubleCheckOperName = ToolUtil.getStrIgnoreNull(operResShowUnit.getOperName());
-                    }else {
-                        strDoubleCheckOperName = strDoubleCheckOperName + "," + operResShowUnit.getOperName();
-                    }
-                }else if("3".equals(operResShowUnit.getFlowStatus())){
-                    if(strApproveOperName.length()==0){
-                        strApproveOperName = ToolUtil.getStrIgnoreNull(operResShowUnit.getOperName());
-                    }else {
-                        strApproveOperName = strApproveOperName + "," + operResShowUnit.getOperName();
-                    }
-                }else if("4".equals(operResShowUnit.getFlowStatus())){
-                    if(strAccountOperName.length()==0){
-                        strAccountOperName = ToolUtil.getStrIgnoreNull(operResShowUnit.getOperName());
-                    }else {
-                        strAccountOperName = strAccountOperName + "," + operResShowUnit.getOperName();
-                    }
-                }else if("5".equals(operResShowUnit.getFlowStatus())){
-                    if(strPlaceOnFileOperName.length()==0){
-                        strPlaceOnFileOperName = ToolUtil.getStrIgnoreNull(operResShowUnit.getOperName());
-                    }else {
-                        strPlaceOnFileOperName = strPlaceOnFileOperName + "," + operResShowUnit.getOperName();
-                    }
-                }
-            }
-            OperFuncResShow operFuncResShowTemp=new OperFuncResShow();
-            operFuncResShowTemp.setResType(cttInfoShowTemp.getCttType());
-            operFuncResShowTemp.setResPkid(cttInfoShowTemp.getPkid());
-            String strResTypeName="";
-            if(EnumResType.RES_TYPE0.getCode().equals(cttInfoShowTemp.getCttType())){
-                strResTypeName="总包合同_";
-            }else if(EnumResType.RES_TYPE1.getCode().equals(cttInfoShowTemp.getCttType())){
-                strResTypeName="成本计划_";
-            }else if(EnumResType.RES_TYPE2.getCode().equals(cttInfoShowTemp.getCttType())){
-                strResTypeName="分包合同_";
-            }
-            operFuncResShowTemp.setResName(strResTypeName+cttInfoShowTemp.getName());
-            operFuncResShowTemp.setInputOperName(strInputOperName);
-            operFuncResShowTemp.setCheckOperName(strCheckOperName);
-            operFuncResShowTemp.setDoubleCheckOperName(strDoubleCheckOperName);
-            operFuncResShowTemp.setApproveOperName(strApproveOperName);
-            operFuncResShowTemp.setAccountOperName(strAccountOperName);
-            operFuncResShowTemp.setPlaceOnFileOperName(strPlaceOnFileOperName);
-            // 合同
-            TreeNode childNodeTemp = new DefaultTreeNode(operFuncResShowTemp, parentNode);
-            OperFuncResShow operFuncResShowForExcelTemp= (OperFuncResShow)BeanUtils.cloneBean(operFuncResShowTemp);
-            operFuncResShowForExcelTemp.setResName(
-            ToolUtil.padLeftSpace_DoLevel(Integer.parseInt(operFuncResShowForExcelTemp.getResType()),operFuncResShowForExcelTemp.getResName()));
-            operFuncResShowFowExcelList.add(operFuncResShowForExcelTemp);
-            // 结算信息
-            if(cttInfoShowTemp.getCttType().equals(EnumResType.RES_TYPE0.getCode())) {
-                // 统计
-                operResShowTemp = new OperResShow();
-                operResShowTemp.setInfoType(EnumResType.RES_TYPE6.getCode());
-                operResShowTemp.setInfoPkid(cttInfoShowTemp.getPkid());
-                List<OperResShow> operResShowForStlListTemp =
-                        operResService.selectOperaResRecordsByModelShow(operResShowTemp);
-                strInputOperName = "";
-                strCheckOperName = "";
-                strDoubleCheckOperName = "";
-                strApproveOperName = "";
-                strAccountOperName = "";
-                strPlaceOnFileOperName = "";
-                for (OperResShow operResShowUnit : operResShowForStlListTemp) {
-                    if (operResShowUnit.getFlowStatus().equals("0")) {
-                        if (strInputOperName.length() == 0) {
-                            strInputOperName = operResShowUnit.getOperName();
-                        } else {
-                            strInputOperName = strInputOperName + "," + operResShowUnit.getOperName();
-                        }
-                    } else if (operResShowUnit.getFlowStatus().equals("1")) {
-                        if (strCheckOperName.length() == 0) {
-                            strCheckOperName = operResShowUnit.getOperName();
-                        } else {
-                            strCheckOperName = strCheckOperName + "," + operResShowUnit.getOperName();
-                        }
-                    } else if (operResShowUnit.getFlowStatus().equals("2")) {
-                        if (strDoubleCheckOperName.length() == 0) {
-                            strDoubleCheckOperName = operResShowUnit.getOperName();
-                        } else {
-                            strDoubleCheckOperName = strDoubleCheckOperName + "," + operResShowUnit.getOperName();
-                        }
-                    } else if (operResShowUnit.getFlowStatus().equals("3")) {
-                        if (strApproveOperName.length() == 0) {
-                            strApproveOperName = operResShowUnit.getOperName();
-                        } else {
-                            strApproveOperName = strApproveOperName + "," + operResShowUnit.getOperName();
-                        }
-                    } else if (operResShowUnit.getFlowStatus().equals("4")) {
-                        if (strAccountOperName.length() == 0) {
-                            strAccountOperName = operResShowUnit.getOperName();
-                        } else {
-                            strAccountOperName = strAccountOperName + "," + operResShowUnit.getOperName();
-                        }
-                    } else if (operResShowUnit.getFlowStatus().equals("5")) {
-                        if (strInputOperName.length() == 0) {
-                            strPlaceOnFileOperName = operResShowUnit.getOperName();
-                        } else {
-                            strPlaceOnFileOperName = strPlaceOnFileOperName + "," + operResShowUnit.getOperName();
-                        }
-                    }
-                }
-                OperFuncResShow operFuncResShowForStlTemp = new OperFuncResShow();
-                operFuncResShowForStlTemp.setResType(operResShowTemp.getInfoType());
-                operFuncResShowForStlTemp.setResPkid(operResShowTemp.getInfoPkid());
-                /*operFuncResShowForStlTemp.setResName(cttInfoShowTemp.getName() + "__统计");*/
-                operFuncResShowForStlTemp.setResName("总包进度_统计");
-                operFuncResShowForStlTemp.setInputOperName(strInputOperName);
-                operFuncResShowForStlTemp.setCheckOperName(strCheckOperName);
-                operFuncResShowForStlTemp.setDoubleCheckOperName(strDoubleCheckOperName);
-                operFuncResShowForStlTemp.setApproveOperName(strApproveOperName);
-                operFuncResShowForStlTemp.setAccountOperName(strAccountOperName);
-                operFuncResShowForStlTemp.setPlaceOnFileOperName(strPlaceOnFileOperName);
-                // 安装树节点
-                new DefaultTreeNode(operFuncResShowForStlTemp, childNodeTemp);
-                operFuncResShowForExcelTemp = (OperFuncResShow) BeanUtils.cloneBean(operFuncResShowForStlTemp);
-                operFuncResShowFowExcelList.add(operFuncResShowForExcelTemp);
 
-                // 计量
-                operResShowTemp = new OperResShow();
-                operResShowTemp.setInfoType(EnumResType.RES_TYPE7.getCode());
-                operResShowTemp.setInfoPkid(cttInfoShowTemp.getPkid());
-                operResShowForStlListTemp =
-                        operResService.selectOperaResRecordsByModelShow(operResShowTemp);
-                strInputOperName = "";
-                strCheckOperName = "";
-                strDoubleCheckOperName = "";
-                strApproveOperName = "";
-                strAccountOperName = "";
-                strPlaceOnFileOperName = "";
-                for (OperResShow operResShowUnit : operResShowForStlListTemp) {
-                    if (operResShowUnit.getFlowStatus().equals("0")) {
-                        if (strInputOperName.length() == 0) {
-                            strInputOperName = operResShowUnit.getOperName();
-                        } else {
-                            strInputOperName = strInputOperName + "," + operResShowUnit.getOperName();
-                        }
-                    } else if (operResShowUnit.getFlowStatus().equals("1")) {
-                        if (strCheckOperName.length() == 0) {
-                            strCheckOperName = operResShowUnit.getOperName();
-                        } else {
-                            strCheckOperName = strCheckOperName + "," + operResShowUnit.getOperName();
-                        }
-                    } else if (operResShowUnit.getFlowStatus().equals("2")) {
-                        if (strDoubleCheckOperName.length() == 0) {
-                            strDoubleCheckOperName = operResShowUnit.getOperName();
-                        } else {
-                            strDoubleCheckOperName = strDoubleCheckOperName + "," + operResShowUnit.getOperName();
-                        }
-                    } else if (operResShowUnit.getFlowStatus().equals("3")) {
-                        if (strApproveOperName.length() == 0) {
-                            strApproveOperName = operResShowUnit.getOperName();
-                        } else {
-                            strApproveOperName = strApproveOperName + "," + operResShowUnit.getOperName();
-                        }
-                    } else if (operResShowUnit.getFlowStatus().equals("4")) {
-                        if (strAccountOperName.length() == 0) {
-                            strAccountOperName = operResShowUnit.getOperName();
-                        } else {
-                            strAccountOperName = strAccountOperName + "," + operResShowUnit.getOperName();
-                        }
-                    } else if (operResShowUnit.getFlowStatus().equals("5")) {
-                        if (strInputOperName.length() == 0) {
-                            strPlaceOnFileOperName = operResShowUnit.getOperName();
-                        } else {
-                            strPlaceOnFileOperName = strPlaceOnFileOperName + "," + operResShowUnit.getOperName();
-                        }
-                    }
-                }
-                operFuncResShowForStlTemp = new OperFuncResShow();
-                operFuncResShowForStlTemp.setResType(operResShowTemp.getInfoType());
-                operFuncResShowForStlTemp.setResPkid(operResShowTemp.getInfoPkid());
-                operFuncResShowForStlTemp.setResName("总包进度_计量");
-                operFuncResShowForStlTemp.setInputOperName(strInputOperName);
-                operFuncResShowForStlTemp.setCheckOperName(strCheckOperName);
-                operFuncResShowForStlTemp.setDoubleCheckOperName(strDoubleCheckOperName);
-                operFuncResShowForStlTemp.setApproveOperName(strApproveOperName);
-                operFuncResShowForStlTemp.setAccountOperName(strAccountOperName);
-                operFuncResShowForStlTemp.setPlaceOnFileOperName(strPlaceOnFileOperName);
-                // 安装树节点
-                new DefaultTreeNode(operFuncResShowForStlTemp, childNodeTemp);
-                operFuncResShowForExcelTemp = (OperFuncResShow) BeanUtils.cloneBean(operFuncResShowForStlTemp);
-                operFuncResShowFowExcelList.add(operFuncResShowForExcelTemp);
-            }else if(cttInfoShowTemp.getCttType().equals(EnumResType.RES_TYPE2.getCode())) {
-                // 工程量结算
-                operResShowTemp = new OperResShow();
-                operResShowTemp.setInfoType(EnumResType.RES_TYPE3.getCode());
-                operResShowTemp.setInfoPkid(cttInfoShowTemp.getPkid());
-                List<OperResShow> operResShowForStlListTemp =
-                        operResService.selectOperaResRecordsByModelShow(operResShowTemp);
-                strInputOperName = "";
-                strCheckOperName = "";
-                strDoubleCheckOperName = "";
-                strApproveOperName = "";
-                strAccountOperName = "";
-                strPlaceOnFileOperName = "";
-                for (OperResShow operResShowUnit : operResShowForStlListTemp) {
-                    if (operResShowUnit.getFlowStatus().equals("0")) {
-                        if (strInputOperName.length() == 0) {
-                            strInputOperName = operResShowUnit.getOperName();
-                        } else {
-                            strInputOperName = strInputOperName + "," + operResShowUnit.getOperName();
-                        }
-                    } else if (operResShowUnit.getFlowStatus().equals("1")) {
-                        if (strCheckOperName.length() == 0) {
-                            strCheckOperName = operResShowUnit.getOperName();
-                        } else {
-                            strCheckOperName = strCheckOperName + "," + operResShowUnit.getOperName();
-                        }
-                    } else if (operResShowUnit.getFlowStatus().equals("2")) {
-                        if (strDoubleCheckOperName.length() == 0) {
-                            strDoubleCheckOperName = operResShowUnit.getOperName();
-                        } else {
-                            strDoubleCheckOperName = strDoubleCheckOperName + "," + operResShowUnit.getOperName();
-                        }
-                    } else if (operResShowUnit.getFlowStatus().equals("3")) {
-                        if (strApproveOperName.length() == 0) {
-                            strApproveOperName = operResShowUnit.getOperName();
-                        } else {
-                            strApproveOperName = strApproveOperName + "," + operResShowUnit.getOperName();
-                        }
-                    } else if (operResShowUnit.getFlowStatus().equals("4")) {
-                        if (strAccountOperName.length() == 0) {
-                            strAccountOperName = operResShowUnit.getOperName();
-                        } else {
-                            strAccountOperName = strAccountOperName + "," + operResShowUnit.getOperName();
-                        }
-                    } else if (operResShowUnit.getFlowStatus().equals("5")) {
-                        if (strInputOperName.length() == 0) {
-                            strPlaceOnFileOperName = operResShowUnit.getOperName();
-                        } else {
-                            strPlaceOnFileOperName = strPlaceOnFileOperName + "," + operResShowUnit.getOperName();
-                        }
-                    }
-                }
-                OperFuncResShow operFuncResShowForStlTemp = new OperFuncResShow();
-                operFuncResShowForStlTemp.setResType(operResShowTemp.getInfoType());
-                operFuncResShowForStlTemp.setResPkid(operResShowTemp.getInfoPkid());
-                operFuncResShowForStlTemp.setResName("分包进度_工程量结算");
-                operFuncResShowForStlTemp.setInputOperName(strInputOperName);
-                operFuncResShowForStlTemp.setCheckOperName(strCheckOperName);
-                operFuncResShowForStlTemp.setDoubleCheckOperName(strDoubleCheckOperName);
-                operFuncResShowForStlTemp.setApproveOperName(strApproveOperName);
-                operFuncResShowForStlTemp.setAccountOperName(strAccountOperName);
-                operFuncResShowForStlTemp.setPlaceOnFileOperName(strPlaceOnFileOperName);
-                // 安装树节点
-                new DefaultTreeNode(operFuncResShowForStlTemp, childNodeTemp);
-                operFuncResShowForExcelTemp = (OperFuncResShow) BeanUtils.cloneBean(operFuncResShowForStlTemp);
-                operFuncResShowForExcelTemp.setResName(
-                        ToolUtil.padLeftSpace_DoLevel(3, operFuncResShowForExcelTemp.getResName()));
-                operFuncResShowFowExcelList.add(operFuncResShowForExcelTemp);
-
-                // 材料消耗量结算
-                operResShowTemp = new OperResShow();
-                operResShowTemp.setInfoType(EnumResType.RES_TYPE4.getCode());
-                operResShowTemp.setInfoPkid(cttInfoShowTemp.getPkid());
-                operResShowForStlListTemp =
-                        operResService.selectOperaResRecordsByModelShow(operResShowTemp);
-                strInputOperName = "";
-                strCheckOperName = "";
-                strDoubleCheckOperName = "";
-                strApproveOperName = "";
-                strAccountOperName = "";
-                strPlaceOnFileOperName = "";
-                for (OperResShow operResShowUnit : operResShowForStlListTemp) {
-                    if (operResShowUnit.getFlowStatus().equals("0")) {
-                        if (strInputOperName.length() == 0) {
-                            strInputOperName = operResShowUnit.getOperName();
-                        } else {
-                            strInputOperName = strInputOperName + "," + operResShowUnit.getOperName();
-                        }
-                    } else if (operResShowUnit.getFlowStatus().equals("1")) {
-                        if (strCheckOperName.length() == 0) {
-                            strCheckOperName = operResShowUnit.getOperName();
-                        } else {
-                            strCheckOperName = strCheckOperName + "," + operResShowUnit.getOperName();
-                        }
-                    } else if (operResShowUnit.getFlowStatus().equals("2")) {
-                        if (strDoubleCheckOperName.length() == 0) {
-                            strDoubleCheckOperName = operResShowUnit.getOperName();
-                        } else {
-                            strDoubleCheckOperName = strDoubleCheckOperName + "," + operResShowUnit.getOperName();
-                        }
-                    } else if (operResShowUnit.getFlowStatus().equals("3")) {
-                        if (strApproveOperName.length() == 0) {
-                            strApproveOperName = operResShowUnit.getOperName();
-                        } else {
-                            strApproveOperName = strApproveOperName + "," + operResShowUnit.getOperName();
-                        }
-                    } else if (operResShowUnit.getFlowStatus().equals("4")) {
-                        if (strAccountOperName.length() == 0) {
-                            strAccountOperName = operResShowUnit.getOperName();
-                        } else {
-                            strAccountOperName = strAccountOperName + "," + operResShowUnit.getOperName();
-                        }
-                    } else if (operResShowUnit.getFlowStatus().equals("5")) {
-                        if (strInputOperName.length() == 0) {
-                            strPlaceOnFileOperName = operResShowUnit.getOperName();
-                        } else {
-                            strPlaceOnFileOperName = strPlaceOnFileOperName + "," + operResShowUnit.getOperName();
-                        }
-                    }
-                }
-                operFuncResShowForStlTemp = new OperFuncResShow();
-                operFuncResShowForStlTemp.setResType(operResShowTemp.getInfoType());
-                operFuncResShowForStlTemp.setResPkid(operResShowTemp.getInfoPkid());
-                operFuncResShowForStlTemp.setResName("分包进度_材料消耗量结算");
-                operFuncResShowForStlTemp.setInputOperName(strInputOperName);
-                operFuncResShowForStlTemp.setCheckOperName(strCheckOperName);
-                operFuncResShowForStlTemp.setDoubleCheckOperName(strDoubleCheckOperName);
-                operFuncResShowForStlTemp.setApproveOperName(strApproveOperName);
-                operFuncResShowForStlTemp.setAccountOperName(strAccountOperName);
-                operFuncResShowForStlTemp.setPlaceOnFileOperName(strPlaceOnFileOperName);
-                // 安装树节点
-                new DefaultTreeNode(operFuncResShowForStlTemp, childNodeTemp);
-                operFuncResShowForExcelTemp = (OperFuncResShow) BeanUtils.cloneBean(operFuncResShowForStlTemp);
-                operFuncResShowForExcelTemp.setResName(
-                        ToolUtil.padLeftSpace_DoLevel(3, operFuncResShowForExcelTemp.getResName()));
-                operFuncResShowFowExcelList.add(operFuncResShowForExcelTemp);
-
-                // 费用结算
-                operResShowTemp = new OperResShow();
-                operResShowTemp.setInfoType(EnumResType.RES_TYPE8.getCode());
-                operResShowTemp.setInfoPkid(cttInfoShowTemp.getPkid());
-                operResShowForStlListTemp =
-                        operResService.selectOperaResRecordsByModelShow(operResShowTemp);
-                strInputOperName = "";
-                strCheckOperName = "";
-                strDoubleCheckOperName = "";
-                strApproveOperName = "";
-                strAccountOperName = "";
-                strPlaceOnFileOperName = "";
-                for (OperResShow operResShowUnit : operResShowForStlListTemp) {
-                    if (operResShowUnit.getFlowStatus().equals("0")) {
-                        if (strInputOperName.length() == 0) {
-                            strInputOperName = operResShowUnit.getOperName();
-                        } else {
-                            strInputOperName = strInputOperName + "," + operResShowUnit.getOperName();
-                        }
-                    } else if (operResShowUnit.getFlowStatus().equals("1")) {
-                        if (strCheckOperName.length() == 0) {
-                            strCheckOperName = operResShowUnit.getOperName();
-                        } else {
-                            strCheckOperName = strCheckOperName + "," + operResShowUnit.getOperName();
-                        }
-                    } else if (operResShowUnit.getFlowStatus().equals("2")) {
-                        if (strDoubleCheckOperName.length() == 0) {
-                            strDoubleCheckOperName = operResShowUnit.getOperName();
-                        } else {
-                            strDoubleCheckOperName = strDoubleCheckOperName + "," + operResShowUnit.getOperName();
-                        }
-                    } else if (operResShowUnit.getFlowStatus().equals("3")) {
-                        if (strApproveOperName.length() == 0) {
-                            strApproveOperName = operResShowUnit.getOperName();
-                        } else {
-                            strApproveOperName = strApproveOperName + "," + operResShowUnit.getOperName();
-                        }
-                    } else if (operResShowUnit.getFlowStatus().equals("4")) {
-                        if (strAccountOperName.length() == 0) {
-                            strAccountOperName = operResShowUnit.getOperName();
-                        } else {
-                            strAccountOperName = strAccountOperName + "," + operResShowUnit.getOperName();
-                        }
-                    } else if (operResShowUnit.getFlowStatus().equals("5")) {
-                        if (strInputOperName.length() == 0) {
-                            strPlaceOnFileOperName = operResShowUnit.getOperName();
-                        } else {
-                            strPlaceOnFileOperName = strPlaceOnFileOperName + "," + operResShowUnit.getOperName();
-                        }
-                    }
-                }
-                operFuncResShowForStlTemp = new OperFuncResShow();
-                operFuncResShowForStlTemp.setResType(operResShowTemp.getInfoType());
-                operFuncResShowForStlTemp.setResPkid(operResShowTemp.getInfoPkid());
-                operFuncResShowForStlTemp.setResName("分包进度_费用结算");
-                operFuncResShowForStlTemp.setInputOperName(strInputOperName);
-                operFuncResShowForStlTemp.setCheckOperName(strCheckOperName);
-                operFuncResShowForStlTemp.setDoubleCheckOperName(strDoubleCheckOperName);
-                operFuncResShowForStlTemp.setApproveOperName(strApproveOperName);
-                operFuncResShowForStlTemp.setAccountOperName(strAccountOperName);
-                operFuncResShowForStlTemp.setPlaceOnFileOperName(strPlaceOnFileOperName);
-                // 安装树节点
-                new DefaultTreeNode(operFuncResShowForStlTemp, childNodeTemp);
-                operFuncResShowForExcelTemp = (OperFuncResShow) BeanUtils.cloneBean(operFuncResShowForStlTemp);
-                operFuncResShowForExcelTemp.setResName(
-                        ToolUtil.padLeftSpace_DoLevel(3, operFuncResShowForExcelTemp.getResName()));
-                operFuncResShowFowExcelList.add(operFuncResShowForExcelTemp);
-
-                // 结算单
-                operResShowTemp = new OperResShow();
-                operResShowTemp.setInfoType(EnumResType.RES_TYPE5.getCode());
-                operResShowTemp.setInfoPkid(cttInfoShowTemp.getPkid());
-                operResShowForStlListTemp =
-                        operResService.selectOperaResRecordsByModelShow(operResShowTemp);
-                strInputOperName = "";
-                strCheckOperName = "";
-                strDoubleCheckOperName = "";
-                strApproveOperName = "";
-                strAccountOperName = "";
-                strPlaceOnFileOperName = "";
-                for (OperResShow operResShowUnit : operResShowForStlListTemp) {
-                    if (operResShowUnit.getFlowStatus().equals("0")) {
-                        if (strInputOperName.length() == 0) {
-                            strInputOperName = operResShowUnit.getOperName();
-                        } else {
-                            strInputOperName = strInputOperName + "," + operResShowUnit.getOperName();
-                        }
-                    } else if (operResShowUnit.getFlowStatus().equals("1")) {
-                        if (strCheckOperName.length() == 0) {
-                            strCheckOperName = operResShowUnit.getOperName();
-                        } else {
-                            strCheckOperName = strCheckOperName + "," + operResShowUnit.getOperName();
-                        }
-                    } else if (operResShowUnit.getFlowStatus().equals("2")) {
-                        if (strDoubleCheckOperName.length() == 0) {
-                            strDoubleCheckOperName = operResShowUnit.getOperName();
-                        } else {
-                            strDoubleCheckOperName = strDoubleCheckOperName + "," + operResShowUnit.getOperName();
-                        }
-                    } else if (operResShowUnit.getFlowStatus().equals("3")) {
-                        if (strApproveOperName.length() == 0) {
-                            strApproveOperName = operResShowUnit.getOperName();
-                        } else {
-                            strApproveOperName = strApproveOperName + "," + operResShowUnit.getOperName();
-                        }
-                    } else if (operResShowUnit.getFlowStatus().equals("4")) {
-                        if (strAccountOperName.length() == 0) {
-                            strAccountOperName = operResShowUnit.getOperName();
-                        } else {
-                            strAccountOperName = strAccountOperName + "," + operResShowUnit.getOperName();
-                        }
-                    } else if (operResShowUnit.getFlowStatus().equals("5")) {
-                        if (strInputOperName.length() == 0) {
-                            strPlaceOnFileOperName = operResShowUnit.getOperName();
-                        } else {
-                            strPlaceOnFileOperName = strPlaceOnFileOperName + "," + operResShowUnit.getOperName();
-                        }
-                    }
-                }
-                operFuncResShowForStlTemp = new OperFuncResShow();
-                operFuncResShowForStlTemp.setResType(operResShowTemp.getInfoType());
-                operFuncResShowForStlTemp.setResPkid(operResShowTemp.getInfoPkid());
-                operFuncResShowForStlTemp.setResName("分包进度＿结算单");
-                operFuncResShowForStlTemp.setInputOperName(strInputOperName);
-                operFuncResShowForStlTemp.setCheckOperName(strCheckOperName);
-                operFuncResShowForStlTemp.setDoubleCheckOperName(strDoubleCheckOperName);
-                operFuncResShowForStlTemp.setApproveOperName(strApproveOperName);
-                operFuncResShowForStlTemp.setAccountOperName(strAccountOperName);
-                operFuncResShowForStlTemp.setPlaceOnFileOperName(strPlaceOnFileOperName);
-                // 安装树节点
-                new DefaultTreeNode(operFuncResShowForStlTemp, childNodeTemp);
-
-                operFuncResShowForExcelTemp = (OperFuncResShow) BeanUtils.cloneBean(operFuncResShowForStlTemp);
-                operFuncResShowForExcelTemp.setResName(
-                        ToolUtil.padLeftSpace_DoLevel(3, operFuncResShowForExcelTemp.getResName()));
-                operFuncResShowFowExcelList.add(operFuncResShowForExcelTemp);
-            }
-            if (currentSelectedNode!=null){
-                OperFuncResShow operFuncResShow1= (OperFuncResShow) currentSelectedNode.getData();
-                OperFuncResShow operFuncResShow2= (OperFuncResShow) childNodeTemp.getData();
-                if ("ROOT".equals(operFuncResShow1.getResPkid())){
-                    currentSelectedNode.setExpanded(true);
-                }else {
-                    if (operFuncResShow1.getResType().equals(operFuncResShow2.getResType())
-                            &&operFuncResShow1.getResPkid().equals(operFuncResShow2.getResPkid())){
-                        TreeNode treeNodeTemp=childNodeTemp;
-                        while (!(treeNodeTemp.getParent()==null)){
-                            treeNodeTemp.setExpanded(true);
-                            treeNodeTemp=treeNodeTemp.getParent();
-                        }
-                    }
-                }
-            }
-            recursiveResTreeNode(operFuncResShowTemp.getResPkid(),childNodeTemp);
-        }
-    }
     private void recursiveOperTreeNode(String strParentPkidPara,TreeNode parentNode){
         List<DeptOperShow> operResShowListTemp=
                 deptOperService.selectDeptAndOperRecords(strParentPkidPara);
@@ -688,22 +179,22 @@ public class OperFuncBusiResMngAction implements Serializable{
         try {
             findSelectedNode(operFuncResShowPara,resRoot,strSubmitTypePara);
             if (strSubmitTypePara.equals("Add")) {
-                cttInfoShowAdd = new CttInfoShow();
+                workorderInfoShowAdd = new WorkorderInfoShow();
                 if(operFuncResShowPara.getResPkid().equals("ROOT")) {
-                    cttInfoShowAdd.setCttType(EnumResType.RES_TYPE0.getCode());
-                    cttInfoShowAdd.setParentPkid("ROOT");
+                    workorderInfoShowAdd.setCttType(EnumResType.RES_TYPE0.getCode());
+                    workorderInfoShowAdd.setParentPkid("ROOT");
                 }else if(operFuncResShowPara.getResType().equals(EnumResType.RES_TYPE0.getCode())) {
-                    cttInfoShowAdd.setCttType(EnumResType.RES_TYPE1.getCode());
-                    cttInfoShowAdd.setParentPkid(operFuncResShowPara.getResPkid());
+                    workorderInfoShowAdd.setCttType(EnumResType.RES_TYPE1.getCode());
+                    workorderInfoShowAdd.setParentPkid(operFuncResShowPara.getResPkid());
                 }else if(operFuncResShowPara.getResType().equals(EnumResType.RES_TYPE1.getCode())) {
-                    cttInfoShowAdd.setCttType(EnumResType.RES_TYPE2.getCode());
-                    cttInfoShowAdd.setParentPkid(operFuncResShowPara.getResPkid());
+                    workorderInfoShowAdd.setCttType(EnumResType.RES_TYPE2.getCode());
+                    workorderInfoShowAdd.setParentPkid(operFuncResShowPara.getResPkid());
                 }
-                cttInfoShowAdd.setId(setMaxNoPlusOne(cttInfoShowAdd.getCttType()));
+                workorderInfoShowAdd.setId(setMaxNoPlusOne(workorderInfoShowAdd.getCttType()));
             } else if (strSubmitTypePara.equals("Upd")){
-                cttInfoShowUpd = fromResModelShowToCttInfoShow(operFuncResShowPara);
+                workorderInfoShowUpd = fromResModelShowToCttInfoShow(operFuncResShowPara);
             } else if (strSubmitTypePara.equals("Del")) {
-                cttInfoShowDel = fromResModelShowToCttInfoShow(operFuncResShowPara);
+                workorderInfoShowDel = fromResModelShowToCttInfoShow(operFuncResShowPara);
             }
         } catch (Exception e) {
             MessageUtil.addError(e.getMessage());
@@ -714,18 +205,18 @@ public class OperFuncBusiResMngAction implements Serializable{
         try {
             findSelectedNode(operFuncResShowPara, resRoot, strSubmitTypePara);
             if (strSubmitTypePara.equals("Sel")) {
-                cttInfoShowSel = fromResModelShowToCttInfoShow(operFuncResShowPara);
-                cttInfoShowSel.setFlowStatus(strResFlowStatus);
+                workorderInfoShowSel = fromResModelShowToCttInfoShow(operFuncResShowPara);
+                workorderInfoShowSel.setFlowStatus(strResFlowStatus);
                 initDeptOper();
                 deptOperShowSeledList.clear();
-                OperResShow operResShowTemp = new OperResShow();
+                /*OperResShow operResShowTemp = new OperResShow();
                 operResShowTemp.setInfoType(operFuncResShowPara.getResType());
                 operResShowTemp.setInfoPkid(operFuncResShowPara.getResPkid());
                 operResShowTemp.setFlowStatus(strResFlowStatus);
                 List<OperResShow> operResShowListTemp = operResService.selectOperaResRecordsByModelShow(operResShowTemp);
                 if (operResShowListTemp.size() > 0) {
                     recursiveOperTreeNodeForFuncChange(deptOperRoot, operResShowListTemp);
-                }
+                }*/
             }
         } catch (Exception e) {
             MessageUtil.addError(e.getMessage());
@@ -775,57 +266,57 @@ public class OperFuncBusiResMngAction implements Serializable{
     public void onClickForMngAction(String strSubmitTypePara) {
         try {
             if (strSubmitTypePara.equals("Add")) {
-                if (!submitPreCheck(cttInfoShowAdd)) {
+                if (!submitPreCheck(workorderInfoShowAdd)) {
                     MessageUtil.addError("请输入名称！");
                     return;
                 }
-                CttInfoShow cttInfoShowTemp=new CttInfoShow();
-                cttInfoShowTemp.setCttType(cttInfoShowAdd.getCttType());
-                cttInfoShowTemp.setName(cttInfoShowAdd.getName());
-                if (cttInfoService.getListByModelShow(cttInfoShowTemp).size()>0) {
+                WorkorderInfoShow workorderInfoShowTemp =new WorkorderInfoShow();
+                workorderInfoShowTemp.setCttType(workorderInfoShowAdd.getCttType());
+                workorderInfoShowTemp.setName(workorderInfoShowAdd.getName());
+                if (cttInfoService.getListByModelShow(workorderInfoShowTemp).size()>0) {
                     MessageUtil.addError("该记录已存在，请重新录入！");
                     return;
                 } else {
-                    cttInfoService.insertRecord(cttInfoShowAdd);
+                    cttInfoService.insertRecord(workorderInfoShowAdd);
                     MessageUtil.addInfo("新增数据完成。");
-					String strCttTypeTemp=cttInfoShowAdd.getCttType();
-					String strParentPkidTemp=cttInfoShowAdd.getParentPkid();
-                    cttInfoShowAdd = new CttInfoShow();
-					cttInfoShowAdd.setCttType(strCttTypeTemp);
-                    cttInfoShowAdd.setParentPkid(strParentPkidTemp);
-                    cttInfoShowAdd.setId(setMaxNoPlusOne(cttInfoShowAdd.getCttType()));
+					String strCttTypeTemp= workorderInfoShowAdd.getCttType();
+					String strParentPkidTemp= workorderInfoShowAdd.getParentPkid();
+                    workorderInfoShowAdd = new WorkorderInfoShow();
+					workorderInfoShowAdd.setCttType(strCttTypeTemp);
+                    workorderInfoShowAdd.setParentPkid(strParentPkidTemp);
+                    workorderInfoShowAdd.setId(setMaxNoPlusOne(workorderInfoShowAdd.getCttType()));
                 }
             } else if (strSubmitTypePara.equals("Upd")) {
-                if (!submitPreCheck(cttInfoShowUpd)) {
+                if (!submitPreCheck(workorderInfoShowUpd)) {
                     MessageUtil.addError("请输入名称！");
                     return;
                 }
-                CttInfo cttInfoTemp=cttInfoService.getCttInfoByPkId(cttInfoShowUpd.getPkid());
-                cttInfoTemp.setName(cttInfoShowUpd.getName());
-                cttInfoService.updateRecord(cttInfoTemp);
+                WorkorderInfo workorderInfoTemp =cttInfoService.getCttInfoByPkId(workorderInfoShowUpd.getPkid());
+                workorderInfoTemp.setName(workorderInfoShowUpd.getName());
+                cttInfoService.updateRecord(workorderInfoTemp);
                 MessageUtil.addInfo("更新数据完成。");
             } else if (strSubmitTypePara.equals("Del")) {
-                if (!submitPreCheck(cttInfoShowDel)) {
+                if (!submitPreCheck(workorderInfoShowDel)) {
                     MessageUtil.addError("该记录已被删除！");
                     return;
                 }
-                MessageUtil.addInfo(operResService.deleteResRecord(cttInfoShowDel));
+                //MessageUtil.addInfo(operResService.deleteResRecord(workorderInfoShowDel));
             } else if (strSubmitTypePara.equals("Power")) {
-                OperRes operResTemp = new OperRes();
-                operResTemp.setInfoType(cttInfoShowSel.getCttType());
-                operResTemp.setInfoPkid(cttInfoShowSel.getPkid());
-                operResTemp.setFlowStatus(cttInfoShowSel.getFlowStatus());
+                /*OperRes operResTemp = new OperRes();
+                operResTemp.setInfoType(workorderInfoShowSel.getCttType());
+                operResTemp.setInfoPkid(workorderInfoShowSel.getPkid());
+                operResTemp.setFlowStatus(workorderInfoShowSel.getFlowStatus());
                 operResService.deleteRecord(operResTemp);
                 for (DeptOperShow deptOperShowUnit:deptOperShowSeledList) {
                     operResTemp = new OperRes();
                     operResTemp.setOperPkid(deptOperShowUnit.getPkid());
-                    operResTemp.setInfoType(cttInfoShowSel.getCttType());
-                    operResTemp.setInfoPkid(cttInfoShowSel.getPkid());
-                    operResTemp.setFlowStatus(cttInfoShowSel.getFlowStatus());
+                    operResTemp.setInfoType(workorderInfoShowSel.getCttType());
+                    operResTemp.setInfoPkid(workorderInfoShowSel.getPkid());
+                    operResTemp.setFlowStatus(workorderInfoShowSel.getFlowStatus());
                     operResTemp.setArchivedFlag(EnumArchivedFlag.ARCHIVED_FLAG0.getCode());
                     operResTemp.setType("business");
                     operResService.insertRecord(operResTemp);
-                }
+                }*/
                 MessageUtil.addInfo("权限添加成功!");
             }
             initRes();
@@ -836,16 +327,16 @@ public class OperFuncBusiResMngAction implements Serializable{
         }
     }
 
-    private CttInfoShow fromResModelShowToCttInfoShow(OperFuncResShow operFuncResShowPara){
-        CttInfoShow cttInfoShowTemp=new CttInfoShow();
-        cttInfoShowTemp.setCttType(operFuncResShowPara.getResType());
-        cttInfoShowTemp.setPkid(operFuncResShowPara.getResPkid());
-        cttInfoShowTemp.setName(operFuncResShowPara.getResName());
-        return cttInfoShowTemp;
+    private WorkorderInfoShow fromResModelShowToCttInfoShow(OperFuncResShow operFuncResShowPara){
+        WorkorderInfoShow workorderInfoShowTemp =new WorkorderInfoShow();
+        workorderInfoShowTemp.setCttType(operFuncResShowPara.getResType());
+        workorderInfoShowTemp.setPkid(operFuncResShowPara.getResPkid());
+        workorderInfoShowTemp.setName(operFuncResShowPara.getResName());
+        return workorderInfoShowTemp;
     }
 
-    private boolean submitPreCheck(CttInfoShow cttInfoShowPara) {
-        if ("".equals(ToolUtil.getStrIgnoreNull(cttInfoShowPara.getName()))){
+    private boolean submitPreCheck(WorkorderInfoShow workorderInfoShowPara) {
+        if ("".equals(ToolUtil.getStrIgnoreNull(workorderInfoShowPara.getName()))){
             return false;
         }
         return true;
@@ -864,35 +355,6 @@ public class OperFuncBusiResMngAction implements Serializable{
         return null;
     }
 
-    private void recursiveOperTreeNodeForFuncChange(TreeNode treeNodePara, List<OperResShow> operResShowListPara) {
-        if (operResShowListPara==null||operResShowListPara.size()==0){
-            return;
-        }
-        if (treeNodePara.getChildCount() != 0) {
-            for (int i = 0; i < treeNodePara.getChildCount(); i++) {
-                TreeNode treeNodeTemp = treeNodePara.getChildren().get(i);
-                DeptOperShow deptOperShowTemp = (DeptOperShow) treeNodeTemp.getData();
-                if (deptOperShowTemp.getPkid()!=null&&"1".equals(deptOperShowTemp.getType())){
-                    for (int j = 0; j < operResShowListPara.size(); j++) {
-                        if (deptOperShowTemp.getPkid().equals(operResShowListPara.get(j).getOperPkid())) {
-                            deptOperShowTemp.setIsSeled(true);
-                            deptOperShowSeledList.add(deptOperShowTemp);
-                            while (!(treeNodeTemp.getParent()==null)){
-                                if (!(treeNodeTemp.isExpanded())&&treeNodeTemp.getChildCount()>0){
-                                    treeNodeTemp.setExpanded(true);
-                                }
-                                treeNodeTemp=treeNodeTemp.getParent();
-                            }
-                            operResShowListPara.remove(j);
-                            break;
-                        }
-                    }
-                }
-                recursiveOperTreeNodeForFuncChange(treeNodeTemp, operResShowListPara);
-            }
-        }
-    }
-
     public void onRowSelect(NodeSelectEvent event) {
         currentSelectedResNode=event.getTreeNode();
         if (lastSelectedResNode==null){
@@ -905,15 +367,6 @@ public class OperFuncBusiResMngAction implements Serializable{
         strBtnRender="true";
     }
     /*智能字段 Start*/
-
-    public OperResService getOperResService() {
-        return operResService;
-    }
-
-    public void setOperResService(OperResService operResService) {
-        this.operResService = operResService;
-    }
-
     public CttInfoService getCttInfoService() {
         return cttInfoService;
     }
@@ -946,12 +399,12 @@ public class OperFuncBusiResMngAction implements Serializable{
         this.esInitCttList = esInitCttList;
     }
 
-    public List<CttInfoShow> getCttInfoShowList() {
-        return cttInfoShowList;
+    public List<WorkorderInfoShow> getWorkorderInfoShowList() {
+        return workorderInfoShowList;
     }
 
-    public void setCttInfoShowList(List<CttInfoShow> cttInfoShowList) {
-        this.cttInfoShowList = cttInfoShowList;
+    public void setWorkorderInfoShowList(List<WorkorderInfoShow> workorderInfoShowList) {
+        this.workorderInfoShowList = workorderInfoShowList;
     }
 
     public TreeNode getResRoot() {
@@ -970,28 +423,28 @@ public class OperFuncBusiResMngAction implements Serializable{
         this.deptOperRoot = deptOperRoot;
     }
 
-    public CttInfoShow getCttInfoShowAdd() {
-        return cttInfoShowAdd;
+    public WorkorderInfoShow getWorkorderInfoShowAdd() {
+        return workorderInfoShowAdd;
     }
 
-    public void setCttInfoShowAdd(CttInfoShow cttInfoShowAdd) {
-        this.cttInfoShowAdd = cttInfoShowAdd;
+    public void setWorkorderInfoShowAdd(WorkorderInfoShow workorderInfoShowAdd) {
+        this.workorderInfoShowAdd = workorderInfoShowAdd;
     }
 
-    public CttInfoShow getCttInfoShowUpd() {
-        return cttInfoShowUpd;
+    public WorkorderInfoShow getWorkorderInfoShowUpd() {
+        return workorderInfoShowUpd;
     }
 
-    public void setCttInfoShowUpd(CttInfoShow cttInfoShowUpd) {
-        this.cttInfoShowUpd = cttInfoShowUpd;
+    public void setWorkorderInfoShowUpd(WorkorderInfoShow workorderInfoShowUpd) {
+        this.workorderInfoShowUpd = workorderInfoShowUpd;
     }
 
-    public CttInfoShow getCttInfoShowDel() {
-        return cttInfoShowDel;
+    public WorkorderInfoShow getWorkorderInfoShowDel() {
+        return workorderInfoShowDel;
     }
 
-    public void setCttInfoShowDel(CttInfoShow cttInfoShowDel) {
-        this.cttInfoShowDel = cttInfoShowDel;
+    public void setWorkorderInfoShowDel(WorkorderInfoShow workorderInfoShowDel) {
+        this.workorderInfoShowDel = workorderInfoShowDel;
     }
 
     public Map getBeansMap() {

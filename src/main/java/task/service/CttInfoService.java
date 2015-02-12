@@ -1,11 +1,10 @@
 package task.service;
 
-import task.common.enums.EnumOperType;
-import task.repository.dao.WorkOrderInfoMapper;
+import task.repository.dao.WorkorderInfoMapper;
 import task.repository.dao.not_mybatis.MyWorkOrderInfoMapper;
 import task.repository.dao.not_mybatis.MyDeptAndOperMapper;
 import task.repository.model.*;
-import task.repository.model.model_show.CttInfoShow;
+import task.repository.model.model_show.WorkorderInfoShow;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,7 +23,7 @@ import java.util.List;
 @Service
 public class CttInfoService {
     @Autowired
-    private WorkOrderInfoMapper workOrderInfoMapper;
+    private WorkorderInfoMapper workorderInfoMapper;
     @Autowired
     private MyWorkOrderInfoMapper myWorkOrderInfoMapper;
     @Resource
@@ -36,50 +35,38 @@ public class CttInfoService {
         return myDeptAndOperMapper.getUserName(ToolUtil.getStrIgnoreNull(operPkidPara));
     }
 
-    public List<CttInfo> getListByModelShow(CttInfoShow cttInfoShowPara) {
-        CttInfoExample example= new CttInfoExample();
-        CttInfoExample.Criteria criteria = example.createCriteria();
+    public List<WorkorderInfo> getListByModelShow(WorkorderInfoShow workorderInfoShowPara) {
+        WorkorderInfoExample example= new WorkorderInfoExample();
+        WorkorderInfoExample.Criteria criteria = example.createCriteria();
         //可以为NULL的项
-        if(!ToolUtil.getStrIgnoreNull(cttInfoShowPara.getCttType()).equals("")){
-            criteria.andCttTypeEqualTo(ToolUtil.getStrIgnoreNull(cttInfoShowPara.getCttType()));
+        if(!ToolUtil.getStrIgnoreNull(workorderInfoShowPara.getCttType()).equals("")){
+            criteria.andTypeEqualTo(ToolUtil.getStrIgnoreNull(workorderInfoShowPara.getCttType()));
         }
-        if(!ToolUtil.getStrIgnoreNull(cttInfoShowPara.getId()).equals("")){
-            criteria.andIdEqualTo(ToolUtil.getStrIgnoreNull(cttInfoShowPara.getId()));
+        if(!ToolUtil.getStrIgnoreNull(workorderInfoShowPara.getId()).equals("")){
+            criteria.andIdEqualTo(ToolUtil.getStrIgnoreNull(workorderInfoShowPara.getId()));
         }
-        if(!ToolUtil.getStrIgnoreNull(cttInfoShowPara.getName()).equals("")){
-            criteria.andNameEqualTo(ToolUtil.getStrIgnoreNull(cttInfoShowPara.getName()));
+        if(!ToolUtil.getStrIgnoreNull(workorderInfoShowPara.getName()).equals("")){
+            criteria.andNameEqualTo(ToolUtil.getStrIgnoreNull(workorderInfoShowPara.getName()));
         }
-        if(!ToolUtil.getStrIgnoreNull(cttInfoShowPara.getParentPkid()).equals("")){
-            criteria.andParentPkidEqualTo(ToolUtil.getStrIgnoreNull(cttInfoShowPara.getParentPkid()));
+        if(!ToolUtil.getStrIgnoreNull(workorderInfoShowPara.getParentPkid()).equals("")){
+            criteria.andParentPkidEqualTo(ToolUtil.getStrIgnoreNull(workorderInfoShowPara.getParentPkid()));
         }
-        if(!ToolUtil.getStrIgnoreNull(cttInfoShowPara.getSignDate()).equals("")){
-            criteria.andSignDateLike(ToolUtil.getStrIgnoreNull(cttInfoShowPara.getSignDate()));
-        }
-        if(!ToolUtil.getStrIgnoreNull(cttInfoShowPara.getSignPartA()).equals("")){
-            criteria.andSignPartALike(ToolUtil.getStrIgnoreNull(cttInfoShowPara.getSignPartA()));
-        }
-        if(!ToolUtil.getStrIgnoreNull(cttInfoShowPara.getSignPartB()).equals("")){
-            criteria.andSignPartBLike(ToolUtil.getStrIgnoreNull(cttInfoShowPara.getSignPartB()));
-        }
-        if(!ToolUtil.getStrIgnoreNull(cttInfoShowPara.getCttStartDate()).equals("")){
-            criteria.andCttStartDateLike(ToolUtil.getStrIgnoreNull(cttInfoShowPara.getCttStartDate()));
-        }
-        if(!ToolUtil.getStrIgnoreNull(cttInfoShowPara.getCttEndDate()).equals("")){
-            criteria.andCttEndDateLike(ToolUtil.getStrIgnoreNull(cttInfoShowPara.getCttEndDate()));
+        if(!ToolUtil.getStrIgnoreNull(workorderInfoShowPara.getSignDate()).equals("")){
+            criteria.andSignDateLike(ToolUtil.getStrIgnoreNull(workorderInfoShowPara.getSignDate()));
         }
         example.setOrderByClause("ID ASC") ;
-        return workOrderInfoMapper.selectByExample(example);
+        return workorderInfoMapper.selectByExample(example);
     }
-    public List<CttInfo> getListByModel(CttInfo cttInfoPara) {
-        return getListByModelShow(fromModelToModelShow(cttInfoPara));
+    public List<WorkorderInfo> getListByModel(WorkorderInfo workorderInfoPara) {
+        return getListByModelShow(fromModelToModelShow(workorderInfoPara));
     }
 
-    public List<CttInfoShow> getCttInfoListByCttType_Status(
+    public List<WorkorderInfoShow> getCttInfoListByCttType_Status(
             String strCttyTypePara,String strStatusPara) {
         return myWorkOrderInfoMapper.getCttInfoListByCttType_Status(strCttyTypePara,strStatusPara);
     }
 
-    public List<CttInfoShow> getCttInfoListByCttType_ParentPkid_Status(
+    public List<WorkorderInfoShow> getCttInfoListByCttType_ParentPkid_Status(
             String strCttyTypePara,
             String strParentPkidPara,
             String strStatusPara) {
@@ -89,36 +76,27 @@ public class CttInfoService {
                 strStatusPara);
     }
 
-    public List<CttInfoShow> selectRecordsFromCtt(String parentPkidPara){
+    public List<WorkorderInfoShow> selectRecordsFromCtt(String parentPkidPara){
         return  myWorkOrderInfoMapper.selectRecordsFromCtt(parentPkidPara);
     }
 
-    public List<CttInfo> getEsInitCttByCttTypeAndBelongToPkId(String strCttType,String strBelongToPkid) {
-        CttInfoExample example= new CttInfoExample();
-        CttInfoExample.Criteria criteria = example.createCriteria();
-        criteria.andCttTypeEqualTo(ToolUtil.getStrIgnoreNull(strCttType))
-                .andParentPkidEqualTo(ToolUtil.getStrIgnoreNull(strBelongToPkid));
+    public List<WorkorderInfo> getEsInitCttByCttTypeAndBelongToPkId(String strCttType,String strBelongToPkid) {
+        WorkorderInfoExample example= new WorkorderInfoExample();
+        WorkorderInfoExample.Criteria criteria = example.createCriteria();
+        criteria.andParentPkidEqualTo(ToolUtil.getStrIgnoreNull(strBelongToPkid));
         example.setOrderByClause("ID ASC") ;
-        return workOrderInfoMapper.selectByExample(example);
+        return workorderInfoMapper.selectByExample(example);
     }
 
-    public List<CttInfo> getEsInitCttListByCttType(String strCttType) {
-        CttInfoExample example= new CttInfoExample();
-        CttInfoExample.Criteria criteria = example.createCriteria();
-        criteria.andCttTypeEqualTo(ToolUtil.getStrIgnoreNull(strCttType));
-        example.setOrderByClause("ID ASC") ;
-        return workOrderInfoMapper.selectByExample(example);
-    }
-
-    public CttInfo getCttInfoByPkId(String strPkid) {
-        return workOrderInfoMapper.selectByPrimaryKey(strPkid);
+    public WorkorderInfo getCttInfoByPkId(String strPkid) {
+        return workorderInfoMapper.selectByPrimaryKey(strPkid);
     }
 
     public boolean findChildRecordsByPkid(String strPkidPara) {
-        CttInfoExample example = new CttInfoExample();
-        CttInfoExample.Criteria criteria = example.createCriteria();
+        WorkorderInfoExample example = new WorkorderInfoExample();
+        WorkorderInfoExample.Criteria criteria = example.createCriteria();
         criteria.andParentPkidEqualTo(strPkidPara);
-        return (workOrderInfoMapper.selectByExample(example)).size()>0;
+        return (workorderInfoMapper.selectByExample(example)).size()>0;
     }
 
     /*public FlowHis fromCttInfoToFlowCtrlHis(CttInfo cttInfoPara,String strOperTypePara){
@@ -139,132 +117,122 @@ public class CttInfoService {
     }*/
 
     @Transactional
-    public void insertRecord(CttInfoShow cttInfoShowPara) {
+    public void insertRecord(WorkorderInfoShow workorderInfoShowPara) {
         String strOperatorIdTemp=ToolUtil.getOperatorManager().getOperator().getPkid();
         String strLastUpdTimeTemp=ToolUtil.getStrLastUpdTime();
-        CttInfo cttInfoTemp=fromModelShowToModel(cttInfoShowPara);
-        cttInfoTemp.setArchivedFlag("0");
-        cttInfoTemp.setCreatedBy(strOperatorIdTemp);
-        cttInfoTemp.setCreatedTime(strLastUpdTimeTemp);
-        cttInfoTemp.setLastUpdBy(strOperatorIdTemp);
-        cttInfoTemp.setLastUpdTime(strLastUpdTimeTemp);
-        workOrderInfoMapper.insertSelective(cttInfoTemp);
+        WorkorderInfo workorderInfoTemp =fromModelShowToModel(workorderInfoShowPara);
+        workorderInfoTemp.setArchivedFlag("0");
+        workorderInfoTemp.setCreatedBy(strOperatorIdTemp);
+        workorderInfoTemp.setCreatedTime(strLastUpdTimeTemp);
+        workorderInfoTemp.setLastUpdBy(strOperatorIdTemp);
+        workorderInfoTemp.setLastUpdTime(strLastUpdTimeTemp);
+        workorderInfoMapper.insertSelective(workorderInfoTemp);
        /* flowCtrlHisService.insertRecord(
                 fromCttInfoToFlowCtrlHis(cttInfoTemp,EnumOperType.OPER_TYPE0.getCode()));*/
     }
     @Transactional
-    public void insertRecord(CttInfo cttInfoPara) {
+    public void insertRecord(WorkorderInfo workorderInfoPara) {
         String strOperatorIdTemp=ToolUtil.getOperatorManager().getOperator().getPkid();
         String strLastUpdTimeTemp=ToolUtil.getStrLastUpdTime();
-        cttInfoPara.setArchivedFlag("0");
-        cttInfoPara.setCreatedBy(strOperatorIdTemp);
-        cttInfoPara.setCreatedTime(strLastUpdTimeTemp);
-        cttInfoPara.setLastUpdBy(strOperatorIdTemp);
-        cttInfoPara.setLastUpdTime(strLastUpdTimeTemp);
-        workOrderInfoMapper.insertSelective(cttInfoPara);
+        workorderInfoPara.setArchivedFlag("0");
+        workorderInfoPara.setCreatedBy(strOperatorIdTemp);
+        workorderInfoPara.setCreatedTime(strLastUpdTimeTemp);
+        workorderInfoPara.setLastUpdBy(strOperatorIdTemp);
+        workorderInfoPara.setLastUpdTime(strLastUpdTimeTemp);
+        workorderInfoMapper.insertSelective(workorderInfoPara);
         /*flowCtrlHisService.insertRecord(
                 fromCttInfoToFlowCtrlHis(cttInfoPara,EnumOperType.OPER_TYPE0.getCode()));*/
     }
     @Transactional
-    public String updateRecord(CttInfoShow cttInfoShowPara){
+    public String updateRecord(WorkorderInfoShow workorderInfoShowPara){
         // 为了防止异步操作数据
-        return updateRecord(fromModelShowToModel(cttInfoShowPara));
+        return updateRecord(fromModelShowToModel(workorderInfoShowPara));
     }
     @Transactional
-    public String updateRecord(CttInfo cttInfoPara){
-        CttInfo cttInfoTemp=getCttInfoByPkId(cttInfoPara.getPkid());
-        if(cttInfoTemp!=null){
+    public String updateRecord(WorkorderInfo workorderInfoPara){
+        WorkorderInfo workorderInfoTemp =getCttInfoByPkId(workorderInfoPara.getPkid());
+        if(workorderInfoTemp !=null){
             //此条记录目前在数据库中的版本
-            int intRecVersionInDB=ToolUtil.getIntIgnoreNull(cttInfoTemp.getRecVersion());
-            int intRecVersion=ToolUtil.getIntIgnoreNull(cttInfoPara.getRecVersion());
+            int intRecVersionInDB=ToolUtil.getIntIgnoreNull(workorderInfoTemp.getRecVersion());
+            int intRecVersion=ToolUtil.getIntIgnoreNull(workorderInfoPara.getRecVersion());
             if(intRecVersionInDB!=intRecVersion) {
                 return "1";
             }
         }
-        cttInfoPara.setRecVersion(
-                ToolUtil.getIntIgnoreNull(cttInfoPara.getRecVersion())+1);
-        cttInfoPara.setArchivedFlag("0");
-        cttInfoPara.setLastUpdBy(ToolUtil.getOperatorManager().getOperator().getPkid());
-        cttInfoPara.setLastUpdTime(ToolUtil.getStrLastUpdTime());
-        workOrderInfoMapper.updateByPrimaryKey(cttInfoPara);
+        workorderInfoPara.setRecVersion(
+                ToolUtil.getIntIgnoreNull(workorderInfoPara.getRecVersion())+1);
+        workorderInfoPara.setArchivedFlag("0");
+        workorderInfoPara.setLastUpdBy(ToolUtil.getOperatorManager().getOperator().getPkid());
+        workorderInfoPara.setLastUpdTime(ToolUtil.getStrLastUpdTime());
+        workorderInfoMapper.updateByPrimaryKey(workorderInfoPara);
         /*flowCtrlHisService.insertRecord(
                 fromCttInfoToFlowCtrlHis(cttInfoPara,EnumOperType.OPER_TYPE1.getCode()));*/
         return "0";
     }
     @Transactional
     public int deleteRecord(String strCttInfoPkidPara){
-        CttInfo cttInfoTemp = getCttInfoByPkId(strCttInfoPkidPara);
+        WorkorderInfo workorderInfoTemp = getCttInfoByPkId(strCttInfoPkidPara);
         /*flowCtrlHisService.insertRecord(
                 fromCttInfoToFlowCtrlHis(cttInfoTemp,EnumOperType.OPER_TYPE1.getCode()));*/
-        return workOrderInfoMapper.deleteByPrimaryKey(strCttInfoPkidPara);
+        return workorderInfoMapper.deleteByPrimaryKey(strCttInfoPkidPara);
     }
 
     public String getStrMaxCttId(String strCttType){
         return myWorkOrderInfoMapper.getStrMaxCttId(strCttType) ;
     }
 
-    public CttInfo fromModelShowToModel(CttInfoShow cttInfoShowPara) {
-        CttInfo cttInfoTemp = new CttInfo();
-        cttInfoTemp.setPkid(cttInfoShowPara.getPkid());
-        cttInfoTemp.setCttType(cttInfoShowPara.getCttType());
-        cttInfoTemp.setParentPkid(cttInfoShowPara.getParentPkid());
-        cttInfoTemp.setId(cttInfoShowPara.getId());
-        cttInfoTemp.setName(cttInfoShowPara.getName());
-        cttInfoTemp.setCttStartDate(cttInfoShowPara.getCttStartDate());
-        cttInfoTemp.setCttEndDate(cttInfoShowPara.getCttEndDate());
-        cttInfoTemp.setSignDate(cttInfoShowPara.getSignDate());
-        cttInfoTemp.setSignPartA(cttInfoShowPara.getSignPartA());
-        cttInfoTemp.setSignPartB(cttInfoShowPara.getSignPartB());
-        cttInfoTemp.setFlowStatus(cttInfoShowPara.getFlowStatus());
-        cttInfoTemp.setFlowStatusReason(cttInfoTemp.getFlowStatusReason());
-        cttInfoTemp.setFlowStatusRemark(cttInfoTemp.getFlowStatusRemark());
-        cttInfoTemp.setRemark(cttInfoShowPara.getRemark());
-        cttInfoTemp.setAttachment(cttInfoShowPara.getAttachment());
-        cttInfoTemp.setArchivedFlag(cttInfoShowPara.getArchivedFlag());
-        cttInfoTemp.setCreatedBy(cttInfoShowPara.getCreatedBy());
-        cttInfoTemp.setCreatedTime(cttInfoShowPara.getCreatedTime());
-        cttInfoTemp.setLastUpdBy(cttInfoShowPara.getLastUpdBy());
-        cttInfoTemp.setLastUpdTime(cttInfoShowPara.getLastUpdTime());
-        cttInfoTemp.setRecVersion(cttInfoShowPara.getRecVersion());
-        cttInfoTemp.setType(cttInfoShowPara.getType());
-        return cttInfoTemp;
+    public WorkorderInfo fromModelShowToModel(WorkorderInfoShow workorderInfoShowPara) {
+        WorkorderInfo workorderInfoTemp = new WorkorderInfo();
+        workorderInfoTemp.setPkid(workorderInfoShowPara.getPkid());
+        workorderInfoTemp.setType(workorderInfoShowPara.getCttType());
+        workorderInfoTemp.setParentPkid(workorderInfoShowPara.getParentPkid());
+        workorderInfoTemp.setId(workorderInfoShowPara.getId());
+        workorderInfoTemp.setName(workorderInfoShowPara.getName());
+        workorderInfoTemp.setStartTime(workorderInfoShowPara.getCttStartDate());
+        workorderInfoTemp.setEndTime(workorderInfoShowPara.getCttEndDate());
+        workorderInfoTemp.setSignDate(workorderInfoShowPara.getSignDate());
+        workorderInfoTemp.setRemark(workorderInfoShowPara.getRemark());
+        workorderInfoTemp.setAttachment(workorderInfoShowPara.getAttachment());
+        workorderInfoTemp.setArchivedFlag(workorderInfoShowPara.getArchivedFlag());
+        workorderInfoTemp.setCreatedBy(workorderInfoShowPara.getCreatedBy());
+        workorderInfoTemp.setCreatedTime(workorderInfoShowPara.getCreatedTime());
+        workorderInfoTemp.setLastUpdBy(workorderInfoShowPara.getLastUpdBy());
+        workorderInfoTemp.setLastUpdTime(workorderInfoShowPara.getLastUpdTime());
+        workorderInfoTemp.setRecVersion(workorderInfoShowPara.getRecVersion());
+        workorderInfoTemp.setType(workorderInfoShowPara.getType());
+        return workorderInfoTemp;
     }
-    public CttInfoShow fromModelToModelShow(CttInfo cttInfoPara) {
-        CttInfoShow cttInfoShowTemp = new CttInfoShow();
-        cttInfoShowTemp.setPkid(cttInfoPara.getPkid());
-        cttInfoShowTemp.setCttType(cttInfoPara.getCttType());
-        cttInfoShowTemp.setParentPkid(cttInfoPara.getParentPkid());
-        cttInfoShowTemp.setId(cttInfoPara.getId());
-        cttInfoShowTemp.setName(cttInfoPara.getName());
-        cttInfoShowTemp.setCttStartDate(cttInfoPara.getCttStartDate());
-        cttInfoShowTemp.setCttEndDate(cttInfoPara.getCttEndDate());
-        cttInfoShowTemp.setSignDate(cttInfoPara.getSignDate());
-        cttInfoShowTemp.setSignPartA(cttInfoPara.getSignPartA());
-        cttInfoShowTemp.setSignPartB(cttInfoPara.getSignPartB());
-        cttInfoShowTemp.setRemark(cttInfoPara.getRemark());
-        cttInfoShowTemp.setFlowStatus(cttInfoPara.getFlowStatus());
-        cttInfoShowTemp.setFlowStatusReason(cttInfoPara.getFlowStatusReason());
-        cttInfoShowTemp.setFlowStatusRemark(cttInfoPara.getFlowStatusRemark());
-        cttInfoShowTemp.setAttachment(cttInfoPara.getAttachment());
-        cttInfoShowTemp.setArchivedFlag(cttInfoPara.getArchivedFlag());
-        cttInfoShowTemp.setCreatedBy(cttInfoPara.getCreatedBy());
-        cttInfoShowTemp.setCreatedTime(cttInfoPara.getCreatedTime());
-        cttInfoShowTemp.setLastUpdBy(cttInfoPara.getLastUpdBy());
-        cttInfoShowTemp.setLastUpdTime(cttInfoPara.getLastUpdTime());
-        cttInfoShowTemp.setRecVersion(cttInfoPara.getRecVersion());
-        cttInfoShowTemp.setType(cttInfoPara.getType());
-        return cttInfoShowTemp;
+    public WorkorderInfoShow fromModelToModelShow(WorkorderInfo workorderInfoPara) {
+        WorkorderInfoShow workorderInfoShowTemp = new WorkorderInfoShow();
+        workorderInfoShowTemp.setPkid(workorderInfoPara.getPkid());
+        workorderInfoShowTemp.setCttType(workorderInfoPara.getType());
+        workorderInfoShowTemp.setParentPkid(workorderInfoPara.getParentPkid());
+        workorderInfoShowTemp.setId(workorderInfoPara.getId());
+        workorderInfoShowTemp.setName(workorderInfoPara.getName());
+        workorderInfoShowTemp.setCttStartDate(workorderInfoPara.getStartTime());
+        workorderInfoShowTemp.setCttEndDate(workorderInfoPara.getEndTime());
+        workorderInfoShowTemp.setSignDate(workorderInfoPara.getSignDate());
+        workorderInfoShowTemp.setRemark(workorderInfoPara.getRemark());
+        workorderInfoShowTemp.setAttachment(workorderInfoPara.getAttachment());
+        workorderInfoShowTemp.setArchivedFlag(workorderInfoPara.getArchivedFlag());
+        workorderInfoShowTemp.setCreatedBy(workorderInfoPara.getCreatedBy());
+        workorderInfoShowTemp.setCreatedTime(workorderInfoPara.getCreatedTime());
+        workorderInfoShowTemp.setLastUpdBy(workorderInfoPara.getLastUpdBy());
+        workorderInfoShowTemp.setLastUpdTime(workorderInfoPara.getLastUpdTime());
+        workorderInfoShowTemp.setRecVersion(workorderInfoPara.getRecVersion());
+        workorderInfoShowTemp.setType(workorderInfoPara.getType());
+        return workorderInfoShowTemp;
     }
     //更新甲供材情况
-    public int updateByPKid(CttInfo cttInfoPara){
-        return workOrderInfoMapper.updateByPrimaryKey(cttInfoPara);
+    public int updateByPKid(WorkorderInfo workorderInfoPara){
+        return workorderInfoMapper.updateByPrimaryKey(workorderInfoPara);
     }
 
     public Integer getChildrenOfThisRecordInEsInitCtt(String strCttType,String strBelongToPkid){
         return myWorkOrderInfoMapper.getChildrenOfThisRecordInEsInitCtt(strCttType,strBelongToPkid);
     }
 
-    public List<CttInfoShow> selectCttByStatusFlagBegin_End(CttInfoShow cttInfoShowPara){
-        return myWorkOrderInfoMapper.selectCttByStatusFlagBegin_End(cttInfoShowPara);
+    public List<WorkorderInfoShow> selectCttByStatusFlagBegin_End(WorkorderInfoShow workorderInfoShowPara){
+        return myWorkOrderInfoMapper.selectCttByStatusFlagBegin_End(workorderInfoShowPara);
     }
 }

@@ -131,7 +131,7 @@
                                          onclick="PF('wVDlgViewForAdd').show()">
                         </p:commandButton>
                         <p:dataTable id="pdt"
-                                 value="#{workOrderItemAction.cttItemShowList}"
+                                 value="#{workOrderItemAction.workorderItemShowList}"
                                  var="record"
                                  rowKey="#{record.pkid}"
                                  selectionMode="single"
@@ -177,17 +177,17 @@
                                 <h:outputText value="#{record.unit}" style="text-align:right"/>
                             </p:column>
                             <p:column style="width:80px" headerText="单价">
-                                <h:outputText value="#{record.contractUnitPrice}" style="float: right" >
+                                <h:outputText value="#{record.UnitPrice}" style="float: right" >
                                     <f:convertNumber type="number" pattern="#,###,###,###,##0.000"/>
                                 </h:outputText>
                             </p:column>
                             <p:column style="width:80px" headerText="数量">
-                                <h:outputText value="#{record.contractQuantity}" style="float: right">
+                                <h:outputText value="#{record.Quantity}" style="float: right">
                                     <f:convertNumber type="number" pattern="#,###,###,###,##0.000"/>
                                 </h:outputText>
                             </p:column>
                             <p:column style="width:100px" headerText="金额">
-                                <h:outputText value="#{record.contractAmount}" style="float: right">
+                                <h:outputText value="#{record.Amount}" style="float: right">
                                     <f:convertNumber type="number" pattern="#,###,###,###,##0.00"/>
                                 </h:outputText>
                             </p:column>
@@ -290,39 +290,39 @@
                                 <h:panelGrid columns="4">
                                     <p:outputLabel for="noItemHieRelapForAdd" value="编号:" />
                                     <h:inputText id="noItemHieRelapForAdd"
-                                                 value="#{workOrderItemAction.cttItemShowAdd.strNo}">
+                                                 value="#{workOrderItemAction.workorderItemShowAdd.strNo}">
                                         <p:ajax event="blur" update="msgs,noItemHieRelapForAdd"
                                                 listener="#{workOrderItemAction.blurStrNoToGradeAndOrderidAction}"/>
                                     </h:inputText>
                                     <p:outputLabel for="nameForAdd" value="名称:" />
-                                    <h:inputText id="nameForAdd" value="#{workOrderItemAction.cttItemShowAdd.name}"/>
+                                    <h:inputText id="nameForAdd" value="#{workOrderItemAction.workorderItemShowAdd.name}"/>
                                     <p:outputLabel for="unitItemInfoForAdd" value="单位:"/>
-                                    <h:inputText id="unitItemInfoForAdd" value="#{workOrderItemAction.cttItemShowAdd.unit}"/>
-                                    <p:outputLabel for="contractUnitPriceItemInfoForAdd" value="单价:"/>
-                                    <h:inputText id="contractUnitPriceItemInfoForAdd"
-                                                 value="#{workOrderItemAction.cttItemShowAdd.contractUnitPrice}"
+                                    <h:inputText id="unitItemInfoForAdd" value="#{workOrderItemAction.workorderItemShowAdd.unit}"/>
+                                    <p:outputLabel for="UnitPriceItemInfoForAdd" value="单价:"/>
+                                    <h:inputText id="UnitPriceItemInfoForAdd"
+                                                 value="#{workOrderItemAction.workorderItemShowAdd.UnitPrice}"
                                                  style="text-align:right;float:left">
                                         <f:convertNumber type="number" pattern="#,###,###,###,##0.000"/>
-                                        <p:ajax event="blur" update="contractAmountItemInfoForAdd"
+                                        <p:ajax event="blur" update="AmountItemInfoForAdd"
                                                 listener="#{workOrderItemAction.blurCalculateAmountAction}"/>
                                     </h:inputText>
-                                    <p:outputLabel for="contractQuantityItemInfoForAdd" value="数量:"/>
-                                    <h:inputText id="contractQuantityItemInfoForAdd"
-                                                 value="#{workOrderItemAction.cttItemShowAdd.contractQuantity}"
+                                    <p:outputLabel for="QuantityItemInfoForAdd" value="数量:"/>
+                                    <h:inputText id="QuantityItemInfoForAdd"
+                                                 value="#{workOrderItemAction.workorderItemShowAdd.Quantity}"
                                                  style="text-align:right;float:left">
                                         <f:convertNumber type="number" pattern="#,###,###,###,##0.000"/>
-                                        <p:ajax event="blur" update="contractAmountItemInfoForAdd"
+                                        <p:ajax event="blur" update="AmountItemInfoForAdd"
                                                 listener="#{workOrderItemAction.blurCalculateAmountAction}"/>
                                     </h:inputText>
-                                    <p:outputLabel for="contractAmountItemInfoForAdd" value="金额:"/>
-                                    <h:inputText id="contractAmountItemInfoForAdd"
-                                                 value="#{workOrderItemAction.cttItemShowAdd.contractAmount}"
+                                    <p:outputLabel for="AmountItemInfoForAdd" value="金额:"/>
+                                    <h:inputText id="AmountItemInfoForAdd"
+                                                 value="#{workOrderItemAction.workorderItemShowAdd.Amount}"
                                                  style="text-align:right;background-color:gainsboro"
                                                  readonly="true">
                                         <f:convertNumber type="number" pattern="#,###,###,###,##0.00"/>
                                     </h:inputText>
                                     <p:outputLabel for="remarkForAdd" value="备注:" />
-                                    <h:inputText id="remarkForAdd" value="#{workOrderItemAction.cttItemShowAdd.remark}"/>
+                                    <h:inputText id="remarkForAdd" value="#{workOrderItemAction.workorderItemShowAdd.remark}"/>
                                 </h:panelGrid>
                                 <h:panelGrid id="pgOperBtnForAdd" columns="2">
                                     <p:commandButton id="submitBtnForAdd"
@@ -348,39 +348,39 @@
                                     <h:inputText id="noItemHieRelapForUpd"
                                                  readonly="true"
                                                  style="background-color:gainsboro"
-                                                 value="#{workOrderItemAction.cttItemShowUpd.strNo}">
+                                                 value="#{workOrderItemAction.workorderItemShowUpd.strNo}">
                                         <p:ajax event="blur" update="msgs,noItemHieRelapForUpd"
                                                 listener="#{workOrderItemAction.blurStrNoToGradeAndOrderidAction}"/>
                                     </h:inputText>
                                     <p:outputLabel for="nameForUpd" value="名称:" />
-                                    <h:inputText id="nameForUpd" value="#{workOrderItemAction.cttItemShowUpd.name}"/>
+                                    <h:inputText id="nameForUpd" value="#{workOrderItemAction.workorderItemShowUpd.name}"/>
                                     <p:outputLabel for="unitItemInfoForUpd" value="单位:"/>
-                                    <h:inputText id="unitItemInfoForUpd" value="#{workOrderItemAction.cttItemShowUpd.unit}"/>
-                                    <p:outputLabel for="contractUnitPriceItemInfoForUpd" value="单价:"/>
-                                    <h:inputText id="contractUnitPriceItemInfoForUpd"
-                                                 value="#{workOrderItemAction.cttItemShowUpd.contractUnitPrice}"
+                                    <h:inputText id="unitItemInfoForUpd" value="#{workOrderItemAction.workorderItemShowUpd.unit}"/>
+                                    <p:outputLabel for="UnitPriceItemInfoForUpd" value="单价:"/>
+                                    <h:inputText id="UnitPriceItemInfoForUpd"
+                                                 value="#{workOrderItemAction.workorderItemShowUpd.UnitPrice}"
                                                  style="text-align:right;float:left">
                                         <f:convertNumber type="number" pattern="#,###,###,###,##0.000"/>
-                                        <p:ajax event="blur" update="contractAmountItemInfoForUpd"
+                                        <p:ajax event="blur" update="AmountItemInfoForUpd"
                                                 listener="#{workOrderItemAction.blurCalculateAmountAction}"/>
                                     </h:inputText>
-                                    <p:outputLabel for="contractQuantityItemInfoForUpd" value="数量:"/>
-                                    <h:inputText id="contractQuantityItemInfoForUpd"
-                                                 value="#{workOrderItemAction.cttItemShowUpd.contractQuantity}"
+                                    <p:outputLabel for="QuantityItemInfoForUpd" value="数量:"/>
+                                    <h:inputText id="QuantityItemInfoForUpd"
+                                                 value="#{workOrderItemAction.workorderItemShowUpd.Quantity}"
                                                  style="text-align:right;float:left">
                                         <f:convertNumber type="number" pattern="#,###,###,###,##0.000"/>
-                                        <p:ajax event="blur" update="contractAmountItemInfoForUpd"
+                                        <p:ajax event="blur" update="AmountItemInfoForUpd"
                                                 listener="#{workOrderItemAction.blurCalculateAmountAction}"/>
                                     </h:inputText>
-                                    <p:outputLabel for="contractAmountItemInfoForUpd" value="金额:"/>
-                                    <h:inputText id="contractAmountItemInfoForUpd"
-                                                 value="#{workOrderItemAction.cttItemShowUpd.contractAmount}"
+                                    <p:outputLabel for="AmountItemInfoForUpd" value="金额:"/>
+                                    <h:inputText id="AmountItemInfoForUpd"
+                                                 value="#{workOrderItemAction.workorderItemShowUpd.Amount}"
                                                  style="text-align:right;background-color:gainsboro"
                                                  readonly="true">
                                         <f:convertNumber type="number" pattern="#,###,###,###,##0.00"/>
                                     </h:inputText>
                                     <p:outputLabel for="remarkForUpd" value="备注:" />
-                                    <h:inputText id="remarkForUpd" value="#{workOrderItemAction.cttItemShowUpd.remark}"/>
+                                    <h:inputText id="remarkForUpd" value="#{workOrderItemAction.workorderItemShowUpd.remark}"/>
                                 </h:panelGrid>
                                 <h:panelGrid id="pgOperBtnForUpd" columns="2">
                                     <p:commandButton id="submitBtnForUpd"
@@ -405,41 +405,41 @@
                                 <h:panelGrid columns="4">
                                     <p:outputLabel for="noItemHieRelapForDel" value="编号:" />
                                     <h:inputText id="noItemHieRelapForDel"
-                                                 value="#{workOrderItemAction.cttItemShowDel.strNo}"
+                                                 value="#{workOrderItemAction.workorderItemShowDel.strNo}"
                                                  readonly="true"
                                                  style="background-color:gainsboro;">
                                     </h:inputText>
                                     <p:outputLabel for="nameForDel" value="名称:" />
-                                    <h:inputText id="nameForDel" value="#{workOrderItemAction.cttItemShowDel.name}"
+                                    <h:inputText id="nameForDel" value="#{workOrderItemAction.workorderItemShowDel.name}"
                                                  readonly="true"
                                                  style="background-color:gainsboro"/>
                                     <p:outputLabel for="unitItemInfoForDel" value="单位:"/>
-                                    <h:inputText id="unitItemInfoForDel" value="#{workOrderItemAction.cttItemShowDel.unit}"
+                                    <h:inputText id="unitItemInfoForDel" value="#{workOrderItemAction.workorderItemShowDel.unit}"
                                                  readonly="true"
                                                  style="background-color:gainsboro"/>
-                                    <p:outputLabel for="contractUnitPriceItemInfoForDel" value="单价:"/>
-                                    <h:inputText id="contractUnitPriceItemInfoForDel"
-                                                 value="#{workOrderItemAction.cttItemShowDel.contractUnitPrice}"
+                                    <p:outputLabel for="UnitPriceItemInfoForDel" value="单价:"/>
+                                    <h:inputText id="UnitPriceItemInfoForDel"
+                                                 value="#{workOrderItemAction.workorderItemShowDel.UnitPrice}"
                                                  readonly="true"
                                                  style="background-color:gainsboro;text-align:right;float:left">
                                         <f:convertNumber type="number" pattern="#,###,###,###,##0.000"/>
                                     </h:inputText>
-                                    <p:outputLabel for="contractQuantityItemInfoForDel" value="数量:"/>
-                                    <h:inputText id="contractQuantityItemInfoForDel"
-                                                 value="#{workOrderItemAction.cttItemShowDel.contractQuantity}"
+                                    <p:outputLabel for="QuantityItemInfoForDel" value="数量:"/>
+                                    <h:inputText id="QuantityItemInfoForDel"
+                                                 value="#{workOrderItemAction.workorderItemShowDel.Quantity}"
                                                  readonly="true"
                                                  style="background-color:gainsboro;text-align:right;float:left">
                                         <f:convertNumber type="number" pattern="#,###,###,###,##0.000"/>
                                     </h:inputText>
-                                    <p:outputLabel for="contractAmountItemInfoForDel" value="金额:"/>
-                                    <h:inputText id="contractAmountItemInfoForDel"
-                                                 value="#{workOrderItemAction.cttItemShowDel.contractAmount}"
+                                    <p:outputLabel for="AmountItemInfoForDel" value="金额:"/>
+                                    <h:inputText id="AmountItemInfoForDel"
+                                                 value="#{workOrderItemAction.workorderItemShowDel.Amount}"
                                                  style="text-align:right;background-color:gainsboro"
                                                  readonly="true">
                                         <f:convertNumber type="number" pattern="#,###,###,###,##0.00"/>
                                     </h:inputText>
                                     <p:outputLabel for="remarkForDel" value="备注:" />
-                                    <h:inputText id="remarkForDel" value="#{workOrderItemAction.cttItemShowDel.remark}"
+                                    <h:inputText id="remarkForDel" value="#{workOrderItemAction.workorderItemShowDel.remark}"
                                                  readonly="true"
                                                  style="background-color:gainsboro"/>
                                 </h:panelGrid>

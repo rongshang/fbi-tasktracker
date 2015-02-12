@@ -1,7 +1,5 @@
 package task.view.his;
 
-import task.common.enums.EnumResType;
-import task.repository.model.CttInfo;
 import task.service.CttInfoService;
 /*import task.service.FlowHisService;*/
 import org.slf4j.Logger;

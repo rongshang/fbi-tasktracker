@@ -9,7 +9,7 @@ import java.io.Serializable;
  * Time: ÏÂÎç4:18
  * To change this template use File | Settings | File Templates.
  */
-public class CttInfoShow implements Serializable {
+public class WorkorderInfoShow implements Serializable {
     private String pkid;
     private String cttType;
     private String parentPkid;
@@ -45,9 +45,9 @@ public class CttInfoShow implements Serializable {
         return pkid;
     }
 
-    public CttInfoShow(String pkid, String id, String cttType, String name, String remark,
-                       String flowStatus, String flowStatusReason, String lastUpdBy,
-                       String lastUpdTime, Integer recVersion, Boolean isSeled) {
+    public WorkorderInfoShow(String pkid, String id, String cttType, String name, String remark,
+                             String flowStatus, String flowStatusReason, String lastUpdBy,
+                             String lastUpdTime, Integer recVersion, Boolean isSeled) {
         this.pkid = pkid;
         this.id = id;
         this.cttType=cttType;
@@ -61,9 +61,9 @@ public class CttInfoShow implements Serializable {
         this.isSeled=isSeled;
     }
 
-    public CttInfoShow(String id, String name, String remark, String signPartAName,
-                       String signPartBName, String cttStartDate, String cttEndDate,
-                       String flowStatus, String flowStatusReason) {
+    public WorkorderInfoShow(String id, String name, String remark, String signPartAName,
+                             String signPartBName, String cttStartDate, String cttEndDate,
+                             String flowStatus, String flowStatusReason) {
         this.id = id;
         this.name = name;
         this.remark = remark;
@@ -75,7 +75,7 @@ public class CttInfoShow implements Serializable {
         this.flowStatusReason = flowStatusReason;
     }
 
-    public CttInfoShow() {
+    public WorkorderInfoShow() {
     }
 
     public void setPkid(String pkid) {

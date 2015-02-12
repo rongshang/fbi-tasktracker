@@ -11,44 +11,35 @@ import java.math.BigDecimal;
  * To change this template use File | Settings | File Templates.
  */
 
-public class CttItemShow implements Serializable {
+public class WorkorderItemShow implements Serializable {
     /*编号，用作显示用，不在数据库里存储，动态显示.依据grade,orderid*/
     private String strNo;
-    /*对应编号，用作显示用，不在数据库里存储，动态显示。依据correspondingPkid*/
-    private String strCorrespondingItemNo;
-    /*对应编号名称，用作显示用，不在数据库里存储，动态显示。依据correspondingPkid*/
-    private String strCorrespondingItemName;
-
-    /*task.CTT_ITEM.PKID*/
+    /*task.WORKORDER_ITEM.PKID*/
     private String pkid;
-    /*task.CTT_ITEM.BELONG_TO_TYPE*/
-    private String belongToType;
-    /*task.CTT_ITEM.BELONG_TO_PKID*/
+    /*task.WORKORDER_ITEM.BELONG_TO_PKID*/
     private String belongToPkid;
-    /*task.CTT_ITEM.ORDERID*/
+    /*task.WORKORDER_ITEM.ORDERID*/
     private Integer orderid;
-    /*task.CTT_ITEM.GRADE*/
+    /*task.WORKORDER_ITEM.GRADE*/
     private Integer grade;
-    /*task.CTT_ITEM.PARENT_PKID*/
+    /*task.WORKORDER_ITEM.PARENT_PKID*/
     private String parentPkid;
-    /*task.CTT_ITEM.CORRESPONDING_PKID*/
+    /*task.WORKORDER_ITEM.CORRESPONDING_PKID*/
     private String correspondingPkid;
 
-    /*task.CTT_ITEM.NAME/task.ES_ITEM_INFO.NAME*/
+    /*task.WORKORDER_ITEM.NAME/task.ES_ITEM_INFO.NAME*/
     private String name;
-    /*task.CTT_ITEM.REMARK/task.ES_ITEM_INFO.REMARK*/
+    /*task.WORKORDER_ITEM.REMARK/task.ES_ITEM_INFO.REMARK*/
     private String remark;
 
     /*task.ES_ITEM_INFO.UNIT*/
     private String unit;
     /*task.ES_ITEM_INFO.CONTRACT_UNIT_PRICE*/
-    private BigDecimal contractUnitPrice;
+    private BigDecimal unitPrice;
     /*task.ES_ITEM_INFO.CONTRACT_QUANTITY*/
-    private BigDecimal contractQuantity;
+    private BigDecimal quantity;
     /*task.ES_ITEM_INFO.CONTRACT_AMOUNT*/
-    private BigDecimal contractAmount;
-    /*task.ES_ITEM_INFO.SIGN_PART_A_PRICE*/
-    private BigDecimal signPartAPrice;
+    private BigDecimal amount;
     /*task.ES_ITEM_INFO.ARCHIVED_FLAG*/
     private String archivedFlag;
     /*task.ES_ITEM_INFO.ORIGIN_FLAG*/
@@ -66,35 +57,27 @@ public class CttItemShow implements Serializable {
 
     private String createdByName;
     private String lastUpdByName;
-    // 主要针对金额率
-    private String spareField;
 
-    public CttItemShow() {
+    public WorkorderItemShow() {
 
     }
 
-    public CttItemShow(String strBelongToType,
-                       String strBelongToPkid) {
-        //To change body of created methods use File | Settings | File Templates.
-        /*task.CTT_ITEM.BelongToType*/
-        this.belongToType =strBelongToType ;
-        /*task.CTT_ITEM.ITEMBELONGTOPKID*/
+    public WorkorderItemShow(String strBelongToPkid) {
+        /*task.WORKORDER_ITEM.ITEMBELONGTOPKID*/
         this.belongToPkid =strBelongToPkid ;
     }
 
-    public CttItemShow(
+    public WorkorderItemShow(
             String strPkId,
-            String strBelongToType,
             String strBelongToPkid,
             String strParentPkid,
             Integer intGrade,
             Integer intOrderid,
             String strName,
             String strUnit,
-            BigDecimal bdContractUnitPrice,
-            BigDecimal bdContractQuantity,
-            BigDecimal bdContractAmount,
-            BigDecimal bdSignPartAPrice,
+            BigDecimal bdUnitPrice,
+            BigDecimal bdQuantity,
+            BigDecimal bdAmount,
             String strArchivedFlag,
             String strOriginFlag,
             String strCreatedBy,
@@ -106,14 +89,10 @@ public class CttItemShow implements Serializable {
             Integer intRecVersion,
             String strRemark,
             String strCorrespondingPkid,
-            String strNo,
-            String strCorrespondingItemNo,
-			String spareField) {
+            String strNo) {
         /*task.ES_ITEM_INFO.PKID*/
         this.pkid=strPkId;
-        /*task.CTT_ITEM.BelongToType*/
-        this.belongToType =strBelongToType ;
-        /*task.CTT_ITEM.ITEMBELONGTOPKID*/
+        /*task.WORKORDER_ITEM.ITEMBELONGTOPKID*/
         this.belongToPkid =strBelongToPkid ;
         this.strNo =strNo ;
         this.orderid =intOrderid;
@@ -124,19 +103,17 @@ public class CttItemShow implements Serializable {
         this.parentPkid =strParentPkid;
         /*task.ES_ITEM_INFO.REMARK*/
         this.remark=strRemark;
-        /*task.CTT_ITEM.CORRESPONDING_PKID*/
+        /*task.WORKORDER_ITEM.CORRESPONDING_PKID*/
         this.correspondingPkid =strCorrespondingPkid;
 
         /*task.ES_ITEM_INFO.UNIT*/
         this.unit=strUnit;
         /*task.ES_ITEM_INFO.CONTRACT_UNIT_PRICE*/
-        this.contractUnitPrice=bdContractUnitPrice;
+        this.unitPrice=bdUnitPrice;
         /*task.ES_ITEM_INFO.CONTRACT_QUANTITY*/
-        this.contractQuantity=bdContractQuantity;
+        this.quantity=bdQuantity;
         /*task.ES_ITEM_INFO.CONTRACT_AMOUNT*/
-        this.contractAmount=bdContractAmount;
-        /*task.ES_ITEM_INFO.SIGN_PART_A_PRICE*/
-        this.signPartAPrice=bdSignPartAPrice;
+        this.amount=bdAmount;
         /*task.ES_ITEM_INFO.ARCHIVED_FLAG*/
         this.archivedFlag=strArchivedFlag;
         /*task.ES_ITEM_INFO.ORIGIN_FLAG*/
@@ -155,8 +132,6 @@ public class CttItemShow implements Serializable {
         this.recVersion=intRecVersion;
 
         this.strNo =strNo ;
-        this.strCorrespondingItemNo =strCorrespondingItemNo;
-		this.spareField=spareField;
     }
 
     public boolean equals(Object obj)
@@ -165,13 +140,11 @@ public class CttItemShow implements Serializable {
             return true;
         }
 
-        if (obj.getClass() == CttItemShow.class)
+        if (obj.getClass() == WorkorderItemShow.class)
         {
-            CttItemShow itemForTkcttAndCstpl = (CttItemShow)obj;
+            WorkorderItemShow itemForTkcttAndCstpl = (WorkorderItemShow)obj;
             return ((itemForTkcttAndCstpl.pkid==null&&this.pkid==null)||
                       itemForTkcttAndCstpl.pkid.equals(this.pkid))
-                    &&((itemForTkcttAndCstpl.belongToType==null&&this.belongToType==null)||
-                        itemForTkcttAndCstpl.belongToType .equals(this.belongToType))
                     &&((itemForTkcttAndCstpl.belongToPkid==null&&this.belongToPkid==null)||
                         itemForTkcttAndCstpl.belongToPkid .equals(this.belongToPkid))
                     &&((itemForTkcttAndCstpl.strNo==null&&this.strNo==null)||
@@ -188,10 +161,9 @@ public class CttItemShow implements Serializable {
                         itemForTkcttAndCstpl.correspondingPkid .equals(this.correspondingPkid))
                     &&((itemForTkcttAndCstpl.unit==null&&this.unit==null)||
                         itemForTkcttAndCstpl.unit .equals(this.unit))
-                    &&(itemForTkcttAndCstpl.contractUnitPrice==this.contractUnitPrice)
-                    &&(itemForTkcttAndCstpl.contractQuantity==this.contractQuantity)
-                    &&(itemForTkcttAndCstpl.contractAmount==this.contractAmount)
-                    &&(itemForTkcttAndCstpl.signPartAPrice==this.signPartAPrice)
+                    &&(itemForTkcttAndCstpl.unitPrice==this.unitPrice)
+                    &&(itemForTkcttAndCstpl.quantity==this.quantity)
+                    &&(itemForTkcttAndCstpl.amount==this.amount)
                     &&((itemForTkcttAndCstpl.archivedFlag==null&&this.archivedFlag==null)||
                         itemForTkcttAndCstpl.archivedFlag .equals(this.archivedFlag))
                     &&((itemForTkcttAndCstpl.originFlag==null&&this.originFlag==null)||
@@ -216,14 +188,6 @@ public class CttItemShow implements Serializable {
 
     public void setPkid(String pkid) {
         this.pkid = pkid;
-    }
-
-    public String getBelongToType() {
-        return belongToType;
-    }
-
-    public void setBelongToType(String belongToType) {
-        this.belongToType = belongToType;
     }
 
     public String getBelongToPkid() {
@@ -290,38 +254,6 @@ public class CttItemShow implements Serializable {
         this.unit = unit;
     }
 
-    public BigDecimal getContractUnitPrice() {
-        return contractUnitPrice;
-    }
-
-    public void setContractUnitPrice(BigDecimal contractUnitPrice) {
-        this.contractUnitPrice = contractUnitPrice;
-    }
-
-    public BigDecimal getContractQuantity() {
-        return contractQuantity;
-    }
-
-    public void setContractQuantity(BigDecimal contractQuantity) {
-        this.contractQuantity = contractQuantity;
-    }
-
-    public BigDecimal getContractAmount() {
-        return contractAmount;
-    }
-
-    public void setContractAmount(BigDecimal contractAmount) {
-        this.contractAmount = contractAmount;
-    }
-
-    public BigDecimal getSignPartAPrice() {
-        return signPartAPrice;
-    }
-
-    public void setSignPartAPrice(BigDecimal signPartAPrice) {
-        this.signPartAPrice = signPartAPrice;
-    }
-
     public String getOriginFlag() {
         return originFlag;
     }
@@ -382,26 +314,33 @@ public class CttItemShow implements Serializable {
         return strNo;
     }
 
+    public BigDecimal getUnitPrice() {
+        return unitPrice;
+    }
+
+    public void setUnitPrice(BigDecimal unitPrice) {
+        this.unitPrice = unitPrice;
+    }
+
+    public BigDecimal getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(BigDecimal quantity) {
+        this.quantity = quantity;
+    }
+
+    public BigDecimal getAmount() {
+        return amount;
+    }
+
+    public void setAmount(BigDecimal amount) {
+        this.amount = amount;
+    }
+
     public void setStrNo(String strNo) {
         this.strNo = strNo;
     }
-
-    public String getStrCorrespondingItemNo() {
-        return strCorrespondingItemNo;
-    }
-
-    public void setStrCorrespondingItemNo(String strCorrespondingItemNo) {
-        this.strCorrespondingItemNo = strCorrespondingItemNo;
-    }
-
-    public String getStrCorrespondingItemName() {
-        return strCorrespondingItemName;
-    }
-
-    public void setStrCorrespondingItemName(String strCorrespondingItemName) {
-        this.strCorrespondingItemName = strCorrespondingItemName;
-    }
-
     public String getCreatedByName() {
         return createdByName;
     }
@@ -416,13 +355,5 @@ public class CttItemShow implements Serializable {
 
     public void setLastUpdByName(String lastUpdByName) {
         this.lastUpdByName = lastUpdByName;
-    }
-
-    public String getSpareField() {
-        return spareField;
-    }
-
-    public void setSpareField(String spareField) {
-        this.spareField = spareField;
     }
 }

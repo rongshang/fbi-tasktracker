@@ -1,10 +1,10 @@
 package task.repository.dao.not_mybatis;
 
-import task.repository.model.CttItem;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 import org.springframework.stereotype.Component;
+import task.repository.model.WorkorderItem;
 
 /**
  * Created by IntelliJ IDEA.
@@ -15,39 +15,36 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public interface MyWorkOrderItemMapper {
-    @Update("Update CTT_ITEM set ORDERID=ORDERID+1 where ORDERID >= #{intOrderid}"+
-            " and BELONG_TO_TYPE = #{strBelongToType}"+
+    @Update("Update WORKORDER_ITEM set ORDERID=ORDERID+1 where ORDERID >= #{intOrderid}"+
             " and BELONG_TO_PKID = #{strBelongToPkid}"+
             " and PARENT_PKID         = #{strParentPkid}"+
             " and GRADE               = #{intGrade}")
-    void setAfterThisOrderidPlusOneByNode(@Param("strBelongToType") String strBelongToType,
+    void setAfterThisOrderidPlusOneByNode(
                                           @Param("strBelongToPkid") String strBelongToPkid,
                                           @Param("strParentPkid") String strParentPkid,
                                           @Param("intGrade") Integer intGrade,
                                           @Param("intOrderid") Integer intOrderid);
 
-    @Update("Update CTT_ITEM set ORDERID=ORDERID-1 where ORDERID >= #{intOrderid}"+
-            " and BELONG_TO_TYPE = #{strBelongToType}"+
+    @Update("Update WORKORDER_ITEM set ORDERID=ORDERID-1 where ORDERID >= #{intOrderid}"+
             " and BELONG_TO_PKID = #{strBelongToPkid}"+
             " and PARENT_PKID         = #{strParentPkid}"+
             " and GRADE               = #{intGrade}")
-    void setAfterThisOrderidSubOneByNode(@Param("strBelongToType") String strBelongToType,
+    void setAfterThisOrderidSubOneByNode(
                                          @Param("strBelongToPkid") String strBelongToPkid,
                                          @Param("strParentPkid") String strParentPkid,
                                          @Param("intGrade") Integer intGrade,
                                          @Param("intOrderid") Integer intOrderid);
 
-    @Update("Update CTT_ITEM set PKID = #{strOldPkid} where PKID = #{strNewPkid}")
+    @Update("Update WORKORDER_ITEM set PKID = #{strOldPkid} where PKID = #{strNewPkid}")
     void updateRecordPkid(@Param("strNewPkid") String strNewPkid,
                           @Param("strOldPkid") String strOldPkid);
 
-    @Select("select * from CTT_ITEM where"+
-            "     BELONG_TO_TYPE = #{strBelongToType}"+
+    @Select("select * from WORKORDER_ITEM where"+
             " and BELONG_TO_PKID = #{strBelongToPkid}"+
             " and PARENT_PKID         = #{strParentPkid}"+
             " and GRADE               = #{intGrade}"+
             " and ORDERID             = #{intOrderid}")
-    CttItem getEsItemHieRelapByBusinessPk(@Param("strBelongToType") String strBelongToType,
+    WorkorderItem getEsItemHieRelapByBusinessPk(
                                           @Param("strBelongToPkid") String strBelongToPkid,
                                           @Param("strParentPkid") String strParentPkid,
                                           @Param("intGrade") Integer intGrade,

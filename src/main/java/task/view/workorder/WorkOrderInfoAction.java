@@ -2,7 +2,7 @@ package task.view.workorder;
 
 import task.common.enums.EnumResType;
 import task.common.enums.EnumFlowStatus;
-import task.repository.model.model_show.CttInfoShow;
+import task.repository.model.model_show.WorkorderInfoShow;
 import task.service.*;
 import task.view.flow.EsCommon;
 import task.view.flow.EsFlowControl;
@@ -40,15 +40,13 @@ public class WorkOrderInfoAction {
     private EsCommon esCommon;
     @ManagedProperty(value = "#{esFlowControl}")
     private EsFlowControl esFlowControl;
-    @ManagedProperty(value = "#{operResService}")
-    private OperResService operResService;
 
-    private CttInfoShow cttInfoShowQry;
-    private CttInfoShow cttInfoShowSel;
-    private CttInfoShow cttInfoShowAdd;
-    private CttInfoShow cttInfoShowUpd;
-    private CttInfoShow cttInfoShowDel;
-    private List<CttInfoShow> cttInfoShowList;
+    private WorkorderInfoShow workorderInfoShowQry;
+    private WorkorderInfoShow workorderInfoShowSel;
+    private WorkorderInfoShow workorderInfoShowAdd;
+    private WorkorderInfoShow workorderInfoShowUpd;
+    private WorkorderInfoShow workorderInfoShowDel;
+    private List<WorkorderInfoShow> workorderInfoShowList;
 
     private String strSubmitType;
     /*控制维护画面层级部分的显示*/
@@ -64,17 +62,17 @@ public class WorkOrderInfoAction {
     }
     public void initData() {
         try {
-            this.cttInfoShowList = new ArrayList<CttInfoShow>();
-            cttInfoShowQry = new CttInfoShow();
-            cttInfoShowQry.setCttType(EnumResType.RES_TYPE0.getCode());
-            cttInfoShowSel = new CttInfoShow();
-            cttInfoShowSel.setCttType(EnumResType.RES_TYPE0.getCode());
-            cttInfoShowAdd = new CttInfoShow();
-            cttInfoShowAdd.setCttType(EnumResType.RES_TYPE0.getCode());
-            cttInfoShowUpd = new CttInfoShow();
-            cttInfoShowUpd.setCttType(EnumResType.RES_TYPE0.getCode());
-            cttInfoShowDel = new CttInfoShow();
-            cttInfoShowDel.setCttType(EnumResType.RES_TYPE0.getCode());
+            this.workorderInfoShowList = new ArrayList<WorkorderInfoShow>();
+            workorderInfoShowQry = new WorkorderInfoShow();
+            workorderInfoShowQry.setCttType(EnumResType.RES_TYPE0.getCode());
+            workorderInfoShowSel = new WorkorderInfoShow();
+            workorderInfoShowSel.setCttType(EnumResType.RES_TYPE0.getCode());
+            workorderInfoShowAdd = new WorkorderInfoShow();
+            workorderInfoShowAdd.setCttType(EnumResType.RES_TYPE0.getCode());
+            workorderInfoShowUpd = new WorkorderInfoShow();
+            workorderInfoShowUpd.setCttType(EnumResType.RES_TYPE0.getCode());
+            workorderInfoShowDel = new WorkorderInfoShow();
+            workorderInfoShowDel.setCttType(EnumResType.RES_TYPE0.getCode());
             styleModel = new StyleModel();
             styleModel.setDisabled_Flag("false");
             strSubmitType = "";
@@ -102,8 +100,8 @@ public class WorkOrderInfoAction {
                     }
                 }
             }
-            cttInfoShowAdd.setId(strMaxId);
-            cttInfoShowUpd.setId(strMaxId);
+            workorderInfoShowAdd.setId(strMaxId);
+            workorderInfoShowUpd.setId(strMaxId);
         } catch (Exception e) {
             logger.error("总包合同信息查询失败", e);
             MessageUtil.addError("总包合同信息查询失败");
@@ -115,30 +113,30 @@ public class WorkOrderInfoAction {
             if (strQryFlag.equals("Qry")) {
 
             } else if (strQryFlag.contains("Mng")) {
-                cttInfoShowQry.setStrStatusFlagBegin(null);
-                cttInfoShowQry.setStrStatusFlagEnd(EnumFlowStatus.FLOW_STATUS0.getCode());
+                workorderInfoShowQry.setStrStatusFlagBegin(null);
+                workorderInfoShowQry.setStrStatusFlagEnd(EnumFlowStatus.FLOW_STATUS0.getCode());
             } else if (strQryFlag.contains("Check")) {
                 if (strQryFlag.contains("DoubleCheck")) {
-                    cttInfoShowQry.setStrStatusFlagBegin(EnumFlowStatus.FLOW_STATUS1.getCode());
-                    cttInfoShowQry.setStrStatusFlagEnd(EnumFlowStatus.FLOW_STATUS2.getCode());
+                    workorderInfoShowQry.setStrStatusFlagBegin(EnumFlowStatus.FLOW_STATUS1.getCode());
+                    workorderInfoShowQry.setStrStatusFlagEnd(EnumFlowStatus.FLOW_STATUS2.getCode());
                 }else{
-                    cttInfoShowQry.setStrStatusFlagBegin(EnumFlowStatus.FLOW_STATUS0.getCode());
-                    cttInfoShowQry.setStrStatusFlagEnd(EnumFlowStatus.FLOW_STATUS1.getCode());
+                    workorderInfoShowQry.setStrStatusFlagBegin(EnumFlowStatus.FLOW_STATUS0.getCode());
+                    workorderInfoShowQry.setStrStatusFlagEnd(EnumFlowStatus.FLOW_STATUS1.getCode());
                 }
             }  else if (strQryFlag.contains("Approve")) {
                 if (strQryFlag.equals("ApprovedQry")) {
-                    cttInfoShowQry.setStrStatusFlagBegin(EnumFlowStatus.FLOW_STATUS3.getCode());
-                    cttInfoShowQry.setStrStatusFlagEnd(EnumFlowStatus.FLOW_STATUS3.getCode());
+                    workorderInfoShowQry.setStrStatusFlagBegin(EnumFlowStatus.FLOW_STATUS3.getCode());
+                    workorderInfoShowQry.setStrStatusFlagEnd(EnumFlowStatus.FLOW_STATUS3.getCode());
                 }else{
-                    cttInfoShowQry.setStrStatusFlagBegin(EnumFlowStatus.FLOW_STATUS2.getCode());
-                    cttInfoShowQry.setStrStatusFlagEnd(EnumFlowStatus.FLOW_STATUS3.getCode());
+                    workorderInfoShowQry.setStrStatusFlagBegin(EnumFlowStatus.FLOW_STATUS2.getCode());
+                    workorderInfoShowQry.setStrStatusFlagEnd(EnumFlowStatus.FLOW_STATUS3.getCode());
                 }
             }
-            this.cttInfoShowList.clear();
-            cttInfoShowList = cttInfoService.selectCttByStatusFlagBegin_End(cttInfoShowQry);
+            this.workorderInfoShowList.clear();
+            workorderInfoShowList = cttInfoService.selectCttByStatusFlagBegin_End(workorderInfoShowQry);
 
             if(strQryMsgOutPara.equals("true"))  {
-                if (cttInfoShowList.isEmpty()) {
+                if (workorderInfoShowList.isEmpty()) {
                     MessageUtil.addWarn("没有查询到数据。");
                 }
             }
@@ -151,25 +149,25 @@ public class WorkOrderInfoAction {
 
     public void resetActionForAdd(){
         strSubmitType="Add";
-        cttInfoShowAdd = new CttInfoShow();
-        cttInfoShowAdd.setCttType(EnumResType.RES_TYPE0.getCode());
+        workorderInfoShowAdd = new WorkorderInfoShow();
+        workorderInfoShowAdd.setCttType(EnumResType.RES_TYPE0.getCode());
     }
     public void selectRecordAction(
                                    String strSubmitTypePara,
-                                   CttInfoShow cttInfoShowPara) {
+                                   WorkorderInfoShow workorderInfoShowPara) {
         try {
             strSubmitType = strSubmitTypePara;
             // 查询
-            cttInfoShowPara.setCreatedByName(cttInfoService.getUserName(cttInfoShowPara.getCreatedBy()));
-            cttInfoShowPara.setLastUpdByName(cttInfoService.getUserName(cttInfoShowPara.getLastUpdBy()));
+            workorderInfoShowPara.setCreatedByName(cttInfoService.getUserName(workorderInfoShowPara.getCreatedBy()));
+            workorderInfoShowPara.setLastUpdByName(cttInfoService.getUserName(workorderInfoShowPara.getLastUpdBy()));
             if (strSubmitTypePara.equals("Sel")) {
-                 cttInfoShowSel = (CttInfoShow) BeanUtils.cloneBean(cttInfoShowPara);
+                 workorderInfoShowSel = (WorkorderInfoShow) BeanUtils.cloneBean(workorderInfoShowPara);
             }else if (strSubmitTypePara.equals("Add")) {
-                cttInfoShowAdd = (CttInfoShow) BeanUtils.cloneBean(cttInfoShowPara);
+                workorderInfoShowAdd = (WorkorderInfoShow) BeanUtils.cloneBean(workorderInfoShowPara);
             }else if (strSubmitTypePara.equals("Upd")) {
-                 cttInfoShowUpd = (CttInfoShow) BeanUtils.cloneBean(cttInfoShowPara);
+                 workorderInfoShowUpd = (WorkorderInfoShow) BeanUtils.cloneBean(workorderInfoShowPara);
             }else if (strSubmitTypePara.equals("Del")){
-                cttInfoShowDel = (CttInfoShow) BeanUtils.cloneBean(cttInfoShowPara);
+                workorderInfoShowDel = (WorkorderInfoShow) BeanUtils.cloneBean(workorderInfoShowPara);
             }
         } catch (Exception e) {
             MessageUtil.addError(e.getMessage());
@@ -179,27 +177,27 @@ public class WorkOrderInfoAction {
     /**
      * 必须输入项目检查
      */
-    private boolean submitPreCheck(CttInfoShow cttInfoShowPara) {
-        if (StringUtils.isEmpty(cttInfoShowPara.getId())) {
+    private boolean submitPreCheck(WorkorderInfoShow workorderInfoShowPara) {
+        if (StringUtils.isEmpty(workorderInfoShowPara.getId())) {
             MessageUtil.addError("请输入合同号！");
             return false;
-        } else if (StringUtils.isEmpty(cttInfoShowPara.getName())) {
+        } else if (StringUtils.isEmpty(workorderInfoShowPara.getName())) {
             MessageUtil.addError("请输入合同名！");
             return false;
-        } else if (StringUtils.isEmpty(cttInfoShowPara.getSignDate())) {
+        } else if (StringUtils.isEmpty(workorderInfoShowPara.getSignDate())) {
             MessageUtil.addError("请输入签订日期！");
             return false;
         }
-        if (StringUtils.isEmpty(cttInfoShowPara.getSignPartA())) {
+        if (StringUtils.isEmpty(workorderInfoShowPara.getSignPartA())) {
             MessageUtil.addError("请输入签订甲方！");
             return false;
-        } else if (StringUtils.isEmpty(cttInfoShowPara.getSignPartB())) {
+        } else if (StringUtils.isEmpty(workorderInfoShowPara.getSignPartB())) {
             MessageUtil.addError("请输入签订乙方！");
             return false;
-        } else if (StringUtils.isEmpty(cttInfoShowPara.getCttStartDate())) {
+        } else if (StringUtils.isEmpty(workorderInfoShowPara.getCttStartDate())) {
             MessageUtil.addError("请输入合同开始时间！");
             return false;
-        } else if (StringUtils.isEmpty(cttInfoShowPara.getCttEndDate())) {
+        } else if (StringUtils.isEmpty(workorderInfoShowPara.getCttEndDate())) {
             MessageUtil.addError("请输入合同截止时间！");
             return false;
         }
@@ -212,58 +210,58 @@ public class WorkOrderInfoAction {
      */
     public void onClickForMngAction() {
         if (strSubmitType.equals("Add")) {
-            if (!submitPreCheck(cttInfoShowAdd)) {
+            if (!submitPreCheck(workorderInfoShowAdd)) {
                 return;
             }
-            CttInfoShow cttInfoShowTemp=new CttInfoShow();
-            cttInfoShowTemp.setCttType(cttInfoShowAdd.getCttType());
-            cttInfoShowTemp.setCttType(cttInfoShowAdd.getCttType());
-            if (cttInfoService.getListByModelShow(cttInfoShowTemp).size()>0) {
+            WorkorderInfoShow workorderInfoShowTemp =new WorkorderInfoShow();
+            workorderInfoShowTemp.setCttType(workorderInfoShowAdd.getCttType());
+            workorderInfoShowTemp.setCttType(workorderInfoShowAdd.getCttType());
+            if (cttInfoService.getListByModelShow(workorderInfoShowTemp).size()>0) {
                 MessageUtil.addError("该记录已存在，请重新录入！");
             } else {
-                addRecordAction(cttInfoShowAdd);
+                addRecordAction(workorderInfoShowAdd);
                 MessageUtil.addInfo("新增数据完成。");
                 resetActionForAdd();
             }
         } else if (strSubmitType.equals("Upd")) {
-			if (!submitPreCheck(cttInfoShowUpd)) {
+			if (!submitPreCheck(workorderInfoShowUpd)) {
 	         return;
 	        }
-            updRecordAction(cttInfoShowUpd);
+            updRecordAction(workorderInfoShowUpd);
             MessageUtil.addInfo("更新数据完成。");
         } else if (strSubmitType.equals("Del")) {
-            deleteRecordAction(cttInfoShowDel);
+            deleteRecordAction(workorderInfoShowDel);
             MessageUtil.addInfo("删除数据完成。");
         }
         onQueryAction("Mng","false");
     }
 
-    private void addRecordAction(CttInfoShow cttInfoShowPara) {
+    private void addRecordAction(WorkorderInfoShow workorderInfoShowPara) {
         try {
-            cttInfoShowPara.setCttType(EnumResType.RES_TYPE0.getCode());
-            if (cttInfoShowPara.getCttType().equals(EnumResType.RES_TYPE0.getCode())) {
-                cttInfoShowPara.setParentPkid("ROOT");
+            workorderInfoShowPara.setCttType(EnumResType.RES_TYPE0.getCode());
+            if (workorderInfoShowPara.getCttType().equals(EnumResType.RES_TYPE0.getCode())) {
+                workorderInfoShowPara.setParentPkid("ROOT");
             }
-            cttInfoService.insertRecord(cttInfoShowPara);
+            cttInfoService.insertRecord(workorderInfoShowPara);
         } catch (Exception e) {
             logger.error("新增数据失败，", e);
             MessageUtil.addError(e.getMessage());
         }
     }
-    private void updRecordAction(CttInfoShow cttInfoShowPara) {
+    private void updRecordAction(WorkorderInfoShow workorderInfoShowPara) {
         try {
-            cttInfoShowPara.setCttType(EnumResType.RES_TYPE0.getCode());
-            cttInfoService.updateRecord(cttInfoShowPara);
+            workorderInfoShowPara.setCttType(EnumResType.RES_TYPE0.getCode());
+            cttInfoService.updateRecord(workorderInfoShowPara);
         } catch (Exception e) {
             logger.error("更新数据失败，", e);
             MessageUtil.addError(e.getMessage());
         }
     }
-    private void deleteRecordAction(CttInfoShow cttInfoShowPara) {
+    private void deleteRecordAction(WorkorderInfoShow workorderInfoShowPara) {
         try {
-            cttInfoShowPara.setCttType(EnumResType.RES_TYPE0.getCode());
-            int deleteRecordNumOfCttItem= cttItemService.deleteRecord(cttInfoShowPara);
-            int deleteRecordNumOfCtt= cttInfoService.deleteRecord(cttInfoShowPara.getPkid());
+            workorderInfoShowPara.setCttType(EnumResType.RES_TYPE0.getCode());
+            int deleteRecordNumOfCttItem= cttItemService.deleteRecord(workorderInfoShowPara);
+            int deleteRecordNumOfCtt= cttInfoService.deleteRecord(workorderInfoShowPara.getPkid());
             if (deleteRecordNumOfCtt<=0&&deleteRecordNumOfCttItem<=0){
                 MessageUtil.addInfo("该记录已删除。");
                 return;
@@ -308,32 +306,32 @@ public class WorkOrderInfoAction {
         this.esFlowControl = esFlowControl;
     }
 
-    public CttInfoShow getCttInfoShowQry() {
-        return cttInfoShowQry;
+    public WorkorderInfoShow getWorkorderInfoShowQry() {
+        return workorderInfoShowQry;
     }
 
-    public void setCttInfoShowQry(CttInfoShow cttInfoShowQry) {
-        this.cttInfoShowQry = cttInfoShowQry;
+    public void setWorkorderInfoShowQry(WorkorderInfoShow workorderInfoShowQry) {
+        this.workorderInfoShowQry = workorderInfoShowQry;
     }
 
-    public CttInfoShow getCttInfoShowAdd() {
-        return cttInfoShowAdd;
+    public WorkorderInfoShow getWorkorderInfoShowAdd() {
+        return workorderInfoShowAdd;
     }
 
-    public void setCttInfoShowAdd(CttInfoShow cttInfoShowAdd) {
-        this.cttInfoShowAdd = cttInfoShowAdd;
+    public void setWorkorderInfoShowAdd(WorkorderInfoShow workorderInfoShowAdd) {
+        this.workorderInfoShowAdd = workorderInfoShowAdd;
     }
 
-    public CttInfoShow getCttInfoShowDel() {
-        return cttInfoShowDel;
+    public WorkorderInfoShow getWorkorderInfoShowDel() {
+        return workorderInfoShowDel;
     }
 
-    public void setCttInfoShowDel(CttInfoShow cttInfoShowDel) {
-        this.cttInfoShowDel = cttInfoShowDel;
+    public void setWorkorderInfoShowDel(WorkorderInfoShow workorderInfoShowDel) {
+        this.workorderInfoShowDel = workorderInfoShowDel;
     }
 
-    public List<CttInfoShow> getCttInfoShowList() {
-        return cttInfoShowList;
+    public List<WorkorderInfoShow> getWorkorderInfoShowList() {
+        return workorderInfoShowList;
     }
 
     public String getStrSubmitType() {
@@ -344,29 +342,20 @@ public class WorkOrderInfoAction {
         return styleModel;
     }
 
-    public CttInfoShow getCttInfoShowUpd() {
-        return cttInfoShowUpd;
+    public WorkorderInfoShow getWorkorderInfoShowUpd() {
+        return workorderInfoShowUpd;
     }
 
-    public void setCttInfoShowUpd(CttInfoShow cttInfoShowUpd) {
-        this.cttInfoShowUpd = cttInfoShowUpd;
+    public void setWorkorderInfoShowUpd(WorkorderInfoShow workorderInfoShowUpd) {
+        this.workorderInfoShowUpd = workorderInfoShowUpd;
     }
 
-    public CttInfoShow getCttInfoShowSel() {
-        return cttInfoShowSel;
+    public WorkorderInfoShow getWorkorderInfoShowSel() {
+        return workorderInfoShowSel;
     }
 
-    public void setCttInfoShowSel(CttInfoShow cttInfoShowSel) {
-        this.cttInfoShowSel = cttInfoShowSel;
-    }
-
-    public OperResService getOperResService() {
-        return operResService;
-    }
-
-    public void setOperResService(OperResService operResService) {
-        this.operResService = operResService;
+    public void setWorkorderInfoShowSel(WorkorderInfoShow workorderInfoShowSel) {
+        this.workorderInfoShowSel = workorderInfoShowSel;
     }
     /*智能字段 End*/
-
 }

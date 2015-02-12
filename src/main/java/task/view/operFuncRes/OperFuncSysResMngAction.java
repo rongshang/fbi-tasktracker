@@ -1,11 +1,9 @@
 package task.view.operFuncRes;
 
 import task.common.enums.EnumArchivedFlag;
-import task.repository.model.OperRes;
 import task.repository.model.Ptmenu;
 import task.repository.model.model_show.DeptOperShow;
 import task.repository.model.model_show.OperFuncResShow;
-import task.repository.model.model_show.OperResShow;
 import task.service.*;
 import org.primefaces.model.DefaultTreeNode;
 import org.primefaces.model.TreeNode;
@@ -26,8 +24,6 @@ import java.util.*;
 @ViewScoped
 public class OperFuncSysResMngAction implements Serializable{
     private static final Logger logger = LoggerFactory.getLogger(OperFuncSysResMngAction.class);
-    @ManagedProperty(value = "#{operResService}")
-    private OperResService operResService;
     @ManagedProperty(value = "#{deptOperService}")
     private DeptOperService deptOperService;
     @ManagedProperty(value = "#{menuService}")
@@ -66,7 +62,7 @@ public class OperFuncSysResMngAction implements Serializable{
         Ptmenu ptmenuTemp=new Ptmenu();
         ptmenuTemp.setMenuType(strMenuTypePara);
         List<Ptmenu> ptmenuListTemp=menuService.selectListByModel(ptmenuTemp);
-        OperRes operResTemp=new OperRes();
+        /*OperRes operResTemp=new OperRes();
         operResTemp.setType("system");
         List<OperResShow> operResShowListTemp=operResService.selectOperaResRecordsByModel(operResTemp);
         for(Ptmenu ptmenuUnit:ptmenuListTemp){
@@ -81,13 +77,13 @@ public class OperFuncSysResMngAction implements Serializable{
                                 ToolUtil.getStrIgnoreNull(operResShowUnit.getOperName());
                     }
                 }
-            }
+            }*/
             OperFuncResShow operFuncResShowTemp=new OperFuncResShow();
-            operFuncResShowTemp.setResPkid(ptmenuUnit.getPkid());
+            /*operFuncResShowTemp.setResPkid(ptmenuUnit.getPkid());
             operFuncResShowTemp.setResName(ptmenuUnit.getMenulabel());
-            operFuncResShowTemp.setInputOperName(strInputOperName);
+            operFuncResShowTemp.setInputOperName(strInputOperName);*/
             operFuncResShowList.add(operFuncResShowTemp);
-        }
+        //}
     }
     private void initDeptOper(){
         deptOperShowSeledList.clear();
@@ -113,7 +109,7 @@ public class OperFuncSysResMngAction implements Serializable{
         initRes(strMenuTypeSeled);
     }
     
-    private void recursiveOperTreeNodeForExpand(
+  /*  private void recursiveOperTreeNodeForExpand(
             TreeNode treeNodePara,List<OperResShow> operResShowListPara) {
         if (operResShowListPara==null||operResShowListPara.size()==0){
             return;
@@ -155,7 +151,7 @@ public class OperFuncSysResMngAction implements Serializable{
         } catch (Exception e) {
             MessageUtil.addError(e.getMessage());
         }
-    }
+    }*/
     public void selOperRecordAction(DeptOperShow deptOperShowPara){
         if (deptOperShowPara.getIsSeled()){
             deptOperShowSeledList.add(deptOperShowPara);
@@ -172,7 +168,7 @@ public class OperFuncSysResMngAction implements Serializable{
     public void onClickForMngAction(String strSubmitTypePara) {
         try {
             if (strSubmitTypePara.equals("Power")) {
-                OperRes operResTemp = new OperRes();
+                /*OperRes operResTemp = new OperRes();
                 operResTemp.setInfoPkid(operFuncResShowSeled.getResPkid());
                 operResService.deleteRecord(operResTemp);
                 operResTemp.setArchivedFlag(EnumArchivedFlag.ARCHIVED_FLAG0.getCode());
@@ -180,7 +176,7 @@ public class OperFuncSysResMngAction implements Serializable{
                 for (DeptOperShow deptOperShowUnit : deptOperShowSeledList) {
                     operResTemp.setOperPkid(deptOperShowUnit.getPkid());
                     operResService.insertRecord(operResTemp);
-                }
+                }*/
                 MessageUtil.addInfo("权限添加成功!");
             }
             initRes(strMenuTypeSeled);
@@ -199,14 +195,6 @@ public class OperFuncSysResMngAction implements Serializable{
 
     public void setMenuTypeList(List<SelectItem> menuTypeList) {
         this.menuTypeList = menuTypeList;
-    }
-
-    public OperResService getOperResService() {
-        return operResService;
-    }
-
-    public void setOperResService(OperResService operResService) {
-        this.operResService = operResService;
     }
 
     public TreeNode getDeptOperRoot() {

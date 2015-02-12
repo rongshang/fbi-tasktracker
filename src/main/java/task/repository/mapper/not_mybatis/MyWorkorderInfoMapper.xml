@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="task.repository.dao.not_mybatis.MyWorkOrderInfoMapper">
-    <resultMap id="BaseResultMapCtt" type="task.repository.model.model_show.CttInfoShow">
+    <resultMap id="BaseResultMapCtt" type="task.repository.model.model_show.WorkorderInfoShow">
         <id column="PKID" jdbcType="VARCHAR" property="pkid" />
         <result column="CTT_TYPE" jdbcType="VARCHAR" property="cttType" />
         <result column="PARENT_PKID" jdbcType="VARCHAR" property="parentPkid" />
@@ -29,7 +29,7 @@
         <result column="REC_VERSION" jdbcType="DECIMAL" property="recVersion" />
         <result column="TYPE" jdbcType="CHAR" property="type" />
     </resultMap>
-    <select id="selectCttByStatusFlagBegin_End" parameterType="task.repository.model.model_show.CttInfoShow"
+    <select id="selectCttByStatusFlagBegin_End" parameterType="task.repository.model.model_show.WorkorderInfoShow"
             resultMap="BaseResultMapCtt">
         <![CDATA[
             select
@@ -59,7 +59,7 @@
                 eic.FLOW_STATUS_REASON,
                 eic.TYPE
             from
-                CTT_INFO eic
+                WORKORDER_INFO eic
             where
                 1=1
         ]]>

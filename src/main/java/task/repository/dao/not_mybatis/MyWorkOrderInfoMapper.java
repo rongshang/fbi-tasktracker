@@ -1,6 +1,6 @@
 package task.repository.dao.not_mybatis;
 
-import task.repository.model.model_show.CttInfoShow;
+import task.repository.model.model_show.WorkorderInfoShow;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Component;
@@ -16,28 +16,28 @@ import java.util.List;
  */
 @Component
 public interface MyWorkOrderInfoMapper {
-    List<CttInfoShow> selectCttByStatusFlagBegin_End(CttInfoShow cttInfoShow);
+    List<WorkorderInfoShow> selectCttByStatusFlagBegin_End(WorkorderInfoShow workorderInfoShow);
 
-    @Select("select max(id) from CTT_INFO where ctt_type = #{strCttType}")
+    @Select("select max(id) from WORKORDER_INFO where ctt_type = #{strCttType}")
     String getStrMaxCttId(@Param("strCttType") String strCttType);
 
     @Select(" select" +
                  " eci.PKID" +
                  ",eci.NAME" +
             " from" +
-                 " CTT_INFO eci" +
+                 " WORKORDER_INFO eci" +
             " where" +
                  " eci.CTT_TYPE = #{strCttType}" +
             " and" +
                  " eci.FLOW_STATUS = #{strFlowStatus}" +
             " order by eci.NAME ")
-    List<CttInfoShow> getCttInfoListByCttType_Status(@Param("strCttType") String strCttType,
+    List<WorkorderInfoShow> getCttInfoListByCttType_Status(@Param("strCttType") String strCttType,
                                                      @Param("strFlowStatus") String strFlowStatus);
     @Select(" select" +
                 " eci.PKID" +
                 ",eci.NAME" +
             " from" +
-                " CTT_INFO eci" +
+                " WORKORDER_INFO eci" +
             " where" +
                 " eci.CTT_TYPE = #{strCttType}" +
             " and" +
@@ -46,14 +46,14 @@ public interface MyWorkOrderInfoMapper {
                 " eci.FLOW_STATUS = #{strFlowStatus}" +
             " order by " +
                 " eci.NAME ")
-    List<CttInfoShow> getCttInfoListByCttType_ParentPkid_Status(@Param("strCttType") String strCttType,
+    List<WorkorderInfoShow> getCttInfoListByCttType_ParentPkid_Status(@Param("strCttType") String strCttType,
                                                                 @Param("strParentPkid") String strParentPkid,
                                                                 @Param("strFlowStatus") String strFlowStatus);
 
     @Select("select " +
             "      count(1)" +
             " from " +
-            "      CTT_INFO" +
+            "      WORKORDER_INFO" +
             " where " +
             "      CTT_TYPE = #{strCttType}" +
             " and " +
@@ -72,10 +72,10 @@ public interface MyWorkOrderInfoMapper {
             "    (select NAME from oper where PKID=t.created_by) as createdByName," +
             "    t.CREATED_TIME as createdTime " +
             " from" +
-            "    CTT_INFO t" +
+            "    WORKORDER_INFO t" +
             " where" +
             "    t.parent_pkid=#{parentPkid}" +
             " order by" +
             "    t.name")
-    List<CttInfoShow> selectRecordsFromCtt(@Param("parentPkid") String parentPkidPara);
+    List<WorkorderInfoShow> selectRecordsFromCtt(@Param("parentPkid") String parentPkidPara);
 }

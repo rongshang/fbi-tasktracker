@@ -1,13 +1,14 @@
 package task.service;
 
-import task.repository.model.CttItem;
-import task.repository.model.CttItemExample;
 import skyline.util.ToolUtil;
-import task.repository.dao.WorkOrderItemMapper;
+import task.repository.dao.WorkorderItemMapper;
 import task.repository.dao.not_mybatis.MyWorkOrderItemMapper;
-import task.repository.model.model_show.CttInfoShow;
-import task.repository.model.model_show.CttItemShow;
+import task.repository.model.WorkorderItem;
+import task.repository.model.WorkorderItemExample;
+import task.repository.model.model_show.WorkorderInfoShow;
+import task.repository.model.model_show.WorkorderItemShow;
 import org.springframework.stereotype.Service;
+
 import javax.annotation.Resource;
 import java.util.List;
 
@@ -21,7 +22,7 @@ import java.util.List;
 @Service
 public class CttItemService {
     @Resource
-    private WorkOrderItemMapper workOrderItemMapper;
+    private WorkorderItemMapper workorderItemMapper;
     @Resource
     private MyWorkOrderItemMapper myWorkOrderItemMapper;
 
@@ -29,27 +30,25 @@ public class CttItemService {
                                                  String strBelongToPkid,
                                                  String strParentPkid,
                                                  Integer intGrade){
-        CttItemExample example = new CttItemExample();
+        WorkorderItemExample example = new WorkorderItemExample();
         example.createCriteria()
-                .andBelongToTypeEqualTo(strBelongToType)
                 .andBelongToPkidEqualTo(strBelongToPkid)
                 .andParentPkidEqualTo(strParentPkid)
                 .andGradeEqualTo(intGrade);
         example .setOrderByClause("ORDERID DESC") ;
-        List<CttItem> cttItemList = workOrderItemMapper.selectByExample(example);
-        if(cttItemList.size() ==0){
+        List<WorkorderItem> workorderItemList = workorderItemMapper.selectByExample(example);
+        if(workorderItemList.size() ==0){
             return 0;
         }
         else{
-            return  cttItemList.get(0).getOrderid();
+            return  workorderItemList.get(0).getOrderid();
         }
     }
-    public List<CttItem> getEsItemList(String strBelongToType,String strItemBelongToPkid){
-        CttItemExample example = new CttItemExample();
-        example.createCriteria().andBelongToTypeEqualTo(strBelongToType)
-                .andBelongToPkidEqualTo(strItemBelongToPkid);
+    public List<WorkorderItem> getEsItemList(String strBelongToType,String strItemBelongToPkid){
+        WorkorderItemExample example = new WorkorderItemExample();
+        example.createCriteria().andBelongToPkidEqualTo(strItemBelongToPkid);
         example .setOrderByClause("GRADE ASC,ORDERID ASC") ;
-        return workOrderItemMapper.selectByExample(example);
+        return workorderItemMapper.selectByExample(example);
         /*return commonMapper.selEsItemHieRelapListByTypeAndId(strBelongToType,strItemBelongToId);*/
     }
 
@@ -59,166 +58,138 @@ public class CttItemService {
      * @param   strPkId
      * @return
      */
-    public CttItem getEsCttItemByPkId(String strPkId){
-        return workOrderItemMapper.selectByPrimaryKey(strPkId) ;
+    public WorkorderItem getEsCttItemByPkId(String strPkId){
+        return workorderItemMapper.selectByPrimaryKey(strPkId) ;
     }
-    public boolean isExistSameNameNodeInDb(CttItem cttItem) {
-        CttItemExample example = new CttItemExample();
-        CttItemExample.Criteria criteria = example.createCriteria();
+    public boolean isExistSameNameNodeInDb(WorkorderItem workorderItem) {
+        WorkorderItemExample example = new WorkorderItemExample();
+        WorkorderItemExample.Criteria criteria = example.createCriteria();
         criteria
-                .andBelongToTypeEqualTo(cttItem.getBelongToType())
-                .andBelongToPkidEqualTo(cttItem.getBelongToPkid())
-                .andParentPkidEqualTo(cttItem.getParentPkid())
-                .andGradeEqualTo(cttItem.getGrade());
-        if(cttItem.getName()==null){
+                .andBelongToPkidEqualTo(workorderItem.getBelongToPkid())
+                .andParentPkidEqualTo(workorderItem.getParentPkid())
+                .andGradeEqualTo(workorderItem.getGrade());
+        if(workorderItem.getName()==null){
             criteria.andNameIsNull();
         }
         else{
-            criteria.andNameEqualTo(cttItem.getName());
+            criteria.andNameEqualTo(workorderItem.getName());
         }
-        if(cttItem.getSpareField()==null){
-            criteria.andSpareFieldIsNull();
-        }
-        else{
-            criteria.andSpareFieldEqualTo(cttItem.getSpareField());
-        }
-        return workOrderItemMapper.countByExample(example) >= 1;
+        return workorderItemMapper.countByExample(example) >= 1;
     }
-    public boolean isExistSameRecordInDb(CttItem cttItem) {
-        CttItemExample example = new CttItemExample();
-        CttItemExample.Criteria criteria = example.createCriteria();
+    public boolean isExistSameRecordInDb(WorkorderItem workorderItem) {
+        WorkorderItemExample example = new WorkorderItemExample();
+        WorkorderItemExample.Criteria criteria = example.createCriteria();
         criteria
-                .andBelongToTypeEqualTo(cttItem.getBelongToType())
-                .andBelongToPkidEqualTo(cttItem.getBelongToPkid())
-                .andParentPkidEqualTo(cttItem.getParentPkid())
-                .andGradeEqualTo(cttItem.getGrade())
-                .andOrderidEqualTo(cttItem.getOrderid());
+                .andBelongToPkidEqualTo(workorderItem.getBelongToPkid())
+                .andParentPkidEqualTo(workorderItem.getParentPkid())
+                .andGradeEqualTo(workorderItem.getGrade())
+                .andOrderidEqualTo(workorderItem.getOrderid());
 
-        if(cttItem.getName()==null){
+        if(workorderItem.getName()==null){
             criteria.andNameIsNull();
         }
         else{
-            criteria.andNameEqualTo(cttItem.getName());
+            criteria.andNameEqualTo(workorderItem.getName());
         }
-        if(cttItem.getSpareField()==null){
-            criteria.andSpareFieldIsNull();
-        }
-        else{
-            criteria.andSpareFieldEqualTo(cttItem.getSpareField());
-        }
-        return workOrderItemMapper.countByExample(example) >= 1;
+        return workorderItemMapper.countByExample(example) >= 1;
     }
 
-    public void insertRecord(CttItemShow cttItemShowPara) {
+    public void insertRecord(WorkorderItemShow workorderItemShowPara) {
         String strOperatorIdTemp=ToolUtil.getOperatorManager().getOperator().getPkid();
         String strLastUpdTimeTemp=ToolUtil.getStrLastUpdTime();
-        CttItem cttItemTemp =fromModelShowToModel(cttItemShowPara);
-        cttItemTemp.setArchivedFlag("0");
-        cttItemTemp.setOriginFlag("0");
-        cttItemTemp.setCreatedBy(strOperatorIdTemp);
-        cttItemTemp.setCreatedTime(strLastUpdTimeTemp);
-        cttItemTemp.setLastUpdBy(strOperatorIdTemp);
-        cttItemTemp.setLastUpdTime(strLastUpdTimeTemp);
-        workOrderItemMapper.insertSelective(cttItemTemp);
+        WorkorderItem workorderItemTemp =fromModelShowToModel(workorderItemShowPara);
+        workorderItemTemp.setArchivedFlag("0");
+        workorderItemTemp.setOriginFlag("0");
+        workorderItemTemp.setCreatedBy(strOperatorIdTemp);
+        workorderItemTemp.setCreatedTime(strLastUpdTimeTemp);
+        workorderItemTemp.setLastUpdBy(strOperatorIdTemp);
+        workorderItemTemp.setLastUpdTime(strLastUpdTimeTemp);
+        workorderItemMapper.insertSelective(workorderItemTemp);
     }
-    public void insertRecord(CttItem cttItemPara){
+    public void insertRecord(WorkorderItem workorderItemPara){
         String strOperatorIdTemp=ToolUtil.getOperatorManager().getOperator().getPkid();
         String strLastUpdTimeTemp=ToolUtil.getStrLastUpdTime();
-        cttItemPara.setArchivedFlag("0");
-        cttItemPara.setOriginFlag("0");
-        cttItemPara.setCreatedBy(strOperatorIdTemp);
-        cttItemPara.setCreatedTime(strLastUpdTimeTemp);
-        cttItemPara.setLastUpdBy(strOperatorIdTemp);
-        cttItemPara.setLastUpdTime(strLastUpdTimeTemp);
-        workOrderItemMapper.insert(cttItemPara);
+        workorderItemPara.setArchivedFlag("0");
+        workorderItemPara.setOriginFlag("0");
+        workorderItemPara.setCreatedBy(strOperatorIdTemp);
+        workorderItemPara.setCreatedTime(strLastUpdTimeTemp);
+        workorderItemPara.setLastUpdBy(strOperatorIdTemp);
+        workorderItemPara.setLastUpdTime(strLastUpdTimeTemp);
+        workorderItemMapper.insert(workorderItemPara);
     }
 
     /*总包合同到层级关系*/
-    public CttItem fromModelShowToModel(CttItemShow cttItemShowPara){
-        CttItem cttItemTemp =new CttItem() ;
-        cttItemTemp.setUnit(cttItemShowPara.getUnit());
-        cttItemTemp.setPkid(cttItemShowPara.getPkid()) ;
-        cttItemTemp.setBelongToType(cttItemShowPara.getBelongToType()) ;
-        cttItemTemp.setBelongToPkid(cttItemShowPara.getBelongToPkid()) ;
-        cttItemTemp.setParentPkid(cttItemShowPara.getParentPkid()) ;
-        cttItemTemp.setGrade(cttItemShowPara.getGrade()) ;
-        cttItemTemp.setOrderid(cttItemShowPara.getOrderid()) ;
-        cttItemTemp.setName(cttItemShowPara.getName()) ;
-        cttItemTemp.setContractUnitPrice(cttItemShowPara.getContractUnitPrice());
-        cttItemTemp.setContractQuantity(cttItemShowPara.getContractQuantity());
-        cttItemTemp.setSignPartAPrice(cttItemShowPara.getSignPartAPrice());
-        cttItemTemp.setContractAmount(cttItemShowPara.getContractAmount());
-        cttItemTemp.setArchivedFlag(cttItemShowPara.getArchivedFlag());
-        cttItemTemp.setOriginFlag(cttItemShowPara.getOriginFlag());
-        cttItemTemp.setCreatedTime(cttItemShowPara.getCreatedTime());
-        cttItemTemp.setCreatedBy(cttItemShowPara.getCreatedBy());
-        cttItemTemp.setLastUpdTime(cttItemShowPara.getLastUpdTime());
-        cttItemTemp.setLastUpdBy(cttItemShowPara.getLastUpdBy());
-        cttItemTemp.setRemark(cttItemShowPara.getRemark());
-        cttItemTemp.setCorrespondingPkid(cttItemShowPara.getCorrespondingPkid());
-        cttItemTemp.setRecVersion(cttItemShowPara.getRecVersion());
-        cttItemTemp.setSpareField(cttItemShowPara.getSpareField());
-        return cttItemTemp;
+    public WorkorderItem fromModelShowToModel(WorkorderItemShow workorderItemShowPara){
+        WorkorderItem workorderItemTemp =new WorkorderItem() ;
+        workorderItemTemp.setUnit(workorderItemShowPara.getUnit());
+        workorderItemTemp.setPkid(workorderItemShowPara.getPkid()) ;
+        workorderItemTemp.setBelongToPkid(workorderItemShowPara.getBelongToPkid()) ;
+        workorderItemTemp.setParentPkid(workorderItemShowPara.getParentPkid()) ;
+        workorderItemTemp.setGrade(workorderItemShowPara.getGrade()) ;
+        workorderItemTemp.setOrderid(workorderItemShowPara.getOrderid()) ;
+        workorderItemTemp.setName(workorderItemShowPara.getName()) ;
+        workorderItemTemp.setUnitPrice(workorderItemShowPara.getUnitPrice());
+        workorderItemTemp.setQuantity(workorderItemShowPara.getQuantity());
+        workorderItemTemp.setAmount(workorderItemShowPara.getAmount());
+        workorderItemTemp.setArchivedFlag(workorderItemShowPara.getArchivedFlag());
+        workorderItemTemp.setOriginFlag(workorderItemShowPara.getOriginFlag());
+        workorderItemTemp.setCreatedTime(workorderItemShowPara.getCreatedTime());
+        workorderItemTemp.setCreatedBy(workorderItemShowPara.getCreatedBy());
+        workorderItemTemp.setLastUpdTime(workorderItemShowPara.getLastUpdTime());
+        workorderItemTemp.setLastUpdBy(workorderItemShowPara.getLastUpdBy());
+        workorderItemTemp.setRemark(workorderItemShowPara.getRemark());
+        workorderItemTemp.setRecVersion(workorderItemShowPara.getRecVersion());
+        return workorderItemTemp;
     }
     /*层级关系到总包合同*/
-    private CttItemShow fromModelToModelShow(CttItem cttItemPara){
-        CttItemShow cttItemShowTemp =new CttItemShow() ;
-        cttItemShowTemp.setPkid(cttItemPara.getPkid()) ;
-        cttItemShowTemp.setBelongToType(cttItemPara.getBelongToType()) ;
-        cttItemShowTemp.setBelongToPkid(cttItemPara.getBelongToPkid()) ;
-        cttItemShowTemp.setParentPkid(cttItemPara.getParentPkid()) ;
-        cttItemShowTemp.setGrade(cttItemPara.getGrade()) ;
-        cttItemShowTemp.setOrderid(cttItemPara.getOrderid()) ;
-        cttItemShowTemp.setName(cttItemPara.getName()) ;
-        cttItemShowTemp.setRemark(cttItemPara.getRemark()) ;
-        cttItemShowTemp.setCorrespondingPkid(cttItemPara.getCorrespondingPkid());
-        return cttItemShowTemp;
+    private WorkorderItemShow fromModelToModelShow(WorkorderItem workorderItemPara){
+        WorkorderItemShow workorderItemShowTemp =new WorkorderItemShow() ;
+        workorderItemShowTemp.setPkid(workorderItemPara.getPkid()) ;
+        workorderItemShowTemp.setBelongToPkid(workorderItemPara.getBelongToPkid()) ;
+        workorderItemShowTemp.setParentPkid(workorderItemPara.getParentPkid()) ;
+        workorderItemShowTemp.setGrade(workorderItemPara.getGrade()) ;
+        workorderItemShowTemp.setOrderid(workorderItemPara.getOrderid()) ;
+        workorderItemShowTemp.setName(workorderItemPara.getName()) ;
+        workorderItemShowTemp.setRemark(workorderItemPara.getRemark()) ;
+        return workorderItemShowTemp;
     }
 
-    public void updateRecord(CttItemShow cttItemShowPara) {
-        CttItem cttItemTemp =fromModelShowToModel(cttItemShowPara);
-        cttItemTemp.setRecVersion(
-                ToolUtil.getIntIgnoreNull(cttItemTemp.getRecVersion())+1);
-        cttItemTemp.setArchivedFlag("0");
-        cttItemTemp.setOriginFlag("0");
-        cttItemTemp.setLastUpdBy(ToolUtil.getOperatorManager().getOperator().getPkid());
-        cttItemTemp.setLastUpdTime(ToolUtil.getStrLastUpdTime());
-        if(ToolUtil.getStrIgnoreNull(cttItemTemp.getSpareField()).length()==0) {
-            cttItemTemp.setContractAmount(cttItemShowPara.getContractUnitPrice().multiply(cttItemShowPara.getContractQuantity()));
-        }
-        workOrderItemMapper.updateByPrimaryKey(cttItemTemp) ;
+    public void updateRecord(WorkorderItemShow workorderItemShowPara) {
+        WorkorderItem workorderItemTemp =fromModelShowToModel(workorderItemShowPara);
+        workorderItemTemp.setRecVersion(
+                ToolUtil.getIntIgnoreNull(workorderItemTemp.getRecVersion())+1);
+        workorderItemTemp.setArchivedFlag("0");
+        workorderItemTemp.setOriginFlag("0");
+        workorderItemTemp.setLastUpdBy(ToolUtil.getOperatorManager().getOperator().getPkid());
+        workorderItemTemp.setLastUpdTime(ToolUtil.getStrLastUpdTime());
+        workorderItemMapper.updateByPrimaryKey(workorderItemTemp) ;
     }
 
     public int deleteRecord(String strPkId){
-        return workOrderItemMapper.deleteByPrimaryKey(strPkId);
+        return workorderItemMapper.deleteByPrimaryKey(strPkId);
     }
-    public int deleteRecord(CttInfoShow cttInfoShowPara){
-        CttItemExample example = new CttItemExample();
+    public int deleteRecord(WorkorderInfoShow workorderInfoShowPara){
+        WorkorderItemExample example = new WorkorderItemExample();
         example.createCriteria()
-                .andBelongToTypeEqualTo(cttInfoShowPara.getCttType())
-                .andBelongToPkidEqualTo(cttInfoShowPara.getPkid());
-        return workOrderItemMapper.deleteByExample(example);
+                .andBelongToPkidEqualTo(workorderInfoShowPara.getPkid());
+        return workorderItemMapper.deleteByExample(example);
     }
 
-    public void setAfterThisOrderidPlusOneByNode(CttItemShow cttItemShowPara){
-        myWorkOrderItemMapper.setAfterThisOrderidPlusOneByNode(cttItemShowPara.getBelongToType(),
-                cttItemShowPara.getBelongToPkid(),
-                cttItemShowPara.getParentPkid(),
-                cttItemShowPara.getGrade(),
-                cttItemShowPara.getOrderid());
-        if(ToolUtil.getStrIgnoreNull(cttItemShowPara.getSpareField()).length()==0) {
-            cttItemShowPara.setContractAmount(cttItemShowPara.getContractUnitPrice().multiply(cttItemShowPara.getContractQuantity()));
-        }
-        insertRecord(cttItemShowPara);
+    public void setAfterThisOrderidPlusOneByNode(WorkorderItemShow workorderItemShowPara){
+        myWorkOrderItemMapper.setAfterThisOrderidPlusOneByNode(
+                workorderItemShowPara.getBelongToPkid(),
+                workorderItemShowPara.getParentPkid(),
+                workorderItemShowPara.getGrade(),
+                workorderItemShowPara.getOrderid());
+        insertRecord(workorderItemShowPara);
     }
 
-    public void setAfterThisOrderidSubOneByNode(CttItemShow cttItemShowPara){
-        deleteRecord(cttItemShowPara.getPkid());
+    public void setAfterThisOrderidSubOneByNode(WorkorderItemShow workorderItemShowPara){
+        deleteRecord(workorderItemShowPara.getPkid());
         myWorkOrderItemMapper.setAfterThisOrderidSubOneByNode(
-                cttItemShowPara.getBelongToType(),
-                cttItemShowPara.getBelongToPkid(),
-                cttItemShowPara.getParentPkid(),
-                cttItemShowPara.getGrade(),
-                cttItemShowPara.getOrderid());
+                workorderItemShowPara.getBelongToPkid(),
+                workorderItemShowPara.getParentPkid(),
+                workorderItemShowPara.getGrade(),
+                workorderItemShowPara.getOrderid());
     }
 }

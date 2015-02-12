@@ -136,7 +136,7 @@
                             <span style="width:100%;">任务一览</span>
                         </div>
                         <div id="middleId2" style="float:left;width:2px;"></div>
-                        <div onclick="document.frames('stlpowerWorkFrame').location.href='<%=contextPath%>/UI/task/operFuncRes/operFuncBusiResMng.xhtml';tabbarclk(this);"
+                        <div onclick="document.frames('stlpowerWorkFrame').location.href='../../UI/task/operFuncRes/taskAppoint.xhtml';tabbarclk(this);"
                              active="false" id="stlpower" class="tabs-item"
                              style="float:left;width:80px;display: none">
                             <span style="width:100%;">任务指派</span>
@@ -188,7 +188,7 @@
                         </div>
                         <div class="divlayout" id="stlpowerLayout">
                             <iframe id="stlpowerWorkFrame" name="workFrame"
-                                    src="<%=contextPath%>/UI/task/operFuncRes/operFuncBusiResMng.xhtml"
+                                    src="<%=contextPath%>/UI/task/operFuncRes/operFuncBusiResMng.taskAppoint.xhtml"
                                     width="100%" height="100%"
                                     frameborder="no"
                                     border="0"

@@ -3,9 +3,7 @@ package task.view.operFuncRes;
 import task.common.enums.EnumResType;
 import task.common.enums.EnumFlowStatus;
 import task.repository.model.Oper;
-import task.repository.model.model_show.OperResShow;
 import task.service.DeptOperService;
-import task.service.OperResService;
 import org.apache.commons.beanutils.BeanUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,21 +25,12 @@ import java.util.List;
 @ViewScoped
 public class OperFuncResQryAction implements Serializable{
     private static final Logger logger = LoggerFactory.getLogger(OperFuncResQryAction.class);
-    @ManagedProperty(value = "#{operResService}")
-    private OperResService operResService;
     @ManagedProperty(value = "#{deptOperService}")
     private DeptOperService deptOperService;
-
-    private OperResShow operResShowQry;
-    private OperResShow operResShowSel;
     private List<SelectItem> taskFunctionList;
-    private List<OperResShow> operResShowQryList;
 
     @PostConstruct
     public void init() {
-        operResShowQry = new OperResShow();
-        operResShowSel = new OperResShow();
-        operResShowQryList = new ArrayList<>();
         initFunc();
     }
 
@@ -62,7 +51,7 @@ public class OperFuncResQryAction implements Serializable{
                 new SelectItem(EnumFlowStatus.FLOW_STATUS5.getCode(), EnumFlowStatus.FLOW_STATUS5.getTitle()));
     }
 
-    public void selectRecordAction(OperResShow operResShowPara) {
+   /* public void selectRecordAction(OperResShow operResShowPara) {
         try {
             operResShowSel= (OperResShow) BeanUtils.cloneBean(operResShowPara);
         } catch (Exception e) {
@@ -106,7 +95,7 @@ public class OperFuncResQryAction implements Serializable{
             logger.error("权限追加信息查询失败", e);
             MessageUtil.addError("权限追加信息查询失败");
         }
-    }
+    }*/
 
     /*智能字段 Start*/
 
@@ -118,43 +107,11 @@ public class OperFuncResQryAction implements Serializable{
         this.deptOperService = deptOperService;
     }
 
-    public OperResService getOperResService() {
-        return operResService;
-    }
-
-    public void setOperResService(OperResService operResService) {
-        this.operResService = operResService;
-    }
-
     public List<SelectItem> getTaskFunctionList() {
         return taskFunctionList;
     }
 
     public void setTaskFunctionList(List<SelectItem> taskFunctionList) {
         this.taskFunctionList = taskFunctionList;
-    }
-
-    public OperResShow getOperResShowQry() {
-        return operResShowQry;
-    }
-
-    public void setOperResShowQry(OperResShow operResShowQry) {
-        this.operResShowQry = operResShowQry;
-    }
-
-    public OperResShow getOperResShowSel() {
-        return operResShowSel;
-    }
-
-    public void setOperResShowSel(OperResShow operResShowSel) {
-        this.operResShowSel = operResShowSel;
-    }
-
-    public List<OperResShow> getOperResShowQryList() {
-        return operResShowQryList;
-    }
-
-    public void setOperResShowQryList(List<OperResShow> operResShowQryList) {
-        this.operResShowQryList = operResShowQryList;
     }
 }

@@ -3,7 +3,7 @@ package task.service;
 import task.common.enums.EnumResType;
 import task.common.enums.EnumFlowStatus;
 import task.common.enums.EnumFlowStatusReason;
-import task.repository.dao.WorkOrderInfoMapper;
+import task.repository.dao.WorkorderInfoMapper;
 import task.repository.dao.not_mybatis.MyTaskMapper;
 import task.repository.model.model_show.TaskShow;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,14 +23,14 @@ import java.util.List;
 @Service
 public class TaskService {
     @Autowired
-    private WorkOrderInfoMapper workOrderInfoMapper;
+    private WorkorderInfoMapper workorderInfoMapper;
     private MyTaskMapper myTaskMapper;
 
     public List<TaskShow> getTaskFlowGroup() {
         return myTaskMapper.getTaskFlowGroup();
     }
 
-    public List<TaskShow> getOwnTaskFlowGroup(String strOperPkidPara) {
+    /*public List<TaskShow> getOwnTaskFlowGroup(String strOperPkidPara) {
         return myTaskMapper.getOwnTaskFlowGroup(strOperPkidPara);
     }
 
@@ -40,14 +40,15 @@ public class TaskService {
 
     public List<TaskShow> getRencentlyPowerDetailTaskShowList(String strOperPkidPara) {
         return myTaskMapper.getRencentlyPowerDetailTaskShowList(strOperPkidPara);
-    }
+    }*/
 
     public List<TaskShow> initRecentlyPowerTaskShowList(){
         List<TaskShow> taskShowList = new ArrayList<TaskShow>();
         //通过OperatorManager获取相应权限下菜单列表
         String strOperPkidTemp = ToolUtil.getOperatorManager().getOperator().getPkid();
         // 获得详细任务列表
-        List<TaskShow> detailTaskShowListTemp = getRencentlyPowerDetailTaskShowList(strOperPkidTemp);
+        List<TaskShow> detailTaskShowListTemp = new ArrayList<>();
+        //detailTaskShowListTemp = getRencentlyPowerDetailTaskShowList(strOperPkidTemp);
 
         TaskShow taskShowTemp=new TaskShow();
         taskShowTemp.setOperResFlowStatusName("待录入(" + detailTaskShowListTemp.size() + ")");
@@ -68,9 +69,11 @@ public class TaskService {
         //通过OperatorManager获取相应权限下菜单列表
         String strOperPkidTemp = ToolUtil.getOperatorManager().getOperator().getPkid();
         // 以流程状态为分组
-        List<TaskShow> ownTaskFlowGroupListTemp = getOwnTaskFlowGroup(strOperPkidTemp);
+        List<TaskShow> ownTaskFlowGroupListTemp=new ArrayList<>();
+        // ownTaskFlowGroupListTemp = getOwnTaskFlowGroup(strOperPkidTemp);
         // 获得详细任务列表
-        List<TaskShow> detailTaskShowListTemp = getDetailTodoTaskShowList(strOperPkidTemp);
+        List<TaskShow> detailTaskShowListTemp = new ArrayList<>();
+        //detailTaskShowListTemp=getDetailTodoTaskShowList(strOperPkidTemp);
 
         for (TaskShow taskShowGroupUnit : ownTaskFlowGroupListTemp) {
             taskShowGroupUnit.setOperResFlowStatusName(

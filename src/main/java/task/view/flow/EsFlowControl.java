@@ -8,7 +8,7 @@ package task.view.flow;
  * To change this template use File | Settings | File Templates.
  */
 
-import task.repository.model.CttInfo;
+import task.repository.model.WorkorderInfo;
 import task.service.CttInfoService;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -69,7 +69,7 @@ public class EsFlowControl implements Serializable {
     }
 
 
-    public CttInfo getCttInfoByPkId(String strPkid) {
+    public WorkorderInfo getCttInfoByPkId(String strPkid) {
         return cttInfoService.getCttInfoByPkId(strPkid);
     }
 

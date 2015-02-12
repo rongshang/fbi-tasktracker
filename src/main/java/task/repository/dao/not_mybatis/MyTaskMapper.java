@@ -26,7 +26,7 @@ public interface MyTaskMapper {
             "   opr.FLOW_STATUS")
     List<TaskShow> getTaskFlowGroup();
 
-    @Select(" select " +
+/*    @Select(" select " +
             "   distinct opr.FLOW_STATUS as flowStatus" +
             " from" +
             "   OPER_RES opr" +
@@ -36,9 +36,9 @@ public interface MyTaskMapper {
             "   opr.TYPE='business'" +
             " order by" +
             "   opr.FLOW_STATUS")
-    List<TaskShow> getOwnTaskFlowGroup(@Param("strOperPkid") String strOperPkid);
+    List<TaskShow> getOwnTaskFlowGroup(@Param("strOperPkid") String strOperPkid);*/
 
-    @Select(
+    /*@Select(
             " (" +
             "      SELECT" +
             "           DISTINCT" +
@@ -51,7 +51,7 @@ public interface MyTaskMapper {
             "      FROM" +
             "           OPER_RES opr" +
             "      INNER JOIN" +
-            "           CTT_INFO ci" +
+            "           WORKORDER_INFO ci" +
             "      ON" +
             "           ci.PKID=opr.INFO_PKID" +
             "      AND " +
@@ -67,9 +67,9 @@ public interface MyTaskMapper {
             " )" +
             " order by  " +
             "    type,taskDoneFlag")
-    List<TaskShow> getRencentlyPowerDetailTaskShowList(@Param("strOperPkid") String strOperPkid);
+    List<TaskShow> getRencentlyPowerDetailTaskShowList(@Param("strOperPkid") String strOperPkid);*/
 
-    @Select(
+   /* @Select(
             "    (" +
             "        select" +
             "            distinct" +
@@ -85,7 +85,7 @@ public interface MyTaskMapper {
             "        from" +
             "            OPER_RES opr" +
             "        inner join  " +
-            "            CTT_INFO ci" +
+            "            WORKORDER_INFO ci" +
             "        on" +
             "            opr.INFO_TYPE=ci.CTT_TYPE" +
             "        and" +
@@ -97,5 +97,5 @@ public interface MyTaskMapper {
             "    ) " +
             " order by" +
             "    flowStatus,name,periodNo")
-    List<TaskShow> getDetailTodoTaskShowList(@Param("strOperPkid") String strOperPkid);
+    List<TaskShow> getDetailTodoTaskShowList(@Param("strOperPkid") String strOperPkid);*/
 }
