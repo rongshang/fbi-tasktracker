@@ -25,7 +25,7 @@ import java.util.List;
  * Created with IntelliJ IDEA.
  * User: Think
  * Date: 13-2-4
- * Time: ÏÂÎç4:53
+ * Time: ä¸‹åˆ4:53
  * To change this template use File | Settings | File Templates.
  */
 @ManagedBean
@@ -49,15 +49,15 @@ public class WorkorderInfoAction {
     private List<WorkorderInfoShow> workorderInfoShowList;
 
     private String strSubmitType;
-    /*¿ØÖÆÎ¬»¤»­Ãæ²ã¼¶²¿·ÖµÄÏÔÊ¾*/
+    /*æ§åˆ¶ç»´æŠ¤ç”»é¢å±‚çº§éƒ¨åˆ†çš„æ˜¾ç¤º*/
     private StyleModel styleModel;
-    //¸üĞÂÊ±¼ìÑéÓÃ£¬·ûºÏÁ¢¿Ì¹Ø±Õ£¬²»·ûºÏ½øĞĞÌáÉı
+    //æ›´æ–°æ—¶æ£€éªŒç”¨ï¼Œç¬¦åˆç«‹åˆ»å…³é—­ï¼Œä¸ç¬¦åˆè¿›è¡Œæå‡
     @PostConstruct
     public void init() {
         try {
             initData();
         }catch (Exception e){
-            logger.error("³õÊ¼»¯Ê§°Ü", e);
+            logger.error("åˆå§‹åŒ–å¤±è´¥", e);
         }
     }
     public void initData() {
@@ -77,8 +77,8 @@ public class WorkorderInfoAction {
             styleModel.setDisabled_Flag("false");
             strSubmitType = "";
         }catch (Exception e){
-            logger.error("³õÊ¼»¯Ê§°Ü", e);
-            MessageUtil.addError("³õÊ¼»¯Ê§°Ü");
+            logger.error("åˆå§‹åŒ–å¤±è´¥", e);
+            MessageUtil.addError("åˆå§‹åŒ–å¤±è´¥");
         }
     }
 
@@ -103,8 +103,8 @@ public class WorkorderInfoAction {
             workorderInfoShowAdd.setId(strMaxId);
             workorderInfoShowUpd.setId(strMaxId);
         } catch (Exception e) {
-            logger.error("×Ü°üºÏÍ¬ĞÅÏ¢²éÑ¯Ê§°Ü", e);
-            MessageUtil.addError("×Ü°üºÏÍ¬ĞÅÏ¢²éÑ¯Ê§°Ü");
+            logger.error("æ€»åŒ…åˆåŒä¿¡æ¯æŸ¥è¯¢å¤±è´¥", e);
+            MessageUtil.addError("æ€»åŒ…åˆåŒä¿¡æ¯æŸ¥è¯¢å¤±è´¥");
         }
     }
 
@@ -137,12 +137,12 @@ public class WorkorderInfoAction {
 
             if(strQryMsgOutPara.equals("true"))  {
                 if (workorderInfoShowList.isEmpty()) {
-                    MessageUtil.addWarn("Ã»ÓĞ²éÑ¯µ½Êı¾İ¡£");
+                    MessageUtil.addWarn("æ²¡æœ‰æŸ¥è¯¢åˆ°æ•°æ®ã€‚");
                 }
             }
         } catch (Exception e) {
-            logger.error("ºÏÍ¬ĞÅÏ¢²éÑ¯Ê§°Ü", e);
-            MessageUtil.addError("ºÏÍ¬ĞÅÏ¢²éÑ¯Ê§°Ü");
+            logger.error("åˆåŒä¿¡æ¯æŸ¥è¯¢å¤±è´¥", e);
+            MessageUtil.addError("åˆåŒä¿¡æ¯æŸ¥è¯¢å¤±è´¥");
         }
         return null;
     }
@@ -157,7 +157,7 @@ public class WorkorderInfoAction {
                                    WorkorderInfoShow workorderInfoShowPara) {
         try {
             strSubmitType = strSubmitTypePara;
-            // ²éÑ¯
+            // æŸ¥è¯¢
             workorderInfoShowPara.setCreatedByName(cttInfoService.getUserName(workorderInfoShowPara.getCreatedBy()));
             workorderInfoShowPara.setLastUpdByName(cttInfoService.getUserName(workorderInfoShowPara.getLastUpdBy()));
             if (strSubmitTypePara.equals("Sel")) {
@@ -175,36 +175,36 @@ public class WorkorderInfoAction {
     }
 
     /**
-     * ±ØĞëÊäÈëÏîÄ¿¼ì²é
+     * å¿…é¡»è¾“å…¥é¡¹ç›®æ£€æŸ¥
      */
     private boolean submitPreCheck(WorkorderInfoShow workorderInfoShowPara) {
         if (StringUtils.isEmpty(workorderInfoShowPara.getId())) {
-            MessageUtil.addError("ÇëÊäÈëºÏÍ¬ºÅ£¡");
+            MessageUtil.addError("è¯·è¾“å…¥åˆåŒå·ï¼");
             return false;
         } else if (StringUtils.isEmpty(workorderInfoShowPara.getName())) {
-            MessageUtil.addError("ÇëÊäÈëºÏÍ¬Ãû£¡");
+            MessageUtil.addError("è¯·è¾“å…¥åˆåŒåï¼");
             return false;
         } else if (StringUtils.isEmpty(workorderInfoShowPara.getSignDate())) {
-            MessageUtil.addError("ÇëÊäÈëÇ©¶©ÈÕÆÚ£¡");
+            MessageUtil.addError("è¯·è¾“å…¥ç­¾è®¢æ—¥æœŸï¼");
             return false;
         }
         if (StringUtils.isEmpty(workorderInfoShowPara.getSignPartA())) {
-            MessageUtil.addError("ÇëÊäÈëÇ©¶©¼×·½£¡");
+            MessageUtil.addError("è¯·è¾“å…¥ç­¾è®¢ç”²æ–¹ï¼");
             return false;
         } else if (StringUtils.isEmpty(workorderInfoShowPara.getSignPartB())) {
-            MessageUtil.addError("ÇëÊäÈëÇ©¶©ÒÒ·½£¡");
+            MessageUtil.addError("è¯·è¾“å…¥ç­¾è®¢ä¹™æ–¹ï¼");
             return false;
         } else if (StringUtils.isEmpty(workorderInfoShowPara.getCttStartDate())) {
-            MessageUtil.addError("ÇëÊäÈëºÏÍ¬¿ªÊ¼Ê±¼ä£¡");
+            MessageUtil.addError("è¯·è¾“å…¥åˆåŒå¼€å§‹æ—¶é—´ï¼");
             return false;
         } else if (StringUtils.isEmpty(workorderInfoShowPara.getCttEndDate())) {
-            MessageUtil.addError("ÇëÊäÈëºÏÍ¬½ØÖ¹Ê±¼ä£¡");
+            MessageUtil.addError("è¯·è¾“å…¥åˆåŒæˆªæ­¢æ—¶é—´ï¼");
             return false;
         }
         return true;
     }
     /**
-     * Ìá½»Î¬»¤È¨ÏŞ
+     * æäº¤ç»´æŠ¤æƒé™
      *
      * @param
      */
@@ -217,10 +217,10 @@ public class WorkorderInfoAction {
             workorderInfoShowTemp.setCttType(workorderInfoShowAdd.getCttType());
             workorderInfoShowTemp.setCttType(workorderInfoShowAdd.getCttType());
             if (cttInfoService.getListByModelShow(workorderInfoShowTemp).size()>0) {
-                MessageUtil.addError("¸Ã¼ÇÂ¼ÒÑ´æÔÚ£¬ÇëÖØĞÂÂ¼Èë£¡");
+                MessageUtil.addError("è¯¥è®°å½•å·²å­˜åœ¨ï¼Œè¯·é‡æ–°å½•å…¥ï¼");
             } else {
                 addRecordAction(workorderInfoShowAdd);
-                MessageUtil.addInfo("ĞÂÔöÊı¾İÍê³É¡£");
+                MessageUtil.addInfo("æ–°å¢æ•°æ®å®Œæˆã€‚");
                 resetActionForAdd();
             }
         } else if (strSubmitType.equals("Upd")) {
@@ -228,10 +228,10 @@ public class WorkorderInfoAction {
 	         return;
 	        }
             updRecordAction(workorderInfoShowUpd);
-            MessageUtil.addInfo("¸üĞÂÊı¾İÍê³É¡£");
+            MessageUtil.addInfo("æ›´æ–°æ•°æ®å®Œæˆã€‚");
         } else if (strSubmitType.equals("Del")) {
             deleteRecordAction(workorderInfoShowDel);
-            MessageUtil.addInfo("É¾³ıÊı¾İÍê³É¡£");
+            MessageUtil.addInfo("åˆ é™¤æ•°æ®å®Œæˆã€‚");
         }
         onQueryAction("Mng","false");
     }
@@ -244,7 +244,7 @@ public class WorkorderInfoAction {
             }
             cttInfoService.insertRecord(workorderInfoShowPara);
         } catch (Exception e) {
-            logger.error("ĞÂÔöÊı¾İÊ§°Ü£¬", e);
+            logger.error("æ–°å¢æ•°æ®å¤±è´¥ï¼Œ", e);
             MessageUtil.addError(e.getMessage());
         }
     }
@@ -253,7 +253,7 @@ public class WorkorderInfoAction {
             workorderInfoShowPara.setCttType(EnumResType.RES_TYPE0.getCode());
             cttInfoService.updateRecord(workorderInfoShowPara);
         } catch (Exception e) {
-            logger.error("¸üĞÂÊı¾İÊ§°Ü£¬", e);
+            logger.error("æ›´æ–°æ•°æ®å¤±è´¥ï¼Œ", e);
             MessageUtil.addError(e.getMessage());
         }
     }
@@ -263,16 +263,16 @@ public class WorkorderInfoAction {
             int deleteRecordNumOfCttItem= cttItemService.deleteRecord(workorderInfoShowPara);
             int deleteRecordNumOfCtt= cttInfoService.deleteRecord(workorderInfoShowPara.getPkid());
             if (deleteRecordNumOfCtt<=0&&deleteRecordNumOfCttItem<=0){
-                MessageUtil.addInfo("¸Ã¼ÇÂ¼ÒÑÉ¾³ı¡£");
+                MessageUtil.addInfo("è¯¥è®°å½•å·²åˆ é™¤ã€‚");
                 return;
             }
         } catch (Exception e) {
-            logger.error("É¾³ıÊı¾İÊ§°Ü£¬", e);
+            logger.error("åˆ é™¤æ•°æ®å¤±è´¥ï¼Œ", e);
             MessageUtil.addError(e.getMessage());
         }
     }
 
-    /*ÖÇÄÜ×Ö¶Î Start*/
+    /*æ™ºèƒ½å­—æ®µ Start*/
 
     public CttItemService getCttItemService() {
         return cttItemService;
@@ -357,5 +357,5 @@ public class WorkorderInfoAction {
     public void setWorkorderInfoShowSel(WorkorderInfoShow workorderInfoShowSel) {
         this.workorderInfoShowSel = workorderInfoShowSel;
     }
-    /*ÖÇÄÜ×Ö¶Î End*/
+    /*æ™ºèƒ½å­—æ®µ End*/
 }
