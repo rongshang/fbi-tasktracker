@@ -69,7 +69,6 @@
                     document.getElementById("sys").className = "tabs-item-active";
                 }else if(strOperType=="0"){               //超级系统管理员
                     document.getElementById('todoTask').style.display = 'inline';
-                    document.getElementById('stlpower').style.display = 'inline';
                     document.getElementById('biz').style.display = 'inline';
                     document.getElementById('sys').style.display = 'inline';
                     tabbarhide("todoTaskLayout");
@@ -77,7 +76,6 @@
                     document.getElementById("todoTask").className = "tabs-item-active";
                 }else{                                    //其他用户
                     document.getElementById('todoTask').style.display = 'inline';
-                    document.getElementById('stlpower').style.display = 'inline';
                     document.getElementById('biz').style.display = 'inline';
                     tabbarhide("todoTaskLayout");
                     document.getElementById("todoTask").setAttribute("active", "true");
@@ -136,12 +134,6 @@
                             <span style="width:100%;">任务一览</span>
                         </div>
                         <div id="middleId2" style="float:left;width:2px;"></div>
-                        <div onclick="document.frames('stlpowerWorkFrame').location.href='../../UI/task/operFuncRes/taskAppoint.xhtml';tabbarclk(this);"
-                             active="false" id="stlpower" class="tabs-item"
-                             style="float:left;width:80px;display: none">
-                            <span style="width:100%;">任务指派</span>
-                        </div>
-                        <div id="middleId3" style="float:left;width:2px;"></div>
                         <div onclick="myRequest();tabbarclk(this);"
                              active="false" id="biz" class="tabs-item"
                              style="float:left;width:80px;display: none">
@@ -179,16 +171,6 @@
                         <div class="divlayout" id="todoTaskLayout">
                             <iframe id="todoTaskWorkFrame"
                                     src="<%=contextPath%>/UI/task/task/stlPower.xhtml"
-                                    width="100%" height="100%"
-                                    frameborder="no"
-                                    border="0"
-                                    marginwidth="0" marginheight="0"
-                                    scrolling="no">
-                            </iframe>
-                        </div>
-                        <div class="divlayout" id="stlpowerLayout">
-                            <iframe id="stlpowerWorkFrame" name="workFrame"
-                                    src="<%=contextPath%>/UI/task/operFuncRes/operFuncBusiResMng.taskAppoint.xhtml"
                                     width="100%" height="100%"
                                     frameborder="no"
                                     border="0"
