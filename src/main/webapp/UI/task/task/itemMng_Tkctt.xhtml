@@ -72,7 +72,7 @@
                                 </h:panelGrid>
                                 <h:panelGrid columns="2">
                                     <p:commandButton value="提交"
-                                                     rendered='#{workOrderItemAction.strPassVisible}'
+                                                     rendered='#{workorderItemAction.strPassVisible}'
                                                      action="#{tkcttInfoTTAction.onClickForMngAction()}"
                                                      update="msgs,ppInfo">
                                     </p:commandButton>
@@ -94,7 +94,7 @@
                                                  onclick="PF('wvAttachmentList').show()">
                                 </p:commandButton>
                                 <p:commandButton value="导出到EXCEL"
-                                                 action="#{workOrderItemAction.onExportExcel}"
+                                                 action="#{workorderItemAction.onExportExcel}"
                                                  ajax="false">
                                 </p:commandButton>
                             </h:panelGrid>
@@ -106,17 +106,17 @@
                                     <p:inputTextarea id="flowRemark"
                                                  rows="1"
                                                  autoResize="false"
-                                                 value="#{workOrderItemAction.strFlowStatusRemark}"/>
+                                                 value="#{workorderItemAction.strFlowStatusRemark}"/>
                                 </h:panelGrid>
                                 <h:panelGrid columns="2">
                                     <p:commandButton value="录入完成"
-                                                     action="#{workOrderItemAction.onClickForPowerAction('Pass')}"
-                                                     rendered='#{workOrderItemAction.strPassVisible}'
+                                                     action="#{workorderItemAction.onClickForPowerAction('Pass')}"
+                                                     rendered='#{workorderItemAction.strPassVisible}'
                                                      update="msgs,ppInfo,ppFlow,ppDetail">
                                     </p:commandButton>
                                     <p:commandButton value="录入未完"
-                                                     action="#{workOrderItemAction.onClickForPowerAction('Fail')}"
-                                                     rendered="#{workOrderItemAction.strPassFailVisible}"
+                                                     action="#{workorderItemAction.onClickForPowerAction('Fail')}"
+                                                     rendered="#{workorderItemAction.strPassFailVisible}"
                                                      update="msgs,ppInfo,ppFlow,ppDetail">
                                     </p:commandButton>
                                 </h:panelGrid>
@@ -125,13 +125,13 @@
                     </h:panelGrid>
                     <p:panel id="ppDetail" header="总包合同内容">
                         <p:commandButton value="增加项"
-                                         rendered='#{workOrderItemAction.strPassVisible}'
-                                         action="#{workOrderItemAction.resetAction()}"
+                                         rendered='#{workorderItemAction.strPassVisible}'
+                                         action="#{workorderItemAction.resetAction()}"
                                          update="pgViewForAdd,pdt,msgs"
                                          onclick="PF('wVDlgViewForAdd').show()">
                         </p:commandButton>
                         <p:dataTable id="pdt"
-                                 value="#{workOrderItemAction.workorderItemShowList}"
+                                 value="#{workorderItemAction.workorderItemShowList}"
                                  var="record"
                                  rowKey="#{record.pkid}"
                                  selectionMode="single"
@@ -148,18 +148,18 @@
                                  scrollable="true"
                                  scrollHeight="425">
                             <p:column headerText="操作" style="width:44px;text-align: center;"
-                                      rendered='#{workOrderItemAction.strPassVisible}'>
+                                      rendered='#{workorderItemAction.strPassVisible}'>
                                 <p:commandButton icon="ui-icon-pencil"
                                                  style="height:18px;width:18px"
                                                  rendered="#{record.name eq '合计'?'false':record.name eq '总合计'?'false':'true'}"
-                                                 action="#{workOrderItemAction.selectRecordAction('Upd',record)}"
+                                                 action="#{workorderItemAction.selectRecordAction('Upd',record)}"
                                                  update="pdt,:form:pgViewForUpd,:form:msgs"
                                                  onclick="PF('wVDlgViewForUpd').show()">
                                 </p:commandButton>
                                 <p:commandButton icon="ui-icon-trash"
                                                  style="height:18px;width:18px"
                                                  rendered="#{record.name eq '合计'?'false':record.name eq '总合计'?'false':'true'}"
-                                                 action="#{workOrderItemAction.selectRecordAction('Del',record)}"
+                                                 action="#{workorderItemAction.selectRecordAction('Del',record)}"
                                                  update="pdt,:form:pgViewForDel,:form:msgs"
                                                  onclick="PF('wVDlgViewForDel').show()">
                                 </p:commandButton>
@@ -218,7 +218,7 @@
                                   showEffect="clip" hideEffect="fold" header="附件列表">
                             <p:growl id="messages" showDetail="true"/>
                             <h:panelGrid id="pgAttachmentView">
-                                <p:fileUpload id="attachmentName" fileUploadListener="#{workOrderItemAction.upload}"
+                                <p:fileUpload id="attachmentName" fileUploadListener="#{workorderItemAction.upload}"
                                               mode="advanced"
                                               sizeLimit="1000000"
                                               multiple="true"
@@ -228,7 +228,7 @@
                                               update="pdtAttachmentList,attachmentName">
                                 </p:fileUpload>
                                 <p:dataTable id="pdtAttachmentList" style="width:100%;"
-                                             value="#{workOrderItemAction.attachmentList}"
+                                             value="#{workorderItemAction.attachmentList}"
                                              var="recordAttachment"
                                              rowKey="#{recordAttachment.COLUMN_NAME}"
                                              selectionMode="single"
@@ -253,22 +253,22 @@
                                                          id="selectButton"
                                                          update=":form:pgImageShow"
                                                          style="height:18px;width:18px"
-                                                         action="#{workOrderItemAction.onViewAttachment(recordAttachment)}"
+                                                         action="#{workorderItemAction.onViewAttachment(recordAttachment)}"
                                                          onclick="dlgWvView.show()"
                                                          title="View">
                                         </p:commandButton>
                                     </p:column>
                                     <p:column headerText="操作" style="width:62px;text-align: center;"
-                                              rendered='#{workOrderItemAction.strPassVisible}'>
+                                              rendered='#{workorderItemAction.strPassVisible}'>
                                         <p:commandButton icon="ui-icon-arrowrefresh-1-w"
                                                          style="height:18px;width:18px"
                                                          ajax="false"
-                                                         actionListener="#{workOrderItemAction.download(recordAttachment.COLUMN_PATH)}">
-                                            <p:fileDownload value="#{workOrderItemAction.downloadFile}"/>
+                                                         actionListener="#{workorderItemAction.download(recordAttachment.COLUMN_PATH)}">
+                                            <p:fileDownload value="#{workorderItemAction.downloadFile}"/>
                                         </p:commandButton>
                                         <p:commandButton icon="ui-icon-trash"
                                                          style="height:18px;width:18px"
-                                                         action="#{workOrderItemAction.delAttachmentRecordAction(recordAttachment)}"
+                                                         action="#{workorderItemAction.delAttachmentRecordAction(recordAttachment)}"
                                                          update=":form:pgAttachmentView,:form:msgs">
                                         </p:commandButton>
                                     </p:column>
@@ -278,7 +278,7 @@
                         <p:dialog id="imageShow" widgetVar="dlgWvView" height="400px" modal="true"
                                   showEffect="clip" hideEffect="fold">
                             <h:panelGrid id="pgImageShow">
-                                <p:graphicImage binding="#{workOrderItemAction.image}"/>
+                                <p:graphicImage binding="#{workorderItemAction.image}"/>
                             </h:panelGrid>
                         </p:dialog>
                         <p:dialog id="dlgViewForAdd"
@@ -290,44 +290,44 @@
                                 <h:panelGrid columns="4">
                                     <p:outputLabel for="noItemHieRelapForAdd" value="编号:" />
                                     <h:inputText id="noItemHieRelapForAdd"
-                                                 value="#{workOrderItemAction.workorderItemShowAdd.strNo}">
+                                                 value="#{workorderItemAction.workorderItemShowAdd.strNo}">
                                         <p:ajax event="blur" update="msgs,noItemHieRelapForAdd"
-                                                listener="#{workOrderItemAction.blurStrNoToGradeAndOrderidAction}"/>
+                                                listener="#{workorderItemAction.blurStrNoToGradeAndOrderidAction}"/>
                                     </h:inputText>
                                     <p:outputLabel for="nameForAdd" value="名称:" />
-                                    <h:inputText id="nameForAdd" value="#{workOrderItemAction.workorderItemShowAdd.name}"/>
+                                    <h:inputText id="nameForAdd" value="#{workorderItemAction.workorderItemShowAdd.name}"/>
                                     <p:outputLabel for="unitItemInfoForAdd" value="单位:"/>
-                                    <h:inputText id="unitItemInfoForAdd" value="#{workOrderItemAction.workorderItemShowAdd.unit}"/>
+                                    <h:inputText id="unitItemInfoForAdd" value="#{workorderItemAction.workorderItemShowAdd.unit}"/>
                                     <p:outputLabel for="UnitPriceItemInfoForAdd" value="单价:"/>
                                     <h:inputText id="UnitPriceItemInfoForAdd"
-                                                 value="#{workOrderItemAction.workorderItemShowAdd.UnitPrice}"
+                                                 value="#{workorderItemAction.workorderItemShowAdd.UnitPrice}"
                                                  style="text-align:right;float:left">
                                         <f:convertNumber type="number" pattern="#,###,###,###,##0.000"/>
                                         <p:ajax event="blur" update="AmountItemInfoForAdd"
-                                                listener="#{workOrderItemAction.blurCalculateAmountAction}"/>
+                                                listener="#{workorderItemAction.blurCalculateAmountAction}"/>
                                     </h:inputText>
                                     <p:outputLabel for="QuantityItemInfoForAdd" value="数量:"/>
                                     <h:inputText id="QuantityItemInfoForAdd"
-                                                 value="#{workOrderItemAction.workorderItemShowAdd.Quantity}"
+                                                 value="#{workorderItemAction.workorderItemShowAdd.Quantity}"
                                                  style="text-align:right;float:left">
                                         <f:convertNumber type="number" pattern="#,###,###,###,##0.000"/>
                                         <p:ajax event="blur" update="AmountItemInfoForAdd"
-                                                listener="#{workOrderItemAction.blurCalculateAmountAction}"/>
+                                                listener="#{workorderItemAction.blurCalculateAmountAction}"/>
                                     </h:inputText>
                                     <p:outputLabel for="AmountItemInfoForAdd" value="金额:"/>
                                     <h:inputText id="AmountItemInfoForAdd"
-                                                 value="#{workOrderItemAction.workorderItemShowAdd.Amount}"
+                                                 value="#{workorderItemAction.workorderItemShowAdd.Amount}"
                                                  style="text-align:right;background-color:gainsboro"
                                                  readonly="true">
                                         <f:convertNumber type="number" pattern="#,###,###,###,##0.00"/>
                                     </h:inputText>
                                     <p:outputLabel for="remarkForAdd" value="备注:" />
-                                    <h:inputText id="remarkForAdd" value="#{workOrderItemAction.workorderItemShowAdd.remark}"/>
+                                    <h:inputText id="remarkForAdd" value="#{workorderItemAction.workorderItemShowAdd.remark}"/>
                                 </h:panelGrid>
                                 <h:panelGrid id="pgOperBtnForAdd" columns="2">
                                     <p:commandButton id="submitBtnForAdd"
                                                      value="提交（增加）"
-                                                     action="#{workOrderItemAction.submitThisRecordAction}"
+                                                     action="#{workorderItemAction.submitThisRecordAction}"
                                                      update="pgViewForAdd,pdt,msgs">
                                     </p:commandButton>
                                     <p:commandButton id="resetBtnForAdd" value="重置"
@@ -348,44 +348,44 @@
                                     <h:inputText id="noItemHieRelapForUpd"
                                                  readonly="true"
                                                  style="background-color:gainsboro"
-                                                 value="#{workOrderItemAction.workorderItemShowUpd.strNo}">
+                                                 value="#{workorderItemAction.workorderItemShowUpd.strNo}">
                                         <p:ajax event="blur" update="msgs,noItemHieRelapForUpd"
-                                                listener="#{workOrderItemAction.blurStrNoToGradeAndOrderidAction}"/>
+                                                listener="#{workorderItemAction.blurStrNoToGradeAndOrderidAction}"/>
                                     </h:inputText>
                                     <p:outputLabel for="nameForUpd" value="名称:" />
-                                    <h:inputText id="nameForUpd" value="#{workOrderItemAction.workorderItemShowUpd.name}"/>
+                                    <h:inputText id="nameForUpd" value="#{workorderItemAction.workorderItemShowUpd.name}"/>
                                     <p:outputLabel for="unitItemInfoForUpd" value="单位:"/>
-                                    <h:inputText id="unitItemInfoForUpd" value="#{workOrderItemAction.workorderItemShowUpd.unit}"/>
+                                    <h:inputText id="unitItemInfoForUpd" value="#{workorderItemAction.workorderItemShowUpd.unit}"/>
                                     <p:outputLabel for="UnitPriceItemInfoForUpd" value="单价:"/>
                                     <h:inputText id="UnitPriceItemInfoForUpd"
-                                                 value="#{workOrderItemAction.workorderItemShowUpd.UnitPrice}"
+                                                 value="#{workorderItemAction.workorderItemShowUpd.UnitPrice}"
                                                  style="text-align:right;float:left">
                                         <f:convertNumber type="number" pattern="#,###,###,###,##0.000"/>
                                         <p:ajax event="blur" update="AmountItemInfoForUpd"
-                                                listener="#{workOrderItemAction.blurCalculateAmountAction}"/>
+                                                listener="#{workorderItemAction.blurCalculateAmountAction}"/>
                                     </h:inputText>
                                     <p:outputLabel for="QuantityItemInfoForUpd" value="数量:"/>
                                     <h:inputText id="QuantityItemInfoForUpd"
-                                                 value="#{workOrderItemAction.workorderItemShowUpd.Quantity}"
+                                                 value="#{workorderItemAction.workorderItemShowUpd.Quantity}"
                                                  style="text-align:right;float:left">
                                         <f:convertNumber type="number" pattern="#,###,###,###,##0.000"/>
                                         <p:ajax event="blur" update="AmountItemInfoForUpd"
-                                                listener="#{workOrderItemAction.blurCalculateAmountAction}"/>
+                                                listener="#{workorderItemAction.blurCalculateAmountAction}"/>
                                     </h:inputText>
                                     <p:outputLabel for="AmountItemInfoForUpd" value="金额:"/>
                                     <h:inputText id="AmountItemInfoForUpd"
-                                                 value="#{workOrderItemAction.workorderItemShowUpd.Amount}"
+                                                 value="#{workorderItemAction.workorderItemShowUpd.Amount}"
                                                  style="text-align:right;background-color:gainsboro"
                                                  readonly="true">
                                         <f:convertNumber type="number" pattern="#,###,###,###,##0.00"/>
                                     </h:inputText>
                                     <p:outputLabel for="remarkForUpd" value="备注:" />
-                                    <h:inputText id="remarkForUpd" value="#{workOrderItemAction.workorderItemShowUpd.remark}"/>
+                                    <h:inputText id="remarkForUpd" value="#{workorderItemAction.workorderItemShowUpd.remark}"/>
                                 </h:panelGrid>
                                 <h:panelGrid id="pgOperBtnForUpd" columns="2">
                                     <p:commandButton id="submitBtnForUpd"
                                                      value="提交（更新）"
-                                         action="#{workOrderItemAction.submitThisRecordAction()}"
+                                         action="#{workorderItemAction.submitThisRecordAction()}"
                                          update="pgViewForUpd,pdt,msgs"
                                          oncomplete="wVDlgViewForUpd.hide()">
                                     </p:commandButton>
@@ -405,48 +405,48 @@
                                 <h:panelGrid columns="4">
                                     <p:outputLabel for="noItemHieRelapForDel" value="编号:" />
                                     <h:inputText id="noItemHieRelapForDel"
-                                                 value="#{workOrderItemAction.workorderItemShowDel.strNo}"
+                                                 value="#{workorderItemAction.workorderItemShowDel.strNo}"
                                                  readonly="true"
                                                  style="background-color:gainsboro;">
                                     </h:inputText>
                                     <p:outputLabel for="nameForDel" value="名称:" />
-                                    <h:inputText id="nameForDel" value="#{workOrderItemAction.workorderItemShowDel.name}"
+                                    <h:inputText id="nameForDel" value="#{workorderItemAction.workorderItemShowDel.name}"
                                                  readonly="true"
                                                  style="background-color:gainsboro"/>
                                     <p:outputLabel for="unitItemInfoForDel" value="单位:"/>
-                                    <h:inputText id="unitItemInfoForDel" value="#{workOrderItemAction.workorderItemShowDel.unit}"
+                                    <h:inputText id="unitItemInfoForDel" value="#{workorderItemAction.workorderItemShowDel.unit}"
                                                  readonly="true"
                                                  style="background-color:gainsboro"/>
                                     <p:outputLabel for="UnitPriceItemInfoForDel" value="单价:"/>
                                     <h:inputText id="UnitPriceItemInfoForDel"
-                                                 value="#{workOrderItemAction.workorderItemShowDel.UnitPrice}"
+                                                 value="#{workorderItemAction.workorderItemShowDel.UnitPrice}"
                                                  readonly="true"
                                                  style="background-color:gainsboro;text-align:right;float:left">
                                         <f:convertNumber type="number" pattern="#,###,###,###,##0.000"/>
                                     </h:inputText>
                                     <p:outputLabel for="QuantityItemInfoForDel" value="数量:"/>
                                     <h:inputText id="QuantityItemInfoForDel"
-                                                 value="#{workOrderItemAction.workorderItemShowDel.Quantity}"
+                                                 value="#{workorderItemAction.workorderItemShowDel.Quantity}"
                                                  readonly="true"
                                                  style="background-color:gainsboro;text-align:right;float:left">
                                         <f:convertNumber type="number" pattern="#,###,###,###,##0.000"/>
                                     </h:inputText>
                                     <p:outputLabel for="AmountItemInfoForDel" value="金额:"/>
                                     <h:inputText id="AmountItemInfoForDel"
-                                                 value="#{workOrderItemAction.workorderItemShowDel.Amount}"
+                                                 value="#{workorderItemAction.workorderItemShowDel.Amount}"
                                                  style="text-align:right;background-color:gainsboro"
                                                  readonly="true">
                                         <f:convertNumber type="number" pattern="#,###,###,###,##0.00"/>
                                     </h:inputText>
                                     <p:outputLabel for="remarkForDel" value="备注:" />
-                                    <h:inputText id="remarkForDel" value="#{workOrderItemAction.workorderItemShowDel.remark}"
+                                    <h:inputText id="remarkForDel" value="#{workorderItemAction.workorderItemShowDel.remark}"
                                                  readonly="true"
                                                  style="background-color:gainsboro"/>
                                 </h:panelGrid>
                                 <h:panelGrid id="pgOperBtnForDel">
                                     <p:commandButton id="submitBtnForDel"
                                                      value="提交（删除）"
-                                         action="#{workOrderItemAction.submitThisRecordAction()}"
+                                         action="#{workorderItemAction.submitThisRecordAction()}"
                                          update="pgViewForDel,pdt,msgs"
                                          oncomplete="wVDlgViewForDel.hide()">
                                     </p:commandButton>

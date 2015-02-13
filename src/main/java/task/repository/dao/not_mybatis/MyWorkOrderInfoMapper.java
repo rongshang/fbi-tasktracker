@@ -15,7 +15,7 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 @Component
-public interface MyWorkOrderInfoMapper {
+public interface MyWorkorderInfoMapper {
     List<WorkorderInfoShow> selectCttByStatusFlagBegin_End(WorkorderInfoShow workorderInfoShow);
 
     @Select("select max(id) from WORKORDER_INFO where ctt_type = #{strCttType}")

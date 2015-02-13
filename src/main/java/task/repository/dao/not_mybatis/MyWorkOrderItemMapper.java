@@ -14,7 +14,7 @@ import task.repository.model.WorkorderItem;
  * To change this template use File | Settings | File Templates.
  */
 @Component
-public interface MyWorkOrderItemMapper {
+public interface MyWorkorderItemMapper {
     @Update("Update WORKORDER_ITEM set ORDERID=ORDERID+1 where ORDERID >= #{intOrderid}"+
             " and BELONG_TO_PKID = #{strBelongToPkid}"+
             " and PARENT_PKID         = #{strParentPkid}"+

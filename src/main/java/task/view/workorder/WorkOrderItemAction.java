@@ -41,8 +41,8 @@ import java.util.*;
 
 @ManagedBean
 @ViewScoped
-public class WorkOrderItemAction {
-    private static final Logger logger = LoggerFactory.getLogger(WorkOrderItemAction.class);
+public class WorkorderItemAction {
+    private static final Logger logger = LoggerFactory.getLogger(WorkorderItemAction.class);
     @ManagedProperty(value = "#{cttInfoService}")
     private CttInfoService cttInfoService;
     @ManagedProperty(value = "#{cttItemService}")

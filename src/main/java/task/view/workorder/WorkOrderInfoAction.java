@@ -30,8 +30,8 @@ import java.util.List;
  */
 @ManagedBean
 @ViewScoped
-public class WorkOrderInfoAction {
-    private static final Logger logger = LoggerFactory.getLogger(WorkOrderInfoAction.class);
+public class WorkorderInfoAction {
+    private static final Logger logger = LoggerFactory.getLogger(WorkorderInfoAction.class);
     @ManagedProperty(value = "#{cttInfoService}")
     private CttInfoService cttInfoService;
     @ManagedProperty(value = "#{cttItemService}")
