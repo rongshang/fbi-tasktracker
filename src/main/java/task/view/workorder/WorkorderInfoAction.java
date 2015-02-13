@@ -25,17 +25,17 @@ import java.util.List;
  * Created with IntelliJ IDEA.
  * User: Think
  * Date: 13-2-4
- * Time: ä¸‹åˆ4:53
+ * Time: ÏÂÎç4:53
  * To change this template use File | Settings | File Templates.
  */
 @ManagedBean
 @ViewScoped
 public class WorkorderInfoAction {
     private static final Logger logger = LoggerFactory.getLogger(WorkorderInfoAction.class);
-    @ManagedProperty(value = "#{cttInfoService}")
-    private CttInfoService cttInfoService;
-    @ManagedProperty(value = "#{cttItemService}")
-    private CttItemService cttItemService;
+    @ManagedProperty(value = "#{workorderInfoService}")
+    private WorkorderInfoService workorderInfoService;
+    @ManagedProperty(value = "#{workorderItemService}")
+    private WorkorderItemService workorderItemService;
     @ManagedProperty(value = "#{esCommon}")
     private EsCommon esCommon;
     @ManagedProperty(value = "#{esFlowControl}")
@@ -49,15 +49,15 @@ public class WorkorderInfoAction {
     private List<WorkorderInfoShow> workorderInfoShowList;
 
     private String strSubmitType;
-    /*æ§åˆ¶ç»´æŠ¤ç”»é¢å±‚çº§éƒ¨åˆ†çš„æ˜¾ç¤º*/
+    /*¿ØÖÆÎ¬»¤»­Ãæ²ã¼¶²¿·ÖµÄÏÔÊ¾*/
     private StyleModel styleModel;
-    //æ›´æ–°æ—¶æ£€éªŒç”¨ï¼Œç¬¦åˆç«‹åˆ»å…³é—­ï¼Œä¸ç¬¦åˆè¿›è¡Œæå‡
+    //¸üĞÂÊ±¼ìÑéÓÃ£¬·ûºÏÁ¢¿Ì¹Ø±Õ£¬²»·ûºÏ½øĞĞÌáÉı
     @PostConstruct
     public void init() {
         try {
             initData();
         }catch (Exception e){
-            logger.error("åˆå§‹åŒ–å¤±è´¥", e);
+            logger.error("³õÊ¼»¯Ê§°Ü", e);
         }
     }
     public void initData() {
@@ -77,15 +77,15 @@ public class WorkorderInfoAction {
             styleModel.setDisabled_Flag("false");
             strSubmitType = "";
         }catch (Exception e){
-            logger.error("åˆå§‹åŒ–å¤±è´¥", e);
-            MessageUtil.addError("åˆå§‹åŒ–å¤±è´¥");
+            logger.error("³õÊ¼»¯Ê§°Ü", e);
+            MessageUtil.addError("³õÊ¼»¯Ê§°Ü");
         }
     }
 
     public void setMaxNoPlusOne() {
         try {
             Integer intTemp;
-            String strMaxId = cttInfoService.getStrMaxCttId(EnumResType.RES_TYPE0.getCode());
+            String strMaxId = workorderInfoService.getStrMaxCttId(EnumResType.RES_TYPE0.getCode());
             if (StringUtils.isEmpty(ToolUtil.getStrIgnoreNull(strMaxId))) {
                 strMaxId = "TKCTT" + ToolUtil.getStrToday() + "001";
             } else {
@@ -103,8 +103,8 @@ public class WorkorderInfoAction {
             workorderInfoShowAdd.setId(strMaxId);
             workorderInfoShowUpd.setId(strMaxId);
         } catch (Exception e) {
-            logger.error("æ€»åŒ…åˆåŒä¿¡æ¯æŸ¥è¯¢å¤±è´¥", e);
-            MessageUtil.addError("æ€»åŒ…åˆåŒä¿¡æ¯æŸ¥è¯¢å¤±è´¥");
+            logger.error("×Ü°üºÏÍ¬ĞÅÏ¢²éÑ¯Ê§°Ü", e);
+            MessageUtil.addError("×Ü°üºÏÍ¬ĞÅÏ¢²éÑ¯Ê§°Ü");
         }
     }
 
@@ -133,16 +133,16 @@ public class WorkorderInfoAction {
                 }
             }
             this.workorderInfoShowList.clear();
-            workorderInfoShowList = cttInfoService.selectCttByStatusFlagBegin_End(workorderInfoShowQry);
+            workorderInfoShowList = workorderInfoService.selectCttByStatusFlagBegin_End(workorderInfoShowQry);
 
             if(strQryMsgOutPara.equals("true"))  {
                 if (workorderInfoShowList.isEmpty()) {
-                    MessageUtil.addWarn("æ²¡æœ‰æŸ¥è¯¢åˆ°æ•°æ®ã€‚");
+                    MessageUtil.addWarn("Ã»ÓĞ²éÑ¯µ½Êı¾İ¡£");
                 }
             }
         } catch (Exception e) {
-            logger.error("åˆåŒä¿¡æ¯æŸ¥è¯¢å¤±è´¥", e);
-            MessageUtil.addError("åˆåŒä¿¡æ¯æŸ¥è¯¢å¤±è´¥");
+            logger.error("ºÏÍ¬ĞÅÏ¢²éÑ¯Ê§°Ü", e);
+            MessageUtil.addError("ºÏÍ¬ĞÅÏ¢²éÑ¯Ê§°Ü");
         }
         return null;
     }
@@ -157,9 +157,9 @@ public class WorkorderInfoAction {
                                    WorkorderInfoShow workorderInfoShowPara) {
         try {
             strSubmitType = strSubmitTypePara;
-            // æŸ¥è¯¢
-            workorderInfoShowPara.setCreatedByName(cttInfoService.getUserName(workorderInfoShowPara.getCreatedBy()));
-            workorderInfoShowPara.setLastUpdByName(cttInfoService.getUserName(workorderInfoShowPara.getLastUpdBy()));
+            // ²éÑ¯
+            workorderInfoShowPara.setCreatedByName(workorderInfoService.getUserName(workorderInfoShowPara.getCreatedBy()));
+            workorderInfoShowPara.setLastUpdByName(workorderInfoService.getUserName(workorderInfoShowPara.getLastUpdBy()));
             if (strSubmitTypePara.equals("Sel")) {
                  workorderInfoShowSel = (WorkorderInfoShow) BeanUtils.cloneBean(workorderInfoShowPara);
             }else if (strSubmitTypePara.equals("Add")) {
@@ -175,36 +175,36 @@ public class WorkorderInfoAction {
     }
 
     /**
-     * å¿…é¡»è¾“å…¥é¡¹ç›®æ£€æŸ¥
+     * ±ØĞëÊäÈëÏîÄ¿¼ì²é
      */
     private boolean submitPreCheck(WorkorderInfoShow workorderInfoShowPara) {
         if (StringUtils.isEmpty(workorderInfoShowPara.getId())) {
-            MessageUtil.addError("è¯·è¾“å…¥åˆåŒå·ï¼");
+            MessageUtil.addError("ÇëÊäÈëºÏÍ¬ºÅ£¡");
             return false;
         } else if (StringUtils.isEmpty(workorderInfoShowPara.getName())) {
-            MessageUtil.addError("è¯·è¾“å…¥åˆåŒåï¼");
+            MessageUtil.addError("ÇëÊäÈëºÏÍ¬Ãû£¡");
             return false;
         } else if (StringUtils.isEmpty(workorderInfoShowPara.getSignDate())) {
-            MessageUtil.addError("è¯·è¾“å…¥ç­¾è®¢æ—¥æœŸï¼");
+            MessageUtil.addError("ÇëÊäÈëÇ©¶©ÈÕÆÚ£¡");
             return false;
         }
         if (StringUtils.isEmpty(workorderInfoShowPara.getSignPartA())) {
-            MessageUtil.addError("è¯·è¾“å…¥ç­¾è®¢ç”²æ–¹ï¼");
+            MessageUtil.addError("ÇëÊäÈëÇ©¶©¼×·½£¡");
             return false;
         } else if (StringUtils.isEmpty(workorderInfoShowPara.getSignPartB())) {
-            MessageUtil.addError("è¯·è¾“å…¥ç­¾è®¢ä¹™æ–¹ï¼");
+            MessageUtil.addError("ÇëÊäÈëÇ©¶©ÒÒ·½£¡");
             return false;
         } else if (StringUtils.isEmpty(workorderInfoShowPara.getCttStartDate())) {
-            MessageUtil.addError("è¯·è¾“å…¥åˆåŒå¼€å§‹æ—¶é—´ï¼");
+            MessageUtil.addError("ÇëÊäÈëºÏÍ¬¿ªÊ¼Ê±¼ä£¡");
             return false;
         } else if (StringUtils.isEmpty(workorderInfoShowPara.getCttEndDate())) {
-            MessageUtil.addError("è¯·è¾“å…¥åˆåŒæˆªæ­¢æ—¶é—´ï¼");
+            MessageUtil.addError("ÇëÊäÈëºÏÍ¬½ØÖ¹Ê±¼ä£¡");
             return false;
         }
         return true;
     }
     /**
-     * æäº¤ç»´æŠ¤æƒé™
+     * Ìá½»Î¬»¤È¨ÏŞ
      *
      * @param
      */
@@ -216,11 +216,11 @@ public class WorkorderInfoAction {
             WorkorderInfoShow workorderInfoShowTemp =new WorkorderInfoShow();
             workorderInfoShowTemp.setCttType(workorderInfoShowAdd.getCttType());
             workorderInfoShowTemp.setCttType(workorderInfoShowAdd.getCttType());
-            if (cttInfoService.getListByModelShow(workorderInfoShowTemp).size()>0) {
-                MessageUtil.addError("è¯¥è®°å½•å·²å­˜åœ¨ï¼Œè¯·é‡æ–°å½•å…¥ï¼");
+            if (workorderInfoService.getListByModelShow(workorderInfoShowTemp).size()>0) {
+                MessageUtil.addError("¸Ã¼ÇÂ¼ÒÑ´æÔÚ£¬ÇëÖØĞÂÂ¼Èë£¡");
             } else {
                 addRecordAction(workorderInfoShowAdd);
-                MessageUtil.addInfo("æ–°å¢æ•°æ®å®Œæˆã€‚");
+                MessageUtil.addInfo("ĞÂÔöÊı¾İÍê³É¡£");
                 resetActionForAdd();
             }
         } else if (strSubmitType.equals("Upd")) {
@@ -228,10 +228,10 @@ public class WorkorderInfoAction {
 	         return;
 	        }
             updRecordAction(workorderInfoShowUpd);
-            MessageUtil.addInfo("æ›´æ–°æ•°æ®å®Œæˆã€‚");
+            MessageUtil.addInfo("¸üĞÂÊı¾İÍê³É¡£");
         } else if (strSubmitType.equals("Del")) {
             deleteRecordAction(workorderInfoShowDel);
-            MessageUtil.addInfo("åˆ é™¤æ•°æ®å®Œæˆã€‚");
+            MessageUtil.addInfo("É¾³ıÊı¾İÍê³É¡£");
         }
         onQueryAction("Mng","false");
     }
@@ -242,52 +242,52 @@ public class WorkorderInfoAction {
             if (workorderInfoShowPara.getCttType().equals(EnumResType.RES_TYPE0.getCode())) {
                 workorderInfoShowPara.setParentPkid("ROOT");
             }
-            cttInfoService.insertRecord(workorderInfoShowPara);
+            workorderInfoService.insertRecord(workorderInfoShowPara);
         } catch (Exception e) {
-            logger.error("æ–°å¢æ•°æ®å¤±è´¥ï¼Œ", e);
+            logger.error("ĞÂÔöÊı¾İÊ§°Ü£¬", e);
             MessageUtil.addError(e.getMessage());
         }
     }
     private void updRecordAction(WorkorderInfoShow workorderInfoShowPara) {
         try {
             workorderInfoShowPara.setCttType(EnumResType.RES_TYPE0.getCode());
-            cttInfoService.updateRecord(workorderInfoShowPara);
+            workorderInfoService.updateRecord(workorderInfoShowPara);
         } catch (Exception e) {
-            logger.error("æ›´æ–°æ•°æ®å¤±è´¥ï¼Œ", e);
+            logger.error("¸üĞÂÊı¾İÊ§°Ü£¬", e);
             MessageUtil.addError(e.getMessage());
         }
     }
     private void deleteRecordAction(WorkorderInfoShow workorderInfoShowPara) {
         try {
             workorderInfoShowPara.setCttType(EnumResType.RES_TYPE0.getCode());
-            int deleteRecordNumOfCttItem= cttItemService.deleteRecord(workorderInfoShowPara);
-            int deleteRecordNumOfCtt= cttInfoService.deleteRecord(workorderInfoShowPara.getPkid());
+            int deleteRecordNumOfCttItem= workorderItemService.deleteRecord(workorderInfoShowPara);
+            int deleteRecordNumOfCtt= workorderInfoService.deleteRecord(workorderInfoShowPara.getPkid());
             if (deleteRecordNumOfCtt<=0&&deleteRecordNumOfCttItem<=0){
-                MessageUtil.addInfo("è¯¥è®°å½•å·²åˆ é™¤ã€‚");
+                MessageUtil.addInfo("¸Ã¼ÇÂ¼ÒÑÉ¾³ı¡£");
                 return;
             }
         } catch (Exception e) {
-            logger.error("åˆ é™¤æ•°æ®å¤±è´¥ï¼Œ", e);
+            logger.error("É¾³ıÊı¾İÊ§°Ü£¬", e);
             MessageUtil.addError(e.getMessage());
         }
     }
 
-    /*æ™ºèƒ½å­—æ®µ Start*/
+    /*ÖÇÄÜ×Ö¶Î Start*/
 
-    public CttItemService getCttItemService() {
-        return cttItemService;
+    public WorkorderItemService getWorkorderItemService() {
+        return workorderItemService;
     }
 
-    public void setCttItemService(CttItemService cttItemService) {
-        this.cttItemService = cttItemService;
+    public void setWorkorderItemService(WorkorderItemService workorderItemService) {
+        this.workorderItemService = workorderItemService;
     }
 
-    public CttInfoService getCttInfoService() {
-        return cttInfoService;
+    public WorkorderInfoService getWorkorderInfoService() {
+        return workorderInfoService;
     }
 
-    public void setCttInfoService(CttInfoService cttInfoService) {
-        this.cttInfoService = cttInfoService;
+    public void setWorkorderInfoService(WorkorderInfoService workorderInfoService) {
+        this.workorderInfoService = workorderInfoService;
     }
 
     public EsCommon getEsCommon() {
@@ -357,5 +357,5 @@ public class WorkorderInfoAction {
     public void setWorkorderInfoShowSel(WorkorderInfoShow workorderInfoShowSel) {
         this.workorderInfoShowSel = workorderInfoShowSel;
     }
-    /*æ™ºèƒ½å­—æ®µ End*/
+    /*ÖÇÄÜ×Ö¶Î End*/
 }

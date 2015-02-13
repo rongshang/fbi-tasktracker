@@ -9,7 +9,7 @@ package task.view.flow;
  */
 
 import task.repository.model.WorkorderInfo;
-import task.service.CttInfoService;
+import task.service.WorkorderInfoService;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,8 +38,8 @@ public class EsFlowControl implements Serializable {
 
     @ManagedProperty(value = "#{toolsService}")
     private ToolsService toolsService;
-    @ManagedProperty(value = "#{cttInfoService}")
-    private CttInfoService cttInfoService;
+    @ManagedProperty(value = "#{workorderInfoService}")
+    private WorkorderInfoService workorderInfoService;
 
     private List<SelectItem> flowStatusFromDBList;
     private List<SelectItem> flowStatusReasonList;
@@ -70,7 +70,7 @@ public class EsFlowControl implements Serializable {
 
 
     public WorkorderInfo getCttInfoByPkId(String strPkid) {
-        return cttInfoService.getCttInfoByPkId(strPkid);
+        return workorderInfoService.getCttInfoByPkId(strPkid);
     }
 
     public String getLabelByValueInPreStatusFlaglist(String strValue){
@@ -146,11 +146,11 @@ public class EsFlowControl implements Serializable {
         this.flowStatusReasonList = flowStatusReasonList;
     }
 
-    public CttInfoService getCttInfoService() {
-        return cttInfoService;
+    public WorkorderInfoService getWorkorderInfoService() {
+        return workorderInfoService;
     }
 
-    public void setCttInfoService(CttInfoService cttInfoService) {
-        this.cttInfoService = cttInfoService;
+    public void setWorkorderInfoService(WorkorderInfoService workorderInfoService) {
+        this.workorderInfoService = workorderInfoService;
     }
 }

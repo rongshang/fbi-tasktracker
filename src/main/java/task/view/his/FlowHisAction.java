@@ -1,6 +1,6 @@
 package task.view.his;
 
-import task.service.CttInfoService;
+import task.service.WorkorderInfoService;
 /*import task.service.FlowHisService;*/
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,8 +27,8 @@ public class FlowHisAction {
 
     /*@ManagedProperty(value = "#{flowCtrlHisService}")
     private FlowHisService flowCtrlHisService;*/
-    @ManagedProperty(value = "#{cttInfoService}")
-    private CttInfoService cttInfoService;
+    @ManagedProperty(value = "#{workorderInfoService}")
+    private WorkorderInfoService workorderInfoService;
 
    /* private FlowHis flowCtrlHis;
     private List<FlowHis> flowHisList;*/
@@ -68,12 +68,12 @@ public class FlowHisAction {
     }
 
 
-    public CttInfoService getCttInfoService() {
-        return cttInfoService;
+    public WorkorderInfoService getWorkorderInfoService() {
+        return workorderInfoService;
     }
 
-    public void setCttInfoService(CttInfoService cttInfoService) {
-        this.cttInfoService = cttInfoService;
+    public void setWorkorderInfoService(WorkorderInfoService workorderInfoService) {
+        this.workorderInfoService = workorderInfoService;
     }
 
     public String getStrTkcttCstplSelected() {

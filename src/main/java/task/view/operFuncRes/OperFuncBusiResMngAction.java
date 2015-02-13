@@ -1,7 +1,6 @@
 package task.view.operFuncRes;
 
 import task.common.enums.EnumResType;
-import task.common.enums.EnumArchivedFlag;
 import task.common.enums.EnumFlowStatus;
 import org.apache.commons.lang.StringUtils;
 import org.primefaces.event.NodeCollapseEvent;
@@ -13,7 +12,6 @@ import task.repository.model.WorkorderInfo;
 import task.repository.model.model_show.*;
 import task.service.*;
 import jxl.write.WriteException;
-import org.apache.commons.beanutils.BeanUtils;
 import org.primefaces.model.DefaultTreeNode;
 import org.primefaces.model.TreeNode;
 import org.slf4j.Logger;
@@ -25,7 +23,6 @@ import javax.faces.bean.ViewScoped;
 import javax.faces.model.SelectItem;
 import java.io.IOException;
 import java.io.Serializable;
-import java.lang.reflect.InvocationTargetException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -38,10 +35,10 @@ public class OperFuncBusiResMngAction implements Serializable{
     private static final Logger logger = LoggerFactory.getLogger(OperFuncBusiResMngAction.class);
     @ManagedProperty(value = "#{deptOperService}")
     private DeptOperService deptOperService;
-    @ManagedProperty(value = "#{cttInfoService}")
-    private CttInfoService cttInfoService;
-    @ManagedProperty(value = "#{cttItemService}")
-    private CttItemService cttItemService;
+    @ManagedProperty(value = "#{workorderInfoService}")
+    private WorkorderInfoService workorderInfoService;
+    @ManagedProperty(value = "#{workorderItemService}")
+    private WorkorderItemService workorderItemService;
 
     private List<SelectItem> taskFunctionList;
     private List<DeptOperShow> deptOperShowSeledList;
@@ -240,7 +237,7 @@ public class OperFuncBusiResMngAction implements Serializable{
         }else if (EnumResType.RES_TYPE2.getCode().equals(strResType)){
             strType="SUBCTT";
         }
-        String strMaxId = cttInfoService.getStrMaxCttId(strResType);
+        String strMaxId = workorderInfoService.getStrMaxCttId(strResType);
         if (StringUtils.isEmpty(ToolUtil.getStrIgnoreNull(strMaxId))) {
             strMaxId = strType + ToolUtil.getStrToday() + "001";
         } else {
@@ -273,11 +270,11 @@ public class OperFuncBusiResMngAction implements Serializable{
                 WorkorderInfoShow workorderInfoShowTemp =new WorkorderInfoShow();
                 workorderInfoShowTemp.setCttType(workorderInfoShowAdd.getCttType());
                 workorderInfoShowTemp.setName(workorderInfoShowAdd.getName());
-                if (cttInfoService.getListByModelShow(workorderInfoShowTemp).size()>0) {
+                if (workorderInfoService.getListByModelShow(workorderInfoShowTemp).size()>0) {
                     MessageUtil.addError("该记录已存在，请重新录入！");
                     return;
                 } else {
-                    cttInfoService.insertRecord(workorderInfoShowAdd);
+                    workorderInfoService.insertRecord(workorderInfoShowAdd);
                     MessageUtil.addInfo("新增数据完成。");
 					String strCttTypeTemp= workorderInfoShowAdd.getCttType();
 					String strParentPkidTemp= workorderInfoShowAdd.getParentPkid();
@@ -291,9 +288,9 @@ public class OperFuncBusiResMngAction implements Serializable{
                     MessageUtil.addError("请输入名称！");
                     return;
                 }
-                WorkorderInfo workorderInfoTemp =cttInfoService.getCttInfoByPkId(workorderInfoShowUpd.getPkid());
+                WorkorderInfo workorderInfoTemp = workorderInfoService.getCttInfoByPkId(workorderInfoShowUpd.getPkid());
                 workorderInfoTemp.setName(workorderInfoShowUpd.getName());
-                cttInfoService.updateRecord(workorderInfoTemp);
+                workorderInfoService.updateRecord(workorderInfoTemp);
                 MessageUtil.addInfo("更新数据完成。");
             } else if (strSubmitTypePara.equals("Del")) {
                 if (!submitPreCheck(workorderInfoShowDel)) {
@@ -367,20 +364,20 @@ public class OperFuncBusiResMngAction implements Serializable{
         strBtnRender="true";
     }
     /*智能字段 Start*/
-    public CttInfoService getCttInfoService() {
-        return cttInfoService;
+    public WorkorderInfoService getWorkorderInfoService() {
+        return workorderInfoService;
     }
 
-    public void setCttInfoService(CttInfoService cttInfoService) {
-        this.cttInfoService = cttInfoService;
+    public void setWorkorderInfoService(WorkorderInfoService workorderInfoService) {
+        this.workorderInfoService = workorderInfoService;
     }
 
-    public CttItemService getCttItemService() {
-        return cttItemService;
+    public WorkorderItemService getWorkorderItemService() {
+        return workorderItemService;
     }
 
-    public void setCttItemService(CttItemService cttItemService) {
-        this.cttItemService = cttItemService;
+    public void setWorkorderItemService(WorkorderItemService workorderItemService) {
+        this.workorderItemService = workorderItemService;
     }
 
     public List<SelectItem> getTaskFunctionList() {

@@ -2,7 +2,7 @@ package task.service;
 
 import skyline.util.ToolUtil;
 import task.repository.dao.WorkorderItemMapper;
-import task.repository.dao.not_mybatis.MyWorkOrderItemMapper;
+import task.repository.dao.not_mybatis.MyWorkorderItemMapper;
 import task.repository.model.WorkorderItem;
 import task.repository.model.WorkorderItemExample;
 import task.repository.model.model_show.WorkorderInfoShow;
@@ -20,11 +20,11 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 @Service
-public class CttItemService {
+public class WorkorderItemService {
     @Resource
     private WorkorderItemMapper workorderItemMapper;
     @Resource
-    private MyWorkOrderItemMapper myWorkOrderItemMapper;
+    private MyWorkorderItemMapper myWorkOrderItemMapper;
 
     public Integer getMaxOrderidInEsCttItemList(String strBelongToType,
                                                  String strBelongToPkid,

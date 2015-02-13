@@ -1,7 +1,7 @@
 package task.service;
 
 import task.repository.dao.WorkorderInfoMapper;
-import task.repository.dao.not_mybatis.MyWorkOrderInfoMapper;
+import task.repository.dao.not_mybatis.MyWorkorderInfoMapper;
 import task.repository.dao.not_mybatis.MyDeptAndOperMapper;
 import task.repository.model.*;
 import task.repository.model.model_show.WorkorderInfoShow;
@@ -21,11 +21,11 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 @Service
-public class CttInfoService {
+public class WorkorderInfoService {
     @Autowired
     private WorkorderInfoMapper workorderInfoMapper;
     @Autowired
-    private MyWorkOrderInfoMapper myWorkOrderInfoMapper;
+    private MyWorkorderInfoMapper myWorkorderInfoMapper;
     @Resource
     private FlowCtrlHisService flowCtrlHisService;
     @Autowired
@@ -63,21 +63,21 @@ public class CttInfoService {
 
     public List<WorkorderInfoShow> getCttInfoListByCttType_Status(
             String strCttyTypePara,String strStatusPara) {
-        return myWorkOrderInfoMapper.getCttInfoListByCttType_Status(strCttyTypePara,strStatusPara);
+        return myWorkorderInfoMapper.getCttInfoListByCttType_Status(strCttyTypePara,strStatusPara);
     }
 
     public List<WorkorderInfoShow> getCttInfoListByCttType_ParentPkid_Status(
             String strCttyTypePara,
             String strParentPkidPara,
             String strStatusPara) {
-        return myWorkOrderInfoMapper.getCttInfoListByCttType_ParentPkid_Status(
+        return myWorkorderInfoMapper.getCttInfoListByCttType_ParentPkid_Status(
                 strCttyTypePara,
                 strParentPkidPara,
                 strStatusPara);
     }
 
     public List<WorkorderInfoShow> selectRecordsFromCtt(String parentPkidPara){
-        return  myWorkOrderInfoMapper.selectRecordsFromCtt(parentPkidPara);
+        return  myWorkorderInfoMapper.selectRecordsFromCtt(parentPkidPara);
     }
 
     public List<WorkorderInfo> getEsInitCttByCttTypeAndBelongToPkId(String strCttType,String strBelongToPkid) {
@@ -178,7 +178,7 @@ public class CttInfoService {
     }
 
     public String getStrMaxCttId(String strCttType){
-        return myWorkOrderInfoMapper.getStrMaxCttId(strCttType) ;
+        return myWorkorderInfoMapper.getStrMaxCttId(strCttType) ;
     }
 
     public WorkorderInfo fromModelShowToModel(WorkorderInfoShow workorderInfoShowPara) {
@@ -229,10 +229,10 @@ public class CttInfoService {
     }
 
     public Integer getChildrenOfThisRecordInEsInitCtt(String strCttType,String strBelongToPkid){
-        return myWorkOrderInfoMapper.getChildrenOfThisRecordInEsInitCtt(strCttType,strBelongToPkid);
+        return myWorkorderInfoMapper.getChildrenOfThisRecordInEsInitCtt(strCttType,strBelongToPkid);
     }
 
     public List<WorkorderInfoShow> selectCttByStatusFlagBegin_End(WorkorderInfoShow workorderInfoShowPara){
-        return myWorkOrderInfoMapper.selectCttByStatusFlagBegin_End(workorderInfoShowPara);
+        return myWorkorderInfoMapper.selectCttByStatusFlagBegin_End(workorderInfoShowPara);
     }
 }
