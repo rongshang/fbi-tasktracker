@@ -4,7 +4,7 @@ package task.view.workorder;
  * Created with IntelliJ IDEA.
  * User: Think
  * Date: 13-2-18
- * Time: ÏÂÎç1:53
+ * Time: ä¸‹åˆ1:53
  * To change this template use File | Settings | File Templates.
  */
 import task.repository.model.model_show.AttachmentModel;
@@ -60,31 +60,31 @@ public class WorkorderItemAction {
     private List<WorkorderItem> workorderItemList;
     private List<WorkorderItemShow> workorderItemShowList;
 
-    //¸½¼ş
+    //é™„ä»¶
     private List<AttachmentModel> attachmentList;
     private HtmlGraphicImage image;
-    //ÉÏ´«ÏÂÔØÎÄ¼ş
+    //ä¸Šä¼ ä¸‹è½½æ–‡ä»¶
     private StreamedContent downloadFile;
 
-    /*ËùÊôÀàĞÍ*/
+    /*æ‰€å±ç±»å‹*/
     private String strBelongToType;
-    /*ËùÊôºÅ*/
+    /*æ‰€å±å·*/
     private String strCttInfoPkid;
 
-    /*Ìá½»ÀàĞÍ*/
+    /*æäº¤ç±»å‹*/
     private String strSubmitType;
 
-    /*¿ØÖÆ¿Ø¼şÔÚ»­ÃæÉÏµÄ¿ÉÓÃÓëÏÖÊµStart*/
+    /*æ§åˆ¶æ§ä»¶åœ¨ç”»é¢ä¸Šçš„å¯ç”¨ä¸ç°å®Start*/
     private StyleModel styleModelNo;
     private StyleModel styleModel;
-    //ÏÔÊ¾µÄ¿ØÖÆ
+    //æ˜¾ç¤ºçš„æ§åˆ¶
     private String strPassVisible;
     private String strPassFailVisible;
     private String strNotPassToStatus;
     private String strFlowType;
     private List<WorkorderItemShow> workorderItemShowListExcel;
     private Map beansMap;
-    // Â¼Èë±¸×¢
+    // å½•å…¥å¤‡æ³¨
     private String strFlowStatusRemark;
 
     @PostConstruct
@@ -108,32 +108,32 @@ public class WorkorderItemAction {
                 initData();
             }
         }catch (Exception e){
-            logger.error("³õÊ¼»¯Ê§°Ü", e);
+            logger.error("åˆå§‹åŒ–å¤±è´¥", e);
         }
     }
 
-    /*³õÊ¼»¯²Ù×÷*/
+    /*åˆå§‹åŒ–æ“ä½œ*/
     private void initData() {
-        /*ĞÎ³É¹ØÏµÊ÷*/
+        /*å½¢æˆå…³ç³»æ ‘*/
         try {
             workorderItemList =new ArrayList<>();
             workorderItemShowList =new ArrayList<>();
             attachmentList=new ArrayList<>();
-            /*³õÊ¼»¯Á÷³Ì×´Ì¬ÁĞ±í*/
+            /*åˆå§‹åŒ–æµç¨‹çŠ¶æ€åˆ—è¡¨*/
             if(ToolUtil.getStrIgnoreNull(strCttInfoPkid).length()!=0) {
-                // ¸½¼ş¼ÇÂ¼±ä³ÉList
+                // é™„ä»¶è®°å½•å˜æˆList
                 attachmentList=ToolUtil.getListAttachmentByStrAttachment(workorderInfo.getAttachment());
-                // Êä³öExcel±íÍ·
+                // è¾“å‡ºExcelè¡¨å¤´
                 beansMap.put("cttInfo", workorderInfo);
                 workorderItemList = cttItemService.getEsItemList(
                         strBelongToType, strCttInfoPkid);
                 recursiveDataTable("root", workorderItemList);
                 workorderItemShowList = getTkcttItemList_DoFromatNo(workorderItemShowList);
                 setTkcttItemList_AddTotal();
-                // Excel±¨±íĞÎ³É
+                // ExcelæŠ¥è¡¨å½¢æˆ
                 workorderItemShowListExcel = new ArrayList<>();
                 for (WorkorderItemShow itemUnit : workorderItemShowList) {
-                    // ºÏÍ¬µ¥¼Û£¬¹¤³ÌÁ¿£¬½ğ¶î
+                    // åˆåŒå•ä»·ï¼Œå·¥ç¨‹é‡ï¼Œé‡‘é¢
                     itemUnit.setUnitPrice(
                                 ToolUtil.getBdFrom0ToNull(itemUnit.getUnitPrice()));
                     itemUnit.setQuantity(
@@ -148,22 +148,22 @@ public class WorkorderItemAction {
                 beansMap.put("cttItemShowListExcel", workorderItemShowListExcel);
             }
         }catch (Exception e){
-            logger.error("³õÊ¼»¯Ê§°Ü", e);
-            MessageUtil.addError("³õÊ¼»¯Ê§°Ü");
+            logger.error("åˆå§‹åŒ–å¤±è´¥", e);
+            MessageUtil.addError("åˆå§‹åŒ–å¤±è´¥");
         }
     }
 
-    /*¸ù¾İÊı¾İ¿âÖĞ²ã¼¶¹ØÏµÊı¾İÁĞ±íµÃµ½×Ü°üºÏÍ¬*/
+    /*æ ¹æ®æ•°æ®åº“ä¸­å±‚çº§å…³ç³»æ•°æ®åˆ—è¡¨å¾—åˆ°æ€»åŒ…åˆåŒ*/
     private void recursiveDataTable(String strLevelParentId, List<WorkorderItem> workorderItemListPara) {
-        // ¸ù¾İ¸¸²ã¼¶ºÅ»ñµÃ¸Ã¸¸²ã¼¶ÏÂµÄ×Ó½Úµã
+        // æ ¹æ®çˆ¶å±‚çº§å·è·å¾—è¯¥çˆ¶å±‚çº§ä¸‹çš„å­èŠ‚ç‚¹
         List<WorkorderItem> subWorkorderItemList = new ArrayList<>();
-        // Í¨¹ı¸¸²ãid²éÕÒËüµÄº¢×Ó
+        // é€šè¿‡çˆ¶å±‚idæŸ¥æ‰¾å®ƒçš„å­©å­
         subWorkorderItemList = getEsCttItemListByParentPkid(strLevelParentId, workorderItemListPara);
         for (WorkorderItem itemUnit : subWorkorderItemList) {
             WorkorderItemShow workorderItemShowTemp = null;
             String strCreatedByName = cttInfoService.getUserName(itemUnit.getCreatedBy());
             String strLastUpdByName = cttInfoService.getUserName(itemUnit.getLastUpdBy());
-            // ²ã¼¶Ïî
+            // å±‚çº§é¡¹
             workorderItemShowTemp = new WorkorderItemShow(
                     itemUnit.getPkid(),
                     itemUnit.getBelongToPkid(),
@@ -193,7 +193,7 @@ public class WorkorderItemAction {
         }
     }
 
-    /*¸ù¾İgroupºÍorderidÁÙÊ±±àÖÆ±àºÅstrNo*/
+    /*æ ¹æ®groupå’Œorderidä¸´æ—¶ç¼–åˆ¶ç¼–å·strNo*/
     private List<WorkorderItemShow> getTkcttItemList_DoFromatNo(
             List<WorkorderItemShow> workorderItemShowListPara) {
         String strTemp = "";
@@ -231,7 +231,7 @@ public class WorkorderItemAction {
         workorderItemShowListTemp.addAll(workorderItemShowList);
 
         workorderItemShowList.clear();
-        // Ğ¡¼Æ
+        // å°è®¡
         BigDecimal bdTotal = new BigDecimal(0);
         BigDecimal bdAllTotal = new BigDecimal(0);
         WorkorderItemShow itemUnit = new WorkorderItemShow();
@@ -246,7 +246,7 @@ public class WorkorderItemAction {
                 itemUnitNext = workorderItemShowListTemp.get(i + 1);
                 if (itemUnitNext.getParentPkid().equals("root")) {
                     WorkorderItemShow workorderItemShowTemp = new WorkorderItemShow();
-                    workorderItemShowTemp.setName("ºÏ¼Æ");
+                    workorderItemShowTemp.setName("åˆè®¡");
                     workorderItemShowTemp.setPkid("total" + i);
                     workorderItemShowTemp.setAmount(bdTotal);
                     workorderItemShowList.add(workorderItemShowTemp);
@@ -254,15 +254,15 @@ public class WorkorderItemAction {
                 }
             } else if (i + 1 == workorderItemShowListTemp.size()) {
                 WorkorderItemShow workorderItemShowTemp = new WorkorderItemShow();
-                workorderItemShowTemp.setName("ºÏ¼Æ");
+                workorderItemShowTemp.setName("åˆè®¡");
                 workorderItemShowTemp.setPkid("total" + i);
                 workorderItemShowTemp.setAmount(bdTotal);
                 workorderItemShowList.add(workorderItemShowTemp);
                 bdTotal = new BigDecimal(0);
 
-                // ×ÜºÏ¼Æ
+                // æ€»åˆè®¡
                 workorderItemShowTemp = new WorkorderItemShow();
-                workorderItemShowTemp.setName("×ÜºÏ¼Æ");
+                workorderItemShowTemp.setName("æ€»åˆè®¡");
                 workorderItemShowTemp.setPkid("total_all" + i);
                 workorderItemShowTemp.setAmount(bdAllTotal);
                 workorderItemShowList.add(workorderItemShowTemp);
@@ -270,7 +270,7 @@ public class WorkorderItemAction {
         }
     }
 
-    /*ÖØÖÃ*/
+    /*é‡ç½®*/
     public void resetAction() {
         strSubmitType = "Add";
         styleModelNo = new StyleModel();
@@ -303,7 +303,7 @@ public class WorkorderItemAction {
         }
     }
 
-    /*ÓÒµ¥»÷ÊÂ¼ş*/
+    /*å³å•å‡»äº‹ä»¶*/
     public void selectRecordAction(String strSubmitTypePara, WorkorderItemShow workorderItemShowPara) {
         try {
             if (strSubmitTypePara.equals("Add")) {
@@ -322,7 +322,7 @@ public class WorkorderItemAction {
                 workorderItemShowDel.setStrNo(ToolUtil.getIgnoreSpaceOfStr(workorderItemShowDel.getStrNo()));
             }
         } catch (Exception e) {
-            logger.error("Ñ¡ÔñÊı¾İÊ§°Ü£¬", e);
+            logger.error("é€‰æ‹©æ•°æ®å¤±è´¥ï¼Œ", e);
             MessageUtil.addError(e.getMessage());
         }
     }
@@ -341,15 +341,15 @@ public class WorkorderItemAction {
         }
         String strRegex = "[1-9]\\d*(\\.[1-9]\\d*)*";
         if (!strIgnoreSpaceOfStr.matches(strRegex)) {
-            MessageUtil.addError("ÇëÈ·ÈÏÊäÈëµÄ±àºÅ£¬±àºÅ" + strIgnoreSpaceOfStr + "¸ñÊ½²»ÕıÈ·£¡");
+            MessageUtil.addError("è¯·ç¡®è®¤è¾“å…¥çš„ç¼–å·ï¼Œç¼–å·" + strIgnoreSpaceOfStr + "æ ¼å¼ä¸æ­£ç¡®ï¼");
             return strNoBlurFalse();
         }
 
-        //¸Ã±àÂëÒÑ¾­´æÔÚ
+        //è¯¥ç¼–ç å·²ç»å­˜åœ¨
         if(!strSubmitType.equals("Upd")){
             if(getEsCttItemByStrNo(strIgnoreSpaceOfStr, workorderItemShowList)!=null){
             }
-            else{ //¸Ã±àÂë²»´æÔÚ
+            else{ //è¯¥ç¼–ç ä¸å­˜åœ¨
             }
         }
         Integer intLastIndexof=strIgnoreSpaceOfStr.lastIndexOf(".");
@@ -360,12 +360,12 @@ public class WorkorderItemAction {
 
             if (itemHieRelapListSubTemp.size() == 0) {
                 if (!strIgnoreSpaceOfStr.equals("1")) {
-                    MessageUtil.addError("ÇëÈ·ÈÏÊäÈëµÄ±àºÅ£¡¸Ã±àºÅ²»·ûºÏ¹æ·¶£¬Ó¦ÊäÈë1£¡");
+                    MessageUtil.addError("è¯·ç¡®è®¤è¾“å…¥çš„ç¼–å·ï¼è¯¥ç¼–å·ä¸ç¬¦åˆè§„èŒƒï¼Œåº”è¾“å…¥1ï¼");
                     return strNoBlurFalse();
                 }
             } else {
                 if (itemHieRelapListSubTemp.size() + 1 < Integer.parseInt(strIgnoreSpaceOfStr)) {
-                    MessageUtil.addError("ÇëÈ·ÈÏÊäÈëµÄ±àºÅ£¡¸Ã±àºÅ²»·ûºÏ¹æ·¶£¬Ó¦ÊäÈë" + (itemHieRelapListSubTemp.size() + 1) + "£¡");
+                    MessageUtil.addError("è¯·ç¡®è®¤è¾“å…¥çš„ç¼–å·ï¼è¯¥ç¼–å·ä¸ç¬¦åˆè§„èŒƒï¼Œåº”è¾“å…¥" + (itemHieRelapListSubTemp.size() + 1) + "ï¼");
                     return strNoBlurFalse();
                 }
             }
@@ -377,7 +377,7 @@ public class WorkorderItemAction {
             WorkorderItemShow workorderItemShowTemp1 = new WorkorderItemShow();
             workorderItemShowTemp1 = getEsCttItemByStrNo(strParentNo, workorderItemShowList);
             if (workorderItemShowTemp1 == null || workorderItemShowTemp1.getPkid() == null) {
-                MessageUtil.addError("ÇëÈ·ÈÏÊäÈëµÄ±àºÅ£¡¸¸²ã" + strParentNo + "²»´æÔÚ£¡");
+                MessageUtil.addError("è¯·ç¡®è®¤è¾“å…¥çš„ç¼–å·ï¼çˆ¶å±‚" + strParentNo + "ä¸å­˜åœ¨ï¼");
                 return strNoBlurFalse();
             } else {
                 List<WorkorderItem> itemHieRelapListSubTemp = new ArrayList<>();
@@ -386,14 +386,14 @@ public class WorkorderItemAction {
                         workorderItemList);
                 if (itemHieRelapListSubTemp.size() == 0) {
                     if (!workorderItemShowTemp.getStrNo().equals(strParentNo + ".1")) {
-                        MessageUtil.addError("ÇëÈ·ÈÏÊäÈëµÄ±àºÅ£¡¸Ã±àºÅ²»·ûºÏ¹æ·¶£¬Ó¦ÊäÈë" + strParentNo + ".1£¡");
+                        MessageUtil.addError("è¯·ç¡®è®¤è¾“å…¥çš„ç¼–å·ï¼è¯¥ç¼–å·ä¸ç¬¦åˆè§„èŒƒï¼Œåº”è¾“å…¥" + strParentNo + ".1ï¼");
                         return strNoBlurFalse();
                     }
                 } else {
                     String strOrderid = strIgnoreSpaceOfStr.substring(intLastIndexof + 1);
                     if (itemHieRelapListSubTemp.size() + 1 < Integer.parseInt(strOrderid)) {
-                        MessageUtil.addError("ÇëÈ·ÈÏÊäÈëµÄ±àºÅ£¡¸Ã±àºÅ²»·ûºÏ¹æ·¶£¬Ó¦ÊäÈë" + strParentNo + "." +
-                                (itemHieRelapListSubTemp.size() + 1) + "£¡");
+                        MessageUtil.addError("è¯·ç¡®è®¤è¾“å…¥çš„ç¼–å·ï¼è¯¥ç¼–å·ä¸ç¬¦åˆè§„èŒƒï¼Œåº”è¾“å…¥" + strParentNo + "." +
+                                (itemHieRelapListSubTemp.size() + 1) + "ï¼");
                         return strNoBlurFalse();
                     }
                 }
@@ -405,7 +405,7 @@ public class WorkorderItemAction {
         }
         return true ;
     }
-    /*Ìá½»Ç°µÄ¼ì²é£º±ØĞëÏîµÄÊäÈë*/
+    /*æäº¤å‰çš„æ£€æŸ¥ï¼šå¿…é¡»é¡¹çš„è¾“å…¥*/
     private Boolean subMitActionPreCheck() {
         WorkorderItemShow workorderItemShowTemp = new WorkorderItemShow(strCttInfoPkid);
         if (strSubmitType.equals("Add")) {
@@ -415,20 +415,20 @@ public class WorkorderItemAction {
             workorderItemShowTemp = workorderItemShowUpd;
         }
         if (StringUtils.isEmpty(workorderItemShowTemp.getStrNo())) {
-            MessageUtil.addError("ÇëÊäÈë±àºÅ£¡");
+            MessageUtil.addError("è¯·è¾“å…¥ç¼–å·ï¼");
             return false;
         }
         if (StringUtils.isEmpty(workorderItemShowTemp.getName())) {
-            MessageUtil.addError("ÇëÊäÈëÃû³Æ£¡");
+            MessageUtil.addError("è¯·è¾“å…¥åç§°ï¼");
             return false;
         }
         if ((workorderItemShowTemp.getUnitPrice() != null &&
                 workorderItemShowTemp.getUnitPrice().compareTo(BigDecimal.ZERO) != 0) ||
                 (workorderItemShowTemp.getQuantity() != null &&
                         workorderItemShowTemp.getQuantity().compareTo(BigDecimal.ZERO) != 0)) {
-            /*°ó¶¨Ç°Ì¨¿Ø¼ş,¿ÉÊäÈëµÄBigDecimalÀàĞÍ±¾À´ÎªnullµÄ£¬×Ô¶¯×ª»»Îª0£¬²»¿ÉÊäÈëµÄ£¬»¹ÊÇnull*/
+            /*ç»‘å®šå‰å°æ§ä»¶,å¯è¾“å…¥çš„BigDecimalç±»å‹æœ¬æ¥ä¸ºnullçš„ï¼Œè‡ªåŠ¨è½¬æ¢ä¸º0ï¼Œä¸å¯è¾“å…¥çš„ï¼Œè¿˜æ˜¯null*/
             if (StringUtils.isEmpty(workorderItemShowTemp.getUnit())) {
-                MessageUtil.addError("ÇëÊäÈëµ¥Î»£¡");
+                MessageUtil.addError("è¯·è¾“å…¥å•ä½ï¼");
                 return false;
             }
         }
@@ -436,14 +436,14 @@ public class WorkorderItemAction {
     }
     public void submitThisRecordAction(){
         try{
-            /*Ìá½»Ç°µÄ¼ì²é*/
+            /*æäº¤å‰çš„æ£€æŸ¥*/
             if(strSubmitType .equals("Del")) {
                 cttItemService.setAfterThisOrderidSubOneByNode(workorderItemShowDel);
             }else{
                 if(!subMitActionPreCheck()){
                     return ;
                 }
-                /*itemUnitConstructµÄgrade,orderid,parentpkid*/
+                /*itemUnitConstructçš„grade,orderid,parentpkid*/
                 if(!blurStrNoToGradeAndOrderidAction()){
                     return ;
                 }
@@ -453,7 +453,7 @@ public class WorkorderItemAction {
                 else if(strSubmitType .equals("Add")) {
                      WorkorderItem workorderItemTemp = cttItemService.fromModelShowToModel(workorderItemShowAdd);
                     if (cttItemService.isExistSameRecordInDb(workorderItemTemp)){
-                        MessageUtil.addInfo("¸Ã±àºÅ¶ÔÓ¦¼ÇÂ¼ÒÑ´æÔÚ£¬ÇëÖØĞÂÂ¼Èë¡£");
+                        MessageUtil.addInfo("è¯¥ç¼–å·å¯¹åº”è®°å½•å·²å­˜åœ¨ï¼Œè¯·é‡æ–°å½•å…¥ã€‚");
                         return;
                     }
                     cttItemService.setAfterThisOrderidPlusOneByNode(workorderItemShowAdd);
@@ -461,29 +461,29 @@ public class WorkorderItemAction {
                 }
             }
             switch (strSubmitType){
-                case "Add" : MessageUtil.addInfo("Ôö¼ÓÊı¾İÍê³É¡£");
+                case "Add" : MessageUtil.addInfo("å¢åŠ æ•°æ®å®Œæˆã€‚");
                     break;
-                case "Upd" : MessageUtil.addInfo("¸üĞÂÊı¾İÍê³É¡£");
+                case "Upd" : MessageUtil.addInfo("æ›´æ–°æ•°æ®å®Œæˆã€‚");
                     break;
-                case "Del" : MessageUtil.addInfo("É¾³ıÊı¾İÍê³É¡£");
+                case "Del" : MessageUtil.addInfo("åˆ é™¤æ•°æ®å®Œæˆã€‚");
             }
             initData();
         } catch (Exception e) {
             switch (strSubmitType){
-                case "Add" : MessageUtil.addError("Ôö¼ÓÊı¾İÊ§°Ü£¬"+ e.getMessage());
+                case "Add" : MessageUtil.addError("å¢åŠ æ•°æ®å¤±è´¥ï¼Œ"+ e.getMessage());
                     break;
-                case "Upd" : MessageUtil.addError("¸üĞÂÊı¾İÊ§°Ü£¬"+ e.getMessage());
+                case "Upd" : MessageUtil.addError("æ›´æ–°æ•°æ®å¤±è´¥ï¼Œ"+ e.getMessage());
                     break;
-                case "Del" : MessageUtil.addError("É¾³ıÊı¾İÊ§°Ü£¬"+ e.getMessage());
+                case "Del" : MessageUtil.addError("åˆ é™¤æ•°æ®å¤±è´¥ï¼Œ"+ e.getMessage());
             }
         }
     }
 
-    /*¸ù¾İÊı¾İ¿âÖĞ²ã¼¶¹ØÏµÊı¾İÁĞ±íµÃµ½Ä³Ò»½ÚµãÏÂµÄ×Ó½Úµã*/
+    /*æ ¹æ®æ•°æ®åº“ä¸­å±‚çº§å…³ç³»æ•°æ®åˆ—è¡¨å¾—åˆ°æŸä¸€èŠ‚ç‚¹ä¸‹çš„å­èŠ‚ç‚¹*/
     private List<WorkorderItem> getEsCttItemListByParentPkid(String strLevelParentPkid,
              List<WorkorderItem> workorderItemListPara) {
         List<WorkorderItem> tempWorkorderItemList =new ArrayList<WorkorderItem>();
-        /*±Ü¿ªÖØ¸´Á´½ÓÊı¾İ¿â*/
+        /*é¿å¼€é‡å¤é“¾æ¥æ•°æ®åº“*/
         for(WorkorderItem itemUnit: workorderItemListPara){
             if(strLevelParentPkid.equalsIgnoreCase(itemUnit.getParentPkid())){
                 tempWorkorderItemList.add(itemUnit);
@@ -491,7 +491,7 @@ public class WorkorderItemAction {
         }
         return tempWorkorderItemList;
     }
-    /*ÔÚ×Ü°üºÏÍ¬ÁĞ±íÖĞ¸ù¾İ±àºÅÕÒµ½Ïî*/
+    /*åœ¨æ€»åŒ…åˆåŒåˆ—è¡¨ä¸­æ ¹æ®ç¼–å·æ‰¾åˆ°é¡¹*/
     private WorkorderItemShow getEsCttItemByStrNo(
              String strNo,
              List<WorkorderItemShow> workorderItemShowListPara){
@@ -527,12 +527,12 @@ public class WorkorderItemAction {
     }
 
     public void onExportExcel()throws IOException, WriteException {
-        String excelFilename = "×Ü°üºÏÍ¬-" + new SimpleDateFormat("yyyyMMdd").format(new Date()) + ".xls";
+        String excelFilename = "æ€»åŒ…åˆåŒ-" + new SimpleDateFormat("yyyyMMdd").format(new Date()) + ".xls";
         JxlsManager jxls = new JxlsManager();
         jxls.exportList(excelFilename, beansMap,"oriTkctt.xls");
     }
 
-    // ¸½¼ş
+    // é™„ä»¶
     public void onViewAttachment(AttachmentModel attachmentModelPara) {
         image.setValue("/upload/" + attachmentModelPara.getCOLUMN_NAME());
     }
@@ -548,15 +548,15 @@ public class WorkorderItemAction {
             workorderInfo.setAttachment(sbTemp.toString());
             cttInfoService.updateRecord(workorderInfo);
         } catch (Exception e) {
-            logger.error("É¾³ıÊı¾İÊ§°Ü£¬", e);
+            logger.error("åˆ é™¤æ•°æ®å¤±è´¥ï¼Œ", e);
             MessageUtil.addError(e.getMessage());
         }
     }
     public void download(String strAttachment){
         try{
             if(StringUtils .isEmpty(strAttachment) ){
-                MessageUtil.addError("Â·¾¶Îª¿Õ£¬ÎŞ·¨ÏÂÔØ£¡");
-                logger.error("Â·¾¶Îª¿Õ£¬ÎŞ·¨ÏÂÔØ£¡");
+                MessageUtil.addError("è·¯å¾„ä¸ºç©ºï¼Œæ— æ³•ä¸‹è½½ï¼");
+                logger.error("è·¯å¾„ä¸ºç©ºï¼Œæ— æ³•ä¸‹è½½ï¼");
             }
             else {
                 String fileName=FacesContext.getCurrentInstance().getExternalContext().getRealPath("/upload")+"/"+strAttachment;
@@ -565,8 +565,8 @@ public class WorkorderItemAction {
                 downloadFile = new DefaultStreamedContent(stream, new MimetypesFileTypeMap().getContentType(file), new String(strAttachment.getBytes("gbk"),"iso8859-1"));
             }
         } catch (Exception e) {
-            logger.error("ÏÂÔØÎÄ¼şÊ§°Ü", e);
-            MessageUtil.addError("ÏÂÔØÎÄ¼şÊ§°Ü,"+e.getMessage()+strAttachment);
+            logger.error("ä¸‹è½½æ–‡ä»¶å¤±è´¥", e);
+            MessageUtil.addError("ä¸‹è½½æ–‡ä»¶å¤±è´¥,"+e.getMessage()+strAttachment);
         }
     }
     public void upload(FileUploadEvent event) {
@@ -586,7 +586,7 @@ public class WorkorderItemAction {
             attachmentModel.setCOLUMN_PATH(descFile.getAbsolutePath());
             for (AttachmentModel item : attachmentList){
                 if (item.getCOLUMN_NAME().equals(attachmentModel.getCOLUMN_NAME())) {
-                    MessageUtil.addError("¸½¼şÒÑ´æÔÚ£¡");
+                    MessageUtil.addError("é™„ä»¶å·²å­˜åœ¨ï¼");
                     return;
                 }
             }
@@ -598,7 +598,7 @@ public class WorkorderItemAction {
                 sb.append(item.getCOLUMN_NAME() + ";");
             }
             if(sb.length()>4000){
-                MessageUtil.addError("¸½¼şÂ·¾¶("+sb.toString()+")³¤¶ÈÒÑ³¬¹ı×î´óÔÊĞíÖµ4000£¬²»ÄÜÈë¿â£¬ÇëÁªÏµÏµÍ³¹ÜÀíÔ±£¡");
+                MessageUtil.addError("é™„ä»¶è·¯å¾„("+sb.toString()+")é•¿åº¦å·²è¶…è¿‡æœ€å¤§å…è®¸å€¼4000ï¼Œä¸èƒ½å…¥åº“ï¼Œè¯·è”ç³»ç³»ç»Ÿç®¡ç†å‘˜ï¼");
                 return;
             }
             workorderInfo.setAttachment(sb.toString());
@@ -632,7 +632,7 @@ public class WorkorderItemAction {
         }
     }
 
-    /*ÖÇÄÜ×Ö¶ÎStart*/
+    /*æ™ºèƒ½å­—æ®µStart*/
     public CttItemService getCttItemService() {
         return cttItemService;
     }
@@ -735,7 +735,7 @@ public class WorkorderItemAction {
         this.beansMap = beansMap;
     }
 
-    //ÎÄ¼ş
+    //æ–‡ä»¶
     public List<AttachmentModel> getAttachmentList() {
         return attachmentList;
     }
@@ -770,5 +770,5 @@ public class WorkorderItemAction {
     public void setStrFlowStatusRemark(String strFlowStatusRemark) {
         this.strFlowStatusRemark = strFlowStatusRemark;
     }
-/*ÖÇÄÜ×Ö¶ÎEnd*/
+/*æ™ºèƒ½å­—æ®µEnd*/
 }
