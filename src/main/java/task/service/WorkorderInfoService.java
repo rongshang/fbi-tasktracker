@@ -26,8 +26,6 @@ public class WorkorderInfoService {
     private WorkorderInfoMapper workorderInfoMapper;
     @Autowired
     private MyWorkorderInfoMapper myWorkorderInfoMapper;
-    @Resource
-    private FlowCtrlHisService flowCtrlHisService;
     @Autowired
     private MyDeptAndOperMapper myDeptAndOperMapper;
 

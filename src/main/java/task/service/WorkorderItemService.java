@@ -24,7 +24,7 @@ public class WorkorderItemService {
     @Resource
     private WorkorderItemMapper workorderItemMapper;
     @Resource
-    private MyWorkorderItemMapper myWorkOrderItemMapper;
+    private MyWorkorderItemMapper myWorkorderItemMapper;
 
     public Integer getMaxOrderidInEsCttItemList(String strBelongToType,
                                                  String strBelongToPkid,
@@ -176,7 +176,7 @@ public class WorkorderItemService {
     }
 
     public void setAfterThisOrderidPlusOneByNode(WorkorderItemShow workorderItemShowPara){
-        myWorkOrderItemMapper.setAfterThisOrderidPlusOneByNode(
+        myWorkorderItemMapper.setAfterThisOrderidPlusOneByNode(
                 workorderItemShowPara.getBelongToPkid(),
                 workorderItemShowPara.getParentPkid(),
                 workorderItemShowPara.getGrade(),
@@ -186,7 +186,7 @@ public class WorkorderItemService {
 
     public void setAfterThisOrderidSubOneByNode(WorkorderItemShow workorderItemShowPara){
         deleteRecord(workorderItemShowPara.getPkid());
-        myWorkOrderItemMapper.setAfterThisOrderidSubOneByNode(
+        myWorkorderItemMapper.setAfterThisOrderidSubOneByNode(
                 workorderItemShowPara.getBelongToPkid(),
                 workorderItemShowPara.getParentPkid(),
                 workorderItemShowPara.getGrade(),
