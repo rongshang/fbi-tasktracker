@@ -194,7 +194,7 @@ public class DatabaseAgent {
                 " ON" +
                 "       r.OPER_PKID='" + strOperPkidPara + "' " +
                 " and" +
-                "       r.INFO_PKID=m.PKID" +
+                "       r.RES_PKID=m.PKID" +
                 " and" +
                 "       m.targetmachine = '" + targetMachinePara + "' " +
                 " ORDER BY m.menuLevel," +

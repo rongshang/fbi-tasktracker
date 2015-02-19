@@ -27,7 +27,7 @@
 <%--<!DOCTYPE html>--%>
 <html>
     <head>
-        <title>工程项目结算管理系统</title>
+        <title>任务跟踪系统</title>
         <meta http-equiv="X-UA-Compatible" content="IE=5" />
 
         <script src="../../dhtmlx/dhtmlxTabbar/codebase/dhtmlxcommon.js" type="text/javascript"></script>
@@ -115,10 +115,7 @@
                 <tr style="width:100%; height:45px">
                     <td width="5%" rowspan="2">
                         &nbsp;
-                        <img src="../../images/task.jpg" height="40px">
-                    </td>
-                    <td colspan="2">
-                        <img src="../../images/task_title.png" height="50px" style="margin-left: 5px">
+                        <img src="../../images/tts.png" height="50px">
                     </td>
                     <td style="text-align:right" class="headfont">
                         <span>您好,<%=operid%>[<%=username%>]! </span>
@@ -127,7 +124,7 @@
                     </td>
                 </tr>
                 <tr style="width:100%; height:25px">
-                    <td colspan="5" style="height:25px;">
+                    <td style="height:25px;">
                         <div onclick="tabbarclk(this);document.frames('todoTaskWorkFrame').location.href='<%=contextPath%>/UI/task/task/stlPower.xhtml;'"
                              active="true" id="todoTask" class="tabs-item-active"
                              style="float:left;width:80px;margin-left:12px;display: none">
@@ -146,7 +143,7 @@
                             <span style="width:100%;">系统管理</span>
                         </div>
                         <div id="middleId5" style="float:left;width:2px;"></div>
-                        <div id="dynamicInfo" style="float:right;width:300px;">
+                        <div id="dynamicInfo" style="float:left;width:300px;">
                             <iframe id="scrollInfoWorkFrame"
                                     src="<%=contextPath%>/UI/task/scrollInfo/scrollInfo.xhtml"
                                     width="100%"

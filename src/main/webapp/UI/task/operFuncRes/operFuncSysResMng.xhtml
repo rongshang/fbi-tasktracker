@@ -23,16 +23,6 @@
             <div style="margin:5px;">
                 <p:growl id="msgs" showDetail="true" />
                 <p:panel>
-                    <h:panelGrid columns="2">
-                        <p:outputLabel value="资源类型：" for="targetmachine"/>
-                        <p:selectOneMenu id="targetmachine"
-                                         value="#{operFuncSysResMngAction.strMenuTypeSeled}">
-                            <p:ajax update="resDataTable,msgs"
-                                listener="#{operFuncSysResMngAction.selectAction()}">
-                            </p:ajax>
-                            <f:selectItems value="#{operFuncSysResMngAction.menuTypeList}"/>
-                        </p:selectOneMenu>
-                    </h:panelGrid>
                     <p:dataTable id="resDataTable"
                                  value="#{operFuncSysResMngAction.operFuncResShowList}"
                                  var="record"

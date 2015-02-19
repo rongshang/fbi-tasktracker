@@ -11,15 +11,15 @@ import java.util.List;
  * Created by IntelliJ IDEA.
  * User: hanjianlong
  * Date: 13-2-13
- * Time: √è√Ç√é√ß8:10
+ * Time: œ¬ŒÁ8:10
  * To change this template use File | Settings | File Templates.
  */
 @Component
 public interface MyWorkorderInfoMapper {
     List<WorkorderInfoShow> selectCttByStatusFlagBegin_End(WorkorderInfoShow workorderInfoShow);
 
-    @Select("select max(id) from WORKORDER_INFO where ctt_type = #{strCttType}")
-    String getStrMaxCttId(@Param("strCttType") String strCttType);
+    @Select("select max(id) from WORKORDER_INFO")
+    String getStrMaxCttId();
 
     @Select(" select" +
                  " eci.PKID" +

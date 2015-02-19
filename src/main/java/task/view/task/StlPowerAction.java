@@ -1,6 +1,4 @@
 package task.view.task;
-
-import task.common.enums.EnumResType;
 import task.repository.model.model_show.TaskShow;
 import task.service.TaskService;
 import org.primefaces.model.DefaultTreeNode;
@@ -12,7 +10,6 @@ import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -77,21 +74,6 @@ public class StlPowerAction {
             TaskShow taskShow=new TaskShow();
             TaskShow taskShowTemp=stlPowerList.get(i);
             if(taskShowTemp.getType()!=null){
-                if(taskShowTemp.getType().equals(EnumResType.RES_TYPE3.getCode())){
-                    parentNode=subStlQ;
-                }else
-                if(taskShowTemp.getType().equals(EnumResType.RES_TYPE4.getCode())){
-                    parentNode=subStlM;
-                }else
-                if(taskShowTemp.getType().equals(EnumResType.RES_TYPE8.getCode())){
-                    parentNode=subStlF;
-                }else
-                if(taskShowTemp.getType().equals(EnumResType.RES_TYPE6.getCode())){
-                    parentNode=tkStlEst;
-                }else
-                if(taskShowTemp.getType().equals(EnumResType.RES_TYPE7.getCode())){
-                    parentNode=tkStlMea;
-                }else
                 {parentNode= null;}
             if(parentNode!=null) {
                 taskShow.setPkid(taskShowTemp.getPkid());
@@ -100,7 +82,8 @@ public class StlPowerAction {
                 taskShow.setName(taskShowTemp.getName());
                 taskShow.setSignPartBName(taskShowTemp.getSignPartBName());
                 new DefaultTreeNode(taskShow, parentNode);
-            }}
+            }
+            }
         }
         return  null;
     }

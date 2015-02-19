@@ -11,7 +11,6 @@ import java.io.Serializable;
  */
 public class WorkorderInfoShow implements Serializable {
     private String pkid;
-    private String cttType;
     private String parentPkid;
     private String belongToId;
     private String id;
@@ -45,12 +44,11 @@ public class WorkorderInfoShow implements Serializable {
         return pkid;
     }
 
-    public WorkorderInfoShow(String pkid, String id, String cttType, String name, String remark,
+    public WorkorderInfoShow(String pkid, String id,String name, String remark,
                              String flowStatus, String flowStatusReason, String lastUpdBy,
                              String lastUpdTime, Integer recVersion, Boolean isSeled) {
         this.pkid = pkid;
         this.id = id;
-        this.cttType=cttType;
         this.name = name;
         this.remark = remark;
         this.flowStatus = flowStatus;
@@ -80,14 +78,6 @@ public class WorkorderInfoShow implements Serializable {
 
     public void setPkid(String pkid) {
         this.pkid = pkid == null ? null : pkid.trim();
-    }
-
-    public String getCttType() {
-        return cttType;
-    }
-
-    public void setCttType(String cttType) {
-        this.cttType = cttType == null ? null : cttType.trim();
     }
 
     public String getBelongToId() {

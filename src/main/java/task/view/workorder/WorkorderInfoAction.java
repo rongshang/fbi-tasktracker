@@ -1,11 +1,9 @@
 package task.view.workorder;
 
-import task.common.enums.EnumResType;
 import task.common.enums.EnumFlowStatus;
 import task.repository.model.model_show.WorkorderInfoShow;
 import task.service.*;
 import task.view.flow.EsCommon;
-import task.view.flow.EsFlowControl;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -13,7 +11,6 @@ import org.slf4j.LoggerFactory;
 import skyline.util.MessageUtil;
 import skyline.util.StyleModel;
 import skyline.util.ToolUtil;
-
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
@@ -38,8 +35,6 @@ public class WorkorderInfoAction {
     private WorkorderItemService workorderItemService;
     @ManagedProperty(value = "#{esCommon}")
     private EsCommon esCommon;
-    @ManagedProperty(value = "#{esFlowControl}")
-    private EsFlowControl esFlowControl;
 
     private WorkorderInfoShow workorderInfoShowQry;
     private WorkorderInfoShow workorderInfoShowSel;
@@ -64,15 +59,10 @@ public class WorkorderInfoAction {
         try {
             this.workorderInfoShowList = new ArrayList<WorkorderInfoShow>();
             workorderInfoShowQry = new WorkorderInfoShow();
-            workorderInfoShowQry.setCttType(EnumResType.RES_TYPE0.getCode());
             workorderInfoShowSel = new WorkorderInfoShow();
-            workorderInfoShowSel.setCttType(EnumResType.RES_TYPE0.getCode());
             workorderInfoShowAdd = new WorkorderInfoShow();
-            workorderInfoShowAdd.setCttType(EnumResType.RES_TYPE0.getCode());
             workorderInfoShowUpd = new WorkorderInfoShow();
-            workorderInfoShowUpd.setCttType(EnumResType.RES_TYPE0.getCode());
             workorderInfoShowDel = new WorkorderInfoShow();
-            workorderInfoShowDel.setCttType(EnumResType.RES_TYPE0.getCode());
             styleModel = new StyleModel();
             styleModel.setDisabled_Flag("false");
             strSubmitType = "";
@@ -85,7 +75,7 @@ public class WorkorderInfoAction {
     public void setMaxNoPlusOne() {
         try {
             Integer intTemp;
-            String strMaxId = workorderInfoService.getStrMaxCttId(EnumResType.RES_TYPE0.getCode());
+            String strMaxId = workorderInfoService.getStrMaxCttId();
             if (StringUtils.isEmpty(ToolUtil.getStrIgnoreNull(strMaxId))) {
                 strMaxId = "TKCTT" + ToolUtil.getStrToday() + "001";
             } else {
@@ -150,7 +140,6 @@ public class WorkorderInfoAction {
     public void resetActionForAdd(){
         strSubmitType="Add";
         workorderInfoShowAdd = new WorkorderInfoShow();
-        workorderInfoShowAdd.setCttType(EnumResType.RES_TYPE0.getCode());
     }
     public void selectRecordAction(
                                    String strSubmitTypePara,
@@ -214,8 +203,6 @@ public class WorkorderInfoAction {
                 return;
             }
             WorkorderInfoShow workorderInfoShowTemp =new WorkorderInfoShow();
-            workorderInfoShowTemp.setCttType(workorderInfoShowAdd.getCttType());
-            workorderInfoShowTemp.setCttType(workorderInfoShowAdd.getCttType());
             if (workorderInfoService.getListByModelShow(workorderInfoShowTemp).size()>0) {
                 MessageUtil.addError("该记录已存在，请重新录入！");
             } else {
@@ -238,10 +225,6 @@ public class WorkorderInfoAction {
 
     private void addRecordAction(WorkorderInfoShow workorderInfoShowPara) {
         try {
-            workorderInfoShowPara.setCttType(EnumResType.RES_TYPE0.getCode());
-            if (workorderInfoShowPara.getCttType().equals(EnumResType.RES_TYPE0.getCode())) {
-                workorderInfoShowPara.setParentPkid("ROOT");
-            }
             workorderInfoService.insertRecord(workorderInfoShowPara);
         } catch (Exception e) {
             logger.error("新增数据失败，", e);
@@ -250,7 +233,6 @@ public class WorkorderInfoAction {
     }
     private void updRecordAction(WorkorderInfoShow workorderInfoShowPara) {
         try {
-            workorderInfoShowPara.setCttType(EnumResType.RES_TYPE0.getCode());
             workorderInfoService.updateRecord(workorderInfoShowPara);
         } catch (Exception e) {
             logger.error("更新数据失败，", e);
@@ -259,7 +241,6 @@ public class WorkorderInfoAction {
     }
     private void deleteRecordAction(WorkorderInfoShow workorderInfoShowPara) {
         try {
-            workorderInfoShowPara.setCttType(EnumResType.RES_TYPE0.getCode());
             int deleteRecordNumOfCttItem= workorderItemService.deleteRecord(workorderInfoShowPara);
             int deleteRecordNumOfCtt= workorderInfoService.deleteRecord(workorderInfoShowPara.getPkid());
             if (deleteRecordNumOfCtt<=0&&deleteRecordNumOfCttItem<=0){
@@ -296,14 +277,6 @@ public class WorkorderInfoAction {
 
     public void setEsCommon(EsCommon esCommon) {
         this.esCommon = esCommon;
-    }
-
-    public EsFlowControl getEsFlowControl() {
-        return esFlowControl;
-    }
-
-    public void setEsFlowControl(EsFlowControl esFlowControl) {
-        this.esFlowControl = esFlowControl;
     }
 
     public WorkorderInfoShow getWorkorderInfoShowQry() {

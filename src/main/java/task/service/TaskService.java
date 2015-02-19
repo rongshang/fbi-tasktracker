@@ -1,6 +1,5 @@
 package task.service;
 
-import task.common.enums.EnumResType;
 import task.common.enums.EnumFlowStatus;
 import task.common.enums.EnumFlowStatusReason;
 import task.repository.dao.WorkorderInfoMapper;
@@ -9,7 +8,6 @@ import task.repository.model.model_show.TaskShow;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import skyline.util.ToolUtil;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -55,9 +53,6 @@ public class TaskService {
         taskShowList.add(taskShowTemp);
         for (TaskShow detailTaskShowUnit : detailTaskShowListTemp) {
             //分包价格结算的生成:分包数量结算和分包材料结算均复核后自动生成分包价格结算单
-            if(EnumResType.RES_TYPE5.getCode().equals(detailTaskShowUnit.getType())){
-                continue;
-            }
             detailTaskShowUnit.setId(detailTaskShowUnit.getId());
             detailTaskShowUnit.setFlowStatusName("已授权");
             taskShowList.add(detailTaskShowUnit);
@@ -87,8 +82,8 @@ public class TaskService {
                         // 资源录入启动且权限分配为录入状态
                         if (detailTaskShowUnit.getFlowStatus() == null) {
                             intHasRecordCount++;
-                            detailTaskShowUnit.setId(EnumResType.getValueByKey(detailTaskShowUnit.getType()).getTitle() + "_" +
-                                            ToolUtil.getStrIgnoreNull(detailTaskShowUnit.getId()));
+                            /*detailTaskShowUnit.setId(EnumResType.getValueByKey(detailTaskShowUnit.getType()).getTitle() + "_" +
+                                            ToolUtil.getStrIgnoreNull(detailTaskShowUnit.getId()));*/
                             if (detailTaskShowUnit.getFlowStatusReason() == null) {
                                 detailTaskShowUnit.setFlowStatusReasonName(null);
                             } else {
@@ -110,18 +105,12 @@ public class TaskService {
                 for (TaskShow detailTaskShowUnit : detailTaskShowListTemp) {
                     if (taskShowGroupUnit.getFlowStatus().equals(detailTaskShowUnit.getOperResFlowStatus())) {
                         if (detailTaskShowUnit.getFlowStatus() != null) {
-                            if (EnumFlowStatus.FLOW_STATUS2.getCode().equals(detailTaskShowUnit.getFlowStatus())) {
-                                if (EnumResType.RES_TYPE3.getCode().equals(detailTaskShowUnit.getType()) ||
-                                        EnumResType.RES_TYPE4.getCode().equals(detailTaskShowUnit.getType())) {
-                                    continue;
-                                }
-                            }
                             if ((((Integer.parseInt(taskShowGroupUnit.getFlowStatus())) - 1) + "")
                                     .equals(detailTaskShowUnit.getFlowStatus())) {
                                 intHasRecordCount++;
-                                detailTaskShowUnit.setId(
+                                /*detailTaskShowUnit.setId(
                                         "(" + EnumResType.getValueByKey(detailTaskShowUnit.getType()).getTitle() + ")" +
-                                                ToolUtil.getStrIgnoreNull(detailTaskShowUnit.getId()));
+                                                ToolUtil.getStrIgnoreNull(detailTaskShowUnit.getId()));*/
                                 detailTaskShowUnit.setFlowStatusReasonName(
                                         EnumFlowStatusReason.getValueByKey(detailTaskShowUnit.getFlowStatusReason()).getTitle());
                                 taskShowList.add(detailTaskShowUnit);

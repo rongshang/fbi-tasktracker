@@ -37,9 +37,6 @@ public class WorkorderInfoService {
         WorkorderInfoExample example= new WorkorderInfoExample();
         WorkorderInfoExample.Criteria criteria = example.createCriteria();
         //可以为NULL的项
-        if(!ToolUtil.getStrIgnoreNull(workorderInfoShowPara.getCttType()).equals("")){
-            criteria.andTypeEqualTo(ToolUtil.getStrIgnoreNull(workorderInfoShowPara.getCttType()));
-        }
         if(!ToolUtil.getStrIgnoreNull(workorderInfoShowPara.getId()).equals("")){
             criteria.andIdEqualTo(ToolUtil.getStrIgnoreNull(workorderInfoShowPara.getId()));
         }
@@ -175,14 +172,13 @@ public class WorkorderInfoService {
         return workorderInfoMapper.deleteByPrimaryKey(strCttInfoPkidPara);
     }
 
-    public String getStrMaxCttId(String strCttType){
-        return myWorkorderInfoMapper.getStrMaxCttId(strCttType) ;
+    public String getStrMaxCttId(){
+        return myWorkorderInfoMapper.getStrMaxCttId() ;
     }
 
     public WorkorderInfo fromModelShowToModel(WorkorderInfoShow workorderInfoShowPara) {
         WorkorderInfo workorderInfoTemp = new WorkorderInfo();
         workorderInfoTemp.setPkid(workorderInfoShowPara.getPkid());
-        workorderInfoTemp.setType(workorderInfoShowPara.getCttType());
         workorderInfoTemp.setParentPkid(workorderInfoShowPara.getParentPkid());
         workorderInfoTemp.setId(workorderInfoShowPara.getId());
         workorderInfoTemp.setName(workorderInfoShowPara.getName());
@@ -203,7 +199,6 @@ public class WorkorderInfoService {
     public WorkorderInfoShow fromModelToModelShow(WorkorderInfo workorderInfoPara) {
         WorkorderInfoShow workorderInfoShowTemp = new WorkorderInfoShow();
         workorderInfoShowTemp.setPkid(workorderInfoPara.getPkid());
-        workorderInfoShowTemp.setCttType(workorderInfoPara.getType());
         workorderInfoShowTemp.setParentPkid(workorderInfoPara.getParentPkid());
         workorderInfoShowTemp.setId(workorderInfoPara.getId());
         workorderInfoShowTemp.setName(workorderInfoPara.getName());

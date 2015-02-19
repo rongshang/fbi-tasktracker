@@ -44,7 +44,7 @@ public class WorkorderItemService {
             return  workorderItemList.get(0).getOrderid();
         }
     }
-    public List<WorkorderItem> getEsItemList(String strBelongToType,String strItemBelongToPkid){
+    public List<WorkorderItem> getEsItemList(String strItemBelongToPkid){
         WorkorderItemExample example = new WorkorderItemExample();
         example.createCriteria().andBelongToPkidEqualTo(strItemBelongToPkid);
         example .setOrderByClause("GRADE ASC,ORDERID ASC") ;
@@ -68,12 +68,6 @@ public class WorkorderItemService {
                 .andBelongToPkidEqualTo(workorderItem.getBelongToPkid())
                 .andParentPkidEqualTo(workorderItem.getParentPkid())
                 .andGradeEqualTo(workorderItem.getGrade());
-        if(workorderItem.getName()==null){
-            criteria.andNameIsNull();
-        }
-        else{
-            criteria.andNameEqualTo(workorderItem.getName());
-        }
         return workorderItemMapper.countByExample(example) >= 1;
     }
     public boolean isExistSameRecordInDb(WorkorderItem workorderItem) {
@@ -84,13 +78,6 @@ public class WorkorderItemService {
                 .andParentPkidEqualTo(workorderItem.getParentPkid())
                 .andGradeEqualTo(workorderItem.getGrade())
                 .andOrderidEqualTo(workorderItem.getOrderid());
-
-        if(workorderItem.getName()==null){
-            criteria.andNameIsNull();
-        }
-        else{
-            criteria.andNameEqualTo(workorderItem.getName());
-        }
         return workorderItemMapper.countByExample(example) >= 1;
     }
 
@@ -121,23 +108,17 @@ public class WorkorderItemService {
     /*总包合同到层级关系*/
     public WorkorderItem fromModelShowToModel(WorkorderItemShow workorderItemShowPara){
         WorkorderItem workorderItemTemp =new WorkorderItem() ;
-        workorderItemTemp.setUnit(workorderItemShowPara.getUnit());
         workorderItemTemp.setPkid(workorderItemShowPara.getPkid()) ;
         workorderItemTemp.setBelongToPkid(workorderItemShowPara.getBelongToPkid()) ;
         workorderItemTemp.setParentPkid(workorderItemShowPara.getParentPkid()) ;
         workorderItemTemp.setGrade(workorderItemShowPara.getGrade()) ;
         workorderItemTemp.setOrderid(workorderItemShowPara.getOrderid()) ;
-        workorderItemTemp.setName(workorderItemShowPara.getName()) ;
-        workorderItemTemp.setUnitPrice(workorderItemShowPara.getUnitPrice());
-        workorderItemTemp.setQuantity(workorderItemShowPara.getQuantity());
-        workorderItemTemp.setAmount(workorderItemShowPara.getAmount());
         workorderItemTemp.setArchivedFlag(workorderItemShowPara.getArchivedFlag());
         workorderItemTemp.setOriginFlag(workorderItemShowPara.getOriginFlag());
         workorderItemTemp.setCreatedTime(workorderItemShowPara.getCreatedTime());
         workorderItemTemp.setCreatedBy(workorderItemShowPara.getCreatedBy());
         workorderItemTemp.setLastUpdTime(workorderItemShowPara.getLastUpdTime());
         workorderItemTemp.setLastUpdBy(workorderItemShowPara.getLastUpdBy());
-        workorderItemTemp.setRemark(workorderItemShowPara.getRemark());
         workorderItemTemp.setRecVersion(workorderItemShowPara.getRecVersion());
         return workorderItemTemp;
     }
@@ -149,8 +130,6 @@ public class WorkorderItemService {
         workorderItemShowTemp.setParentPkid(workorderItemPara.getParentPkid()) ;
         workorderItemShowTemp.setGrade(workorderItemPara.getGrade()) ;
         workorderItemShowTemp.setOrderid(workorderItemPara.getOrderid()) ;
-        workorderItemShowTemp.setName(workorderItemPara.getName()) ;
-        workorderItemShowTemp.setRemark(workorderItemPara.getRemark()) ;
         return workorderItemShowTemp;
     }
 

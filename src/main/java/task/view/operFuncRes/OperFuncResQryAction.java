@@ -1,6 +1,5 @@
 package task.view.operFuncRes;
 
-import task.common.enums.EnumResType;
 import task.common.enums.EnumFlowStatus;
 import task.repository.model.Oper;
 import task.service.DeptOperService;

@@ -1,5 +1,7 @@
 package task.view.his;
 
+import task.repository.model.FlowHis;
+import task.service.FlowHisService;
 import task.service.WorkorderInfoService;
 /*import task.service.FlowHisService;*/
 import org.slf4j.Logger;
@@ -25,13 +27,13 @@ import java.util.List;
 public class FlowHisAction {
     private static final Logger logger = LoggerFactory.getLogger(FlowHisAction.class);
 
-    /*@ManagedProperty(value = "#{flowCtrlHisService}")
-    private FlowHisService flowCtrlHisService;*/
+    @ManagedProperty(value = "#{flowHisService}")
+    private FlowHisService flowHisService;
     @ManagedProperty(value = "#{workorderInfoService}")
     private WorkorderInfoService workorderInfoService;
 
-   /* private FlowHis flowCtrlHis;
-    private List<FlowHis> flowHisList;*/
+    private FlowHis flowHis;
+    private List<FlowHis> flowHisList;
 
     private String strRendered1;
     private String strRendered2;
@@ -40,11 +42,10 @@ public class FlowHisAction {
     private List<SelectItem> esInitCtt1List;
     private List<SelectItem> esInitCtt2List;
 
-    private String strTkcttCstplSelected;
-
     @PostConstruct
     public void init() {
-        //this.flowHisList = new ArrayList<FlowHis>();
+        flowHis=new FlowHis();
+        this.flowHisList = new ArrayList<FlowHis>();
         esInitCtt1List=new ArrayList<SelectItem> ();
         esInitCtt2List=new ArrayList<SelectItem> ();
         strRendered1="false";
@@ -54,11 +55,11 @@ public class FlowHisAction {
 
     public String onQueryAction(String strQryMsgOutPara) {
         try {
-            //this.flowHisList = flowCtrlHisService.selectListByModel(flowCtrlHis);
+            this.flowHisList = flowHisService.getListByModel(flowHis);
             if(strQryMsgOutPara.equals("true")){
-                /*if (flowHisList.isEmpty()) {
+                if (flowHisList.isEmpty()) {
                     MessageUtil.addWarn("没有查询到数据。");
-                }*/
+                }
             }
         } catch (Exception e) {
             logger.error("信息查询失败", e);
@@ -67,6 +68,13 @@ public class FlowHisAction {
         return null;
     }
 
+    public FlowHisService getFlowHisService() {
+        return flowHisService;
+    }
+
+    public void setFlowHisService(FlowHisService flowHisService) {
+        this.flowHisService = flowHisService;
+    }
 
     public WorkorderInfoService getWorkorderInfoService() {
         return workorderInfoService;
@@ -74,14 +82,6 @@ public class FlowHisAction {
 
     public void setWorkorderInfoService(WorkorderInfoService workorderInfoService) {
         this.workorderInfoService = workorderInfoService;
-    }
-
-    public String getStrTkcttCstplSelected() {
-        return strTkcttCstplSelected;
-    }
-
-    public void setStrTkcttCstplSelected(String strTkcttCstplSelected) {
-        this.strTkcttCstplSelected = strTkcttCstplSelected;
     }
 
     public String getStrRendered1() {
@@ -130,5 +130,21 @@ public class FlowHisAction {
 
     public void setEsInitCtt2List(List<SelectItem> esInitCtt2List) {
         this.esInitCtt2List = esInitCtt2List;
+    }
+
+    public FlowHis getFlowHis() {
+        return flowHis;
+    }
+
+    public void setFlowHis(FlowHis flowHis) {
+        this.flowHis = flowHis;
+    }
+
+    public List<FlowHis> getFlowHisList() {
+        return flowHisList;
+    }
+
+    public void setFlowHisList(List<FlowHis> flowHisList) {
+        this.flowHisList = flowHisList;
     }
 }

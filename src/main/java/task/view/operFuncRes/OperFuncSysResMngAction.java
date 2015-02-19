@@ -33,7 +33,6 @@ public class OperFuncSysResMngAction implements Serializable{
     private List<OperFuncResShow> operFuncResShowList;
     private List<DeptOperShow> deptOperShowSeledList;
     private TreeNode deptOperRoot;
-    private List<SelectItem> menuTypeList;
     private String strMenuTypeSeled;
 
     @PostConstruct
@@ -41,13 +40,7 @@ public class OperFuncSysResMngAction implements Serializable{
         try {
             operFuncResShowList = new ArrayList<>();
             deptOperShowSeledList = new ArrayList<>();
-            menuTypeList = new ArrayList<>();
             strMenuTypeSeled = "0";
-            menuTypeList.add(new SelectItem("", "全部"));
-            menuTypeList.add(new SelectItem("0", "查询"));
-            menuTypeList.add(new SelectItem("1", "录入"));
-            menuTypeList.add(new SelectItem("2", "流程"));
-            menuTypeList.add(new SelectItem("3", "系统"));
             // 资源-用户-功能
             initRes(strMenuTypeSeled);
             initDeptOper();
@@ -60,7 +53,6 @@ public class OperFuncSysResMngAction implements Serializable{
         deptOperShowSeledList.clear();
         operFuncResShowList.clear();
         Ptmenu ptmenuTemp=new Ptmenu();
-        ptmenuTemp.setMenuType(strMenuTypePara);
         List<Ptmenu> ptmenuListTemp=menuService.selectListByModel(ptmenuTemp);
         /*OperRes operResTemp=new OperRes();
         operResTemp.setType("system");
@@ -188,15 +180,6 @@ public class OperFuncSysResMngAction implements Serializable{
     }
 
     /*智能字段 Start*/
-
-    public List<SelectItem> getMenuTypeList() {
-        return menuTypeList;
-    }
-
-    public void setMenuTypeList(List<SelectItem> menuTypeList) {
-        this.menuTypeList = menuTypeList;
-    }
-
     public TreeNode getDeptOperRoot() {
         return deptOperRoot;
     }
