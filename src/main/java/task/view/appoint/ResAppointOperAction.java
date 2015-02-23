@@ -1,9 +1,10 @@
-package task.view.operFuncRes;
+package task.view.appoint;
 
 import task.common.enums.EnumArchivedFlag;
+import task.repository.model.OperRes;
 import task.repository.model.Ptmenu;
 import task.repository.model.model_show.DeptOperShow;
-import task.repository.model.model_show.OperFuncResShow;
+import task.repository.model.model_show.OperResShow;
 import task.service.*;
 import org.primefaces.model.DefaultTreeNode;
 import org.primefaces.model.TreeNode;
@@ -11,56 +12,61 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import skyline.util.MessageUtil;
 import skyline.util.ToolUtil;
-
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
-import javax.faces.model.SelectItem;
 import java.io.Serializable;
 import java.util.*;
 
 @ManagedBean
 @ViewScoped
-public class OperFuncSysResMngAction implements Serializable{
-    private static final Logger logger = LoggerFactory.getLogger(OperFuncSysResMngAction.class);
+public class ResAppointOperAction implements Serializable{
+    private static final Logger logger = LoggerFactory.getLogger(ResAppointOperAction.class);
     @ManagedProperty(value = "#{deptOperService}")
     private DeptOperService deptOperService;
+    @ManagedProperty(value = "#{operResService}")
+    private OperResService operResService;
     @ManagedProperty(value = "#{menuService}")
     private MenuService menuService;
 
-    private OperFuncResShow operFuncResShowSeled;
-    private List<OperFuncResShow> operFuncResShowList;
+    private OperResShow operResShowSeled;
+
+    private List<OperResShow> operResShowList;
+    private List<OperResShow> filteredOperResShowList;
+
     private List<DeptOperShow> deptOperShowSeledList;
     private TreeNode deptOperRoot;
-    private String strMenuTypeSeled;
 
     @PostConstruct
     public void init() {
         try {
-            operFuncResShowList = new ArrayList<>();
+            operResShowList = new ArrayList<>();
+            filteredOperResShowList= new ArrayList<>();
+
             deptOperShowSeledList = new ArrayList<>();
-            strMenuTypeSeled = "0";
+
             // 资源-用户-功能
-            initRes(strMenuTypeSeled);
-            initDeptOper();
+            initRes();
+            filteredOperResShowList.addAll(operResShowList);
+            initDeptOperAppoint();
+
         }catch (Exception e){
             MessageUtil.addError(e.getMessage());
             logger.error("初始化失败", e);
         }
     }
-    private void initRes(String strMenuTypePara){
+    private void initRes(){
         deptOperShowSeledList.clear();
-        operFuncResShowList.clear();
+        operResShowList.clear();
         Ptmenu ptmenuTemp=new Ptmenu();
         List<Ptmenu> ptmenuListTemp=menuService.selectListByModel(ptmenuTemp);
-        /*OperRes operResTemp=new OperRes();
-        operResTemp.setType("system");
+        OperRes operResTemp=new OperRes();
         List<OperResShow> operResShowListTemp=operResService.selectOperaResRecordsByModel(operResTemp);
         for(Ptmenu ptmenuUnit:ptmenuListTemp){
             String strInputOperName="";
             for(OperResShow operResShowUnit:operResShowListTemp){
-                if(ptmenuUnit.getPkid().equals(operResShowUnit.getInfoPkid())){
+                if(ptmenuUnit.getPkid().equals(operResShowUnit.getResPkid())){
                     if(strInputOperName.length()==0){
                         strInputOperName =
                                 ToolUtil.getStrIgnoreNull(operResShowUnit.getOperName());
@@ -69,15 +75,16 @@ public class OperFuncSysResMngAction implements Serializable{
                                 ToolUtil.getStrIgnoreNull(operResShowUnit.getOperName());
                     }
                 }
-            }*/
-            OperFuncResShow operFuncResShowTemp=new OperFuncResShow();
-            /*operFuncResShowTemp.setResPkid(ptmenuUnit.getPkid());
-            operFuncResShowTemp.setResName(ptmenuUnit.getMenulabel());
-            operFuncResShowTemp.setInputOperName(strInputOperName);*/
-            operFuncResShowList.add(operFuncResShowTemp);
-        //}
+            }
+            OperResShow operResShowTemp=new OperResShow();
+            operResShowTemp.setResPkid(ptmenuUnit.getPkid());
+            operResShowTemp.setResName(ptmenuUnit.getMenulabel());
+            operResShowTemp.setOperName(strInputOperName);
+            operResShowList.add(operResShowTemp);
+        }
     }
-    private void initDeptOper(){
+
+    private void initDeptOperAppoint(){
         deptOperShowSeledList.clear();
         deptOperRoot = new DefaultTreeNode("ROOT", null);
         DeptOperShow deptOperShowTemp =new DeptOperShow();
@@ -88,7 +95,6 @@ public class OperFuncSysResMngAction implements Serializable{
         recursiveOperTreeNode("ROOT", node0);
         node0.setExpanded(true);
     }
-
     private void recursiveOperTreeNode(String strParentPkidPara, TreeNode parentNode) {
         List<DeptOperShow> operResShowListTemp = deptOperService.selectDeptAndOperRecords(strParentPkidPara);
         for (DeptOperShow anOperResShowListTemp : operResShowListTemp) {
@@ -96,12 +102,7 @@ public class OperFuncSysResMngAction implements Serializable{
             recursiveOperTreeNode(anOperResShowListTemp.getPkid(), childNodeTemp);
         }
     }
-
-    public void selectAction(){
-        initRes(strMenuTypeSeled);
-    }
-    
-  /*  private void recursiveOperTreeNodeForExpand(
+    private void recursiveOperTreeNodeForExpand(
             TreeNode treeNodePara,List<OperResShow> operResShowListPara) {
         if (operResShowListPara==null||operResShowListPara.size()==0){
             return;
@@ -131,19 +132,18 @@ public class OperFuncSysResMngAction implements Serializable{
         }
     }
 
-    public void selectRecordAction(OperFuncResShow operFuncResShowPara) {
+    public void selectRecordAction(OperResShow operResShowPara) {
         try {
-            operFuncResShowSeled=operFuncResShowPara;
-            initDeptOper();
+            operResShowSeled=operResShowPara;
+            initDeptOperAppoint();
             OperRes operResTemp=new OperRes();
-            operResTemp.setInfoPkid(operFuncResShowSeled.getResPkid());
-            operResTemp.setType("system");
+            operResTemp.setResPkid(operResShowSeled.getResPkid());
             List<OperResShow> operResShowListTemp=operResService.selectOperaResRecordsByModel(operResTemp);
             recursiveOperTreeNodeForExpand(deptOperRoot,operResShowListTemp);
         } catch (Exception e) {
             MessageUtil.addError(e.getMessage());
         }
-    }*/
+    }
     public void selOperRecordAction(DeptOperShow deptOperShowPara){
         if (deptOperShowPara.getIsSeled()){
             deptOperShowSeledList.add(deptOperShowPara);
@@ -160,19 +160,26 @@ public class OperFuncSysResMngAction implements Serializable{
     public void onClickForMngAction(String strSubmitTypePara) {
         try {
             if (strSubmitTypePara.equals("Power")) {
-                /*OperRes operResTemp = new OperRes();
-                operResTemp.setInfoPkid(operFuncResShowSeled.getResPkid());
-                operResService.deleteRecord(operResTemp);
+                OperRes operResTemp = new OperRes();
+                operResTemp.setResPkid(operResShowSeled.getResPkid());
+                operResService.deleteRecordByResPkid(operResTemp);
                 operResTemp.setArchivedFlag(EnumArchivedFlag.ARCHIVED_FLAG0.getCode());
-                operResTemp.setType("system");
                 for (DeptOperShow deptOperShowUnit : deptOperShowSeledList) {
                     operResTemp.setOperPkid(deptOperShowUnit.getPkid());
                     operResService.insertRecord(operResTemp);
-                }*/
+                }
                 MessageUtil.addInfo("权限添加成功!");
             }
-            initRes(strMenuTypeSeled);
-            initDeptOper();
+            initRes();
+            //过滤需要和原数据同步
+            int selIndex=filteredOperResShowList.indexOf(operResShowSeled);
+            filteredOperResShowList.remove(operResShowSeled);
+            for(OperResShow operResShowUnit:operResShowList){
+                if(operResShowUnit.getOperPkid().equals(operResShowSeled.getOperPkid())){
+                    filteredOperResShowList.add(selIndex,operResShowUnit);
+                }
+            }
+            initDeptOperAppoint();
         }catch (Exception e){
             MessageUtil.addError(e.getMessage());
             logger.error("初始化失败", e);
@@ -196,20 +203,20 @@ public class OperFuncSysResMngAction implements Serializable{
         this.deptOperShowSeledList = deptOperShowSeledList;
     }
 
-    public List<OperFuncResShow> getOperFuncResShowList() {
-        return operFuncResShowList;
+    public List<OperResShow> getOperResShowList() {
+        return operResShowList;
     }
 
-    public void setOperFuncResShowList(List<OperFuncResShow> operFuncResShowList) {
-        this.operFuncResShowList = operFuncResShowList;
+    public void setOperResShowList(List<OperResShow> operResShowList) {
+        this.operResShowList = operResShowList;
     }
 
-    public String getStrMenuTypeSeled() {
-        return strMenuTypeSeled;
+    public List<OperResShow> getFilteredOperResShowList() {
+        return filteredOperResShowList;
     }
 
-    public void setStrMenuTypeSeled(String strMenuTypeSeled) {
-        this.strMenuTypeSeled = strMenuTypeSeled;
+    public void setFilteredOperResShowList(List<OperResShow> filteredOperResShowList) {
+        this.filteredOperResShowList = filteredOperResShowList;
     }
 
     public MenuService getMenuService() {
@@ -226,5 +233,13 @@ public class OperFuncSysResMngAction implements Serializable{
 
     public void setDeptOperService(DeptOperService deptOperService) {
         this.deptOperService = deptOperService;
+    }
+
+    public OperResService getOperResService() {
+        return operResService;
+    }
+
+    public void setOperResService(OperResService operResService) {
+        this.operResService = operResService;
     }
 }

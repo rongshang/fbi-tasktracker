@@ -100,12 +100,6 @@
                     <p:column headerText="资源功能" style="width:300px;text-align:left">
                         <h:outputText value="#{record.menuaction}"/>
                     </p:column>
-                    <p:column headerText="资源类型" style="width:60px;text-align:center">
-                        <h:outputText value="#{record.infotype}"/>
-                    </p:column>
-                    <p:column headerText="功能分类" style="width:60px;text-align:center">
-                        <h:outputText value="#{record.flowstatus}"/>
-                    </p:column>
                     <p:column headerText="系统类型" style="width:60px;text-align:center">
                         <h:outputText value="#{record.targetmachine}"/>
                     </p:column>
@@ -143,14 +137,6 @@
                             <p:outputLabel value="是否打开：" for="openwindowAdd"/>
                             <p:selectOneMenu id="openwindowAdd" value="#{menuAction.ptmenuAdd.openwindow}">
                                 <f:selectItems value="#{menuAction.openWindowList}"/>
-                            </p:selectOneMenu>
-                            <p:outputLabel value="资源分类：" for="infotypeAdd"/>
-                            <p:selectOneMenu id="infotypeAdd" value="#{menuAction.ptmenuAdd.infotype}">
-                                <f:selectItems value="#{esCommon.resTypeList}"/>
-                            </p:selectOneMenu>
-                            <p:outputLabel value="功能类型：" for="flowstatusAdd"/>
-                            <p:selectOneMenu id="flowstatusAdd" value="#{menuAction.ptmenuAdd.flowstatus}">
-                                <f:selectItems value="#{esCommon.flowStatusList}"/>
                             </p:selectOneMenu>
                             <p:outputLabel value="系统类型：" for="targetmachineAdd"/>
                             <p:selectOneMenu id="targetmachineAdd" value="#{menuAction.ptmenuAdd.targetmachine}">
@@ -208,14 +194,6 @@
                             <p:outputLabel value="是否打开：" for="openwindowUpd"/>
                             <p:selectOneMenu id="openwindowUpd" value="#{menuAction.ptmenuUpd.openwindow}">
                                 <f:selectItems value="#{menuAction.openWindowList}"/>
-                            </p:selectOneMenu>
-                            <p:outputLabel value="资源分类：" for="infotypeUpd"/>
-                            <p:selectOneMenu id="infotypeUpd" value="#{menuAction.ptmenuUpd.infotype}">
-                                <f:selectItems value="#{esCommon.resTypeList}"/>
-                            </p:selectOneMenu>
-                            <p:outputLabel value="功能类型：" for="flowstatusUpd"/>
-                            <p:selectOneMenu id="flowstatusUpd" value="#{menuAction.ptmenuUpd.flowstatus}">
-                                <f:selectItems value="#{esCommon.flowStatusList}"/>
                             </p:selectOneMenu>
                             <p:outputLabel value="系统类型：" for="targetmachineUpd"/>
                             <p:selectOneMenu id="targetmachineUpd" value="#{menuAction.ptmenuUpd.targetmachine}">
@@ -276,14 +254,6 @@
                                          style="background-color:gainsboro;"/>
                             <p:outputLabel value="是否打开：" for="openwindowDel"/>
                             <p:inputText id="openwindowDel" value="#{menuAction.ptmenuDel.openwindow}"
-                                         readonly="true"
-                                         style="background-color:gainsboro;"/>
-                            <p:outputLabel value="资源分类：" for="infotypeUpd"/>
-                            <p:inputText id="infotypeDel" value="#{menuAction.ptmenuDel.infotype}"
-                                         readonly="true"
-                                         style="background-color:gainsboro;"/>
-                            <p:outputLabel value="功能类型：" for="flowstatusUpd"/>
-                            <p:inputText id="flowstatusDel" value="#{menuAction.ptmenuDel.flowstatus}"
                                          readonly="true"
                                          style="background-color:gainsboro;"/>
                             <p:outputLabel value="系统类型：" for="targetmachineUpd"/>

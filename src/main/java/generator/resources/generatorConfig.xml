@@ -31,6 +31,14 @@
         </javaClientGenerator>
 
         <!--业务类例子 -->
+        <table schema="task" tableName="PTLOGICACT">
+            <property name="ignoreQualifiersAtRuntime" value="true" />
+            <generatedKey column="pkid" sqlStatement="select sys_guid() from dual" identity="false"/>
+        </table>
+        <table schema="task" tableName="PTMENU">
+            <property name="ignoreQualifiersAtRuntime" value="true" />
+            <generatedKey column="pkid" sqlStatement="select sys_guid() from dual" identity="false"/>
+        </table>
         <!--<table schema="task" tableName="DEPT">
             <property name="ignoreQualifiersAtRuntime" value="true" />
             <generatedKey column="pkid" sqlStatement="select sys_guid() from dual" identity="false"/>
@@ -42,30 +50,18 @@
         <table schema="task" tableName="WORKORDER_INFO">
             <property name="ignoreQualifiersAtRuntime" value="true" />
             <generatedKey column="pkid" sqlStatement="select sys_guid() from dual" identity="false"/>
-        </table>-->
+        </table>
         <table schema="task" tableName="WORKORDER_ITEM">
             <property name="ignoreQualifiersAtRuntime" value="true" />
             <generatedKey column="pkid" sqlStatement="select sys_guid() from dual" identity="false"/>
         </table>
-      <!--  <table schema="task" tableName="FLOW">
+        <table schema="task" tableName="FLOW">
             <property name="ignoreQualifiersAtRuntime" value="true" />
             <generatedKey column="pkid" sqlStatement="select sys_guid() from dual" identity="false"/>
         </table>
         <table schema="task" tableName="FLOW_HIS">
             <property name="ignoreQualifiersAtRuntime" value="true" />
             <generatedKey column="pkid" sqlStatement="select sys_guid() from dual" identity="false"/>
-        </table>
-        <table schema="task" tableName="PTENUDETAIL">
-            <property name="ignoreQualifiersAtRuntime" value="true" />
-        </table>
-        <table schema="task" tableName="PTENUMAIN">
-            <property name="ignoreQualifiersAtRuntime" value="true" />
-        </table>
-        <table schema="task" tableName="PTLOGICACT">
-            <property name="ignoreQualifiersAtRuntime" value="true" />
-        </table>
-        <table schema="task" tableName="PTMENU">
-            <property name="ignoreQualifiersAtRuntime" value="true" />
         </table>-->
        <!-- 平台类 有几个表并不是Mybatis自动生成的，更新慎用
         <table schema="task" tableName="DEPT">

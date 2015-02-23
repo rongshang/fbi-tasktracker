@@ -125,7 +125,7 @@
                 </tr>
                 <tr style="width:100%; height:25px">
                     <td style="height:25px;">
-                        <div onclick="tabbarclk(this);document.frames('todoTaskWorkFrame').location.href='<%=contextPath%>/UI/task/task/stlPower.xhtml;'"
+                        <div onclick="tabbarclk(this);document.frames('todoTaskWorkFrame').location.href='<%=contextPath%>/UI/task/taskDisplay/stlPower.xhtml;'"
                              active="true" id="todoTask" class="tabs-item-active"
                              style="float:left;width:80px;margin-left:12px;display: none">
                             <span style="width:100%;">任务一览</span>
@@ -137,7 +137,7 @@
                             <span style="width:100%;">查询操作</span>
                         </div>
                         <div id="middleId4" style="float:left;width:2px;"></div>
-                        <div onclick="tabbarclk(this);"
+                        <div onclick="myRequest();tabbarclk(this);"
                              active="false" id="sys" class="tabs-item"
                              style="float:left;width:80px;display: none">
                             <span style="width:100%;">系统管理</span>
@@ -167,7 +167,7 @@
                     <td width="100%" colspan="4">
                         <div class="divlayout" id="todoTaskLayout">
                             <iframe id="todoTaskWorkFrame"
-                                    src="<%=contextPath%>/UI/task/task/stlPower.xhtml"
+                                    src="<%=contextPath%>/UI/task/taskDisplay/stlPower.xhtml"
                                     width="100%" height="100%"
                                     frameborder="no"
                                     border="0"

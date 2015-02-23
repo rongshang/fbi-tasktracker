@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="task.repository.dao.not_mybatis.MyOperResMapper">
+    <resultMap id="BaseResultMapOperRes" type="task.repository.model.model_show.OperResShow">
+        <result column="PKID" jdbcType="VARCHAR" property="pkid" />
+        <result column="TID" jdbcType="VARCHAR" property="tid" />
+        <result column="OPER_PKID" jdbcType="VARCHAR" property="operPkid" />
+        <result column="OPER_ID" jdbcType="VARCHAR" property="operId" />
+        <result column="OPER_NAME" jdbcType="VARCHAR" property="operName" />
+        <result column="RES_PKID" jdbcType="VARCHAR" property="resPkid" />
+        <result column="RES_NAME" jdbcType="VARCHAR" property="resName" />
+        <result column="ARCHIVED_FLAG" jdbcType="CHAR" property="archivedFlag" />
+        <result column="CREATED_BY" jdbcType="VARCHAR" property="createdBy" />
+        <result column="CREATED_BY_NAME" jdbcType="VARCHAR" property="createdByName" />
+        <result column="CREATED_TIME" jdbcType="VARCHAR" property="createdTime" />
+        <result column="LAST_UPD_BY" jdbcType="VARCHAR" property="lastUpdBy" />
+        <result column="LAST_UPD_BY_NAME" jdbcType="VARCHAR" property="lastUpdByName" />
+        <result column="LAST_UPD_TIME" jdbcType="VARCHAR" property="lastUpdTime" />
+        <result column="REMARK" jdbcType="VARCHAR" property="remark" />
+        <result column="REC_VERSION" jdbcType="DECIMAL" property="recVersion" />
+    </resultMap>
+    <select id="selectOperResRecordsByModelShow" parameterType="task.repository.model.model_show.OperResShow"
+            resultMap="BaseResultMapOperRes">
+        <![CDATA[
+            select
+                t.PKID,
+                t.TID,
+                t.OPER_PKID,
+                o.ID as OPER_ID,
+                o.NAME as OPER_NAME,
+                t.RES_PKID,
+                t.ARCHIVED_FLAG,
+                t.CREATED_BY,
+                (select name from oper where PKID=t.CREATED_BY) as CREATED_BY_NAME,
+                t.CREATED_TIME,
+                t.LAST_UPD_BY,
+                (select name from oper where PKID=t.LAST_UPD_BY) as LAST_UPD_BY_NAME,
+                t.LAST_UPD_TIME,
+                t.REMARK,
+                t.REC_VERSION
+            from
+                OPER_RES t
+            left join
+                OPER o
+            on
+                t.OPER_PKID=o.PKID
+            where
+               1=1
+        ]]>
+        <if test="tid != null and tid != ''">
+            and t.TID=#{tid}
+        </if>
+        <if test="operPkid != null and operPkid != ''">
+            and t.OPER_PKID=#{operPkid}
+        </if>
+        <if test="resPkid != null and resPkid != ''">
+            and t.RES_PKID=#{resPkid}
+        </if>
+    </select>
+</mapper>
