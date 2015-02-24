@@ -1,5 +1,7 @@
 package task.service;
 
+import org.apache.commons.lang.StringUtils;
+import skyline.util.MessageUtil;
 import task.repository.dao.WorkorderInfoMapper;
 import task.repository.dao.not_mybatis.MyWorkorderInfoMapper;
 import task.repository.dao.not_mybatis.MyDeptAndOperMapper;
@@ -11,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import skyline.util.ToolUtil;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -30,10 +33,14 @@ public class WorkorderInfoService {
     private MyDeptAndOperMapper myDeptAndOperMapper;
 
     public String getUserName(String operPkidPara){
-        return myDeptAndOperMapper.getUserName(ToolUtil.getStrIgnoreNull(operPkidPara));
+        if(ToolUtil.getStrIgnoreNull(operPkidPara).equals("")){
+            return "";
+        }else {
+            return myDeptAndOperMapper.getUserName(ToolUtil.getStrIgnoreNull(operPkidPara));
+        }
     }
 
-    public List<WorkorderInfo> getListByModelShow(WorkorderInfoShow workorderInfoShowPara) {
+    public List<WorkorderInfo> getWorkorderInfoListByModelShow(WorkorderInfoShow workorderInfoShowPara) {
         WorkorderInfoExample example= new WorkorderInfoExample();
         WorkorderInfoExample.Criteria criteria = example.createCriteria();
         //可以为NULL的项
@@ -52,46 +59,17 @@ public class WorkorderInfoService {
         example.setOrderByClause("ID ASC") ;
         return workorderInfoMapper.selectByExample(example);
     }
-    public List<WorkorderInfo> getListByModel(WorkorderInfo workorderInfoPara) {
-        return getListByModelShow(fromModelToModelShow(workorderInfoPara));
-    }
-
-    public List<WorkorderInfoShow> getCttInfoListByCttType_Status(
-            String strCttyTypePara,String strStatusPara) {
-        return myWorkorderInfoMapper.getCttInfoListByCttType_Status(strCttyTypePara,strStatusPara);
-    }
-
-    public List<WorkorderInfoShow> getCttInfoListByCttType_ParentPkid_Status(
-            String strCttyTypePara,
-            String strParentPkidPara,
-            String strStatusPara) {
-        return myWorkorderInfoMapper.getCttInfoListByCttType_ParentPkid_Status(
-                strCttyTypePara,
-                strParentPkidPara,
-                strStatusPara);
-    }
-
-    public List<WorkorderInfoShow> selectRecordsFromCtt(String parentPkidPara){
-        return  myWorkorderInfoMapper.selectRecordsFromCtt(parentPkidPara);
-    }
-
-    public List<WorkorderInfo> getEsInitCttByCttTypeAndBelongToPkId(String strCttType,String strBelongToPkid) {
-        WorkorderInfoExample example= new WorkorderInfoExample();
-        WorkorderInfoExample.Criteria criteria = example.createCriteria();
-        criteria.andParentPkidEqualTo(ToolUtil.getStrIgnoreNull(strBelongToPkid));
-        example.setOrderByClause("ID ASC") ;
-        return workorderInfoMapper.selectByExample(example);
+    public List<WorkorderInfoShow> getWorkorderShowInfoListByModelShow(WorkorderInfoShow workorderInfoShowPara) {
+        List<WorkorderInfo> workorderInfoListTemp=getWorkorderInfoListByModelShow(workorderInfoShowPara);
+        List<WorkorderInfoShow> workorderInfoShowListTemp=new ArrayList<>();
+        for(WorkorderInfo workorderInfoUnit:workorderInfoListTemp){
+            workorderInfoShowListTemp.add(fromModelToModelShow(workorderInfoUnit));
+        }
+        return workorderInfoShowListTemp;
     }
 
     public WorkorderInfo getCttInfoByPkId(String strPkid) {
         return workorderInfoMapper.selectByPrimaryKey(strPkid);
-    }
-
-    public boolean findChildRecordsByPkid(String strPkidPara) {
-        WorkorderInfoExample example = new WorkorderInfoExample();
-        WorkorderInfoExample.Criteria criteria = example.createCriteria();
-        criteria.andParentPkidEqualTo(strPkidPara);
-        return (workorderInfoMapper.selectByExample(example)).size()>0;
     }
 
     /*public FlowHis fromCttInfoToFlowCtrlHis(CttInfo cttInfoPara,String strOperTypePara){
@@ -172,18 +150,30 @@ public class WorkorderInfoService {
         return workorderInfoMapper.deleteByPrimaryKey(strCttInfoPkidPara);
     }
 
-    public String getStrMaxCttId(){
-        return myWorkorderInfoMapper.getStrMaxCttId() ;
+    public String getMaxNoPlusOne() {
+        Integer intTemp;
+        String strMaxId = myWorkorderInfoMapper.getStrMaxCttId() ;
+        if (StringUtils.isEmpty(ToolUtil.getStrIgnoreNull(strMaxId))) {
+            strMaxId = "ORDER" + ToolUtil.getStrToday() + "0001";
+        } else {
+            String strTemp = strMaxId.substring(strMaxId.length() - 4).replaceFirst("^0+", "");
+            if (ToolUtil.strIsDigit(strTemp)) {
+                intTemp = Integer.parseInt(strTemp);
+                intTemp = intTemp + 1;
+                strMaxId = strMaxId.substring(0, strMaxId.length() - 4) + StringUtils.leftPad(intTemp.toString(), 4, "0");
+            }
+        }
+        return strMaxId;
     }
-
     public WorkorderInfo fromModelShowToModel(WorkorderInfoShow workorderInfoShowPara) {
         WorkorderInfo workorderInfoTemp = new WorkorderInfo();
         workorderInfoTemp.setPkid(workorderInfoShowPara.getPkid());
         workorderInfoTemp.setParentPkid(workorderInfoShowPara.getParentPkid());
         workorderInfoTemp.setId(workorderInfoShowPara.getId());
+        workorderInfoTemp.setType(workorderInfoShowPara.getType());
         workorderInfoTemp.setName(workorderInfoShowPara.getName());
-        workorderInfoTemp.setStartTime(workorderInfoShowPara.getCttStartDate());
-        workorderInfoTemp.setEndTime(workorderInfoShowPara.getCttEndDate());
+        workorderInfoTemp.setStartTime(workorderInfoShowPara.getStartDate());
+        workorderInfoTemp.setEndTime(workorderInfoShowPara.getEndDate());
         workorderInfoTemp.setSignDate(workorderInfoShowPara.getSignDate());
         workorderInfoTemp.setRemark(workorderInfoShowPara.getRemark());
         workorderInfoTemp.setAttachment(workorderInfoShowPara.getAttachment());
@@ -193,7 +183,6 @@ public class WorkorderInfoService {
         workorderInfoTemp.setLastUpdBy(workorderInfoShowPara.getLastUpdBy());
         workorderInfoTemp.setLastUpdTime(workorderInfoShowPara.getLastUpdTime());
         workorderInfoTemp.setRecVersion(workorderInfoShowPara.getRecVersion());
-        workorderInfoTemp.setType(workorderInfoShowPara.getType());
         return workorderInfoTemp;
     }
     public WorkorderInfoShow fromModelToModelShow(WorkorderInfo workorderInfoPara) {
@@ -201,31 +190,21 @@ public class WorkorderInfoService {
         workorderInfoShowTemp.setPkid(workorderInfoPara.getPkid());
         workorderInfoShowTemp.setParentPkid(workorderInfoPara.getParentPkid());
         workorderInfoShowTemp.setId(workorderInfoPara.getId());
+        workorderInfoShowTemp.setType(workorderInfoPara.getType());
         workorderInfoShowTemp.setName(workorderInfoPara.getName());
-        workorderInfoShowTemp.setCttStartDate(workorderInfoPara.getStartTime());
-        workorderInfoShowTemp.setCttEndDate(workorderInfoPara.getEndTime());
+        workorderInfoShowTemp.setStartDate(workorderInfoPara.getStartTime());
+        workorderInfoShowTemp.setEndDate(workorderInfoPara.getEndTime());
         workorderInfoShowTemp.setSignDate(workorderInfoPara.getSignDate());
         workorderInfoShowTemp.setRemark(workorderInfoPara.getRemark());
         workorderInfoShowTemp.setAttachment(workorderInfoPara.getAttachment());
         workorderInfoShowTemp.setArchivedFlag(workorderInfoPara.getArchivedFlag());
         workorderInfoShowTemp.setCreatedBy(workorderInfoPara.getCreatedBy());
+        workorderInfoShowTemp.setCreatedByName(getUserName(workorderInfoPara.getCreatedBy()));
         workorderInfoShowTemp.setCreatedTime(workorderInfoPara.getCreatedTime());
         workorderInfoShowTemp.setLastUpdBy(workorderInfoPara.getLastUpdBy());
+        workorderInfoShowTemp.setLastUpdByName(getUserName(workorderInfoPara.getLastUpdBy()));
         workorderInfoShowTemp.setLastUpdTime(workorderInfoPara.getLastUpdTime());
         workorderInfoShowTemp.setRecVersion(workorderInfoPara.getRecVersion());
-        workorderInfoShowTemp.setType(workorderInfoPara.getType());
         return workorderInfoShowTemp;
-    }
-    //更新甲供材情况
-    public int updateByPKid(WorkorderInfo workorderInfoPara){
-        return workorderInfoMapper.updateByPrimaryKey(workorderInfoPara);
-    }
-
-    public Integer getChildrenOfThisRecordInEsInitCtt(String strCttType,String strBelongToPkid){
-        return myWorkorderInfoMapper.getChildrenOfThisRecordInEsInitCtt(strCttType,strBelongToPkid);
-    }
-
-    public List<WorkorderInfoShow> selectCttByStatusFlagBegin_End(WorkorderInfoShow workorderInfoShowPara){
-        return myWorkorderInfoMapper.selectCttByStatusFlagBegin_End(workorderInfoShowPara);
     }
 }

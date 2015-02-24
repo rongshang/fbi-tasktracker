@@ -43,14 +43,12 @@ public class ResAppointOperAction implements Serializable{
         try {
             operResShowList = new ArrayList<>();
             filteredOperResShowList= new ArrayList<>();
-
             deptOperShowSeledList = new ArrayList<>();
 
             // 资源-用户-功能
             initRes();
             filteredOperResShowList.addAll(operResShowList);
             initDeptOperAppoint();
-
         }catch (Exception e){
             MessageUtil.addError(e.getMessage());
             logger.error("初始化失败", e);
@@ -175,11 +173,10 @@ public class ResAppointOperAction implements Serializable{
             int selIndex=filteredOperResShowList.indexOf(operResShowSeled);
             filteredOperResShowList.remove(operResShowSeled);
             for(OperResShow operResShowUnit:operResShowList){
-                if(operResShowUnit.getOperPkid().equals(operResShowSeled.getOperPkid())){
+                if(operResShowUnit.getResPkid().equals(operResShowSeled.getResPkid())){
                     filteredOperResShowList.add(selIndex,operResShowUnit);
                 }
             }
-            initDeptOperAppoint();
         }catch (Exception e){
             MessageUtil.addError(e.getMessage());
             logger.error("初始化失败", e);
@@ -217,6 +214,14 @@ public class ResAppointOperAction implements Serializable{
 
     public void setFilteredOperResShowList(List<OperResShow> filteredOperResShowList) {
         this.filteredOperResShowList = filteredOperResShowList;
+    }
+
+    public OperResShow getOperResShowSeled() {
+        return operResShowSeled;
+    }
+
+    public void setOperResShowSeled(OperResShow operResShowSeled) {
+        this.operResShowSeled = operResShowSeled;
     }
 
     public MenuService getMenuService() {

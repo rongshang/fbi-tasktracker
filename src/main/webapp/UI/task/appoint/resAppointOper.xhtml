@@ -27,12 +27,14 @@
                                  widgetVar="widResDataTable"
                                  value="#{resAppointOperAction.operResShowList}"
                                  var="record"
+                                 rowKey="#{record.resPkid}"
+                                 resizableColumns="true"
+                                 selectionMode="single"
                                  filteredValue="#{resAppointOperAction.filteredOperResShowList}"
                                  emptyMessage="数据记录为空..."
                                  rowIndexVar="row"
                                  scrollable="true"
                                  scrollHeight="400">
-
                         <f:facet name="header" style="text-align:left;">
                             <div style="text-align:left;">
                                 <h:outputText value="查找所有的列：" />
@@ -63,7 +65,9 @@
                             <h:outputText value="#{record.operName}"/>
                         </p:column>
                     </p:dataTable>
-                    <p:dialog id="dlgViewForRes" header="人员指派" widgetVar="wVDlgViewForRes"
+                    <p:dialog id="dlgViewForRes"
+                              header="#{resAppointOperAction.operResShowSeled.resName}_人员指派"
+                              widgetVar="wVDlgViewForRes"
                               resizable="false" modal="true"
                               showEffect="clip" hideEffect="fold">
                         <h:panelGrid id="pgViewForRes">

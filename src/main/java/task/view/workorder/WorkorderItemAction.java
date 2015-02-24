@@ -219,20 +219,14 @@ public class WorkorderItemAction {
     /*右单击事件*/
     public void selectRecordAction(String strSubmitTypePara, WorkorderItemShow workorderItemShowPara) {
         try {
-            if (strSubmitTypePara.equals("Add")) {
-                return;
-            }
             strSubmitType = strSubmitTypePara;
             if (strSubmitTypePara.equals("Sel")) {
                 workorderItemShowSel = (WorkorderItemShow) BeanUtils.cloneBean(workorderItemShowPara);
-                workorderItemShowSel.setStrNo(ToolUtil.getIgnoreSpaceOfStr(workorderItemShowSel.getStrNo()));
             }
             if (strSubmitTypePara.equals("Upd")) {
                 workorderItemShowUpd = (WorkorderItemShow) BeanUtils.cloneBean(workorderItemShowPara);
-                workorderItemShowUpd.setStrNo(ToolUtil.getIgnoreSpaceOfStr(workorderItemShowUpd.getStrNo()));
             } else if (strSubmitTypePara.equals("Del")) {
                 workorderItemShowDel = (WorkorderItemShow) BeanUtils.cloneBean(workorderItemShowPara);
-                workorderItemShowDel.setStrNo(ToolUtil.getIgnoreSpaceOfStr(workorderItemShowDel.getStrNo()));
             }
         } catch (Exception e) {
             logger.error("选择数据失败，", e);

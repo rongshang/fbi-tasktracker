@@ -57,7 +57,7 @@ public class WorkorderInfoAction {
     }
     public void initData() {
         try {
-            this.workorderInfoShowList = new ArrayList<WorkorderInfoShow>();
+            this.workorderInfoShowList = new ArrayList<>();
             workorderInfoShowQry = new WorkorderInfoShow();
             workorderInfoShowSel = new WorkorderInfoShow();
             workorderInfoShowAdd = new WorkorderInfoShow();
@@ -72,59 +72,11 @@ public class WorkorderInfoAction {
         }
     }
 
-    public void setMaxNoPlusOne() {
+    public String onQueryAction(String strQryMsgOutPara) {
         try {
-            Integer intTemp;
-            String strMaxId = workorderInfoService.getStrMaxCttId();
-            if (StringUtils.isEmpty(ToolUtil.getStrIgnoreNull(strMaxId))) {
-                strMaxId = "TKCTT" + ToolUtil.getStrToday() + "001";
-            } else {
-                if (strMaxId.length() > 3) {
-                    String strTemp = strMaxId.substring(strMaxId.length() - 3).replaceFirst("^0+", "");
-                    if (ToolUtil.strIsDigit(strTemp)) {
-                        intTemp = Integer.parseInt(strTemp);
-                        intTemp = intTemp + 1;
-                        strMaxId = strMaxId.substring(0, strMaxId.length() - 3) + StringUtils.leftPad(intTemp.toString(), 3, "0");
-                    } else {
-                        strMaxId += "001";
-                    }
-                }
-            }
-            workorderInfoShowAdd.setId(strMaxId);
-            workorderInfoShowUpd.setId(strMaxId);
-        } catch (Exception e) {
-            logger.error("总包合同信息查询失败", e);
-            MessageUtil.addError("总包合同信息查询失败");
-        }
-    }
-
-    public String onQueryAction(String strQryFlag,String strQryMsgOutPara) {
-        try {
-            if (strQryFlag.equals("Qry")) {
-
-            } else if (strQryFlag.contains("Mng")) {
-                workorderInfoShowQry.setStrStatusFlagBegin(null);
-                workorderInfoShowQry.setStrStatusFlagEnd(EnumFlowStatus.FLOW_STATUS0.getCode());
-            } else if (strQryFlag.contains("Check")) {
-                if (strQryFlag.contains("DoubleCheck")) {
-                    workorderInfoShowQry.setStrStatusFlagBegin(EnumFlowStatus.FLOW_STATUS1.getCode());
-                    workorderInfoShowQry.setStrStatusFlagEnd(EnumFlowStatus.FLOW_STATUS2.getCode());
-                }else{
-                    workorderInfoShowQry.setStrStatusFlagBegin(EnumFlowStatus.FLOW_STATUS0.getCode());
-                    workorderInfoShowQry.setStrStatusFlagEnd(EnumFlowStatus.FLOW_STATUS1.getCode());
-                }
-            }  else if (strQryFlag.contains("Approve")) {
-                if (strQryFlag.equals("ApprovedQry")) {
-                    workorderInfoShowQry.setStrStatusFlagBegin(EnumFlowStatus.FLOW_STATUS3.getCode());
-                    workorderInfoShowQry.setStrStatusFlagEnd(EnumFlowStatus.FLOW_STATUS3.getCode());
-                }else{
-                    workorderInfoShowQry.setStrStatusFlagBegin(EnumFlowStatus.FLOW_STATUS2.getCode());
-                    workorderInfoShowQry.setStrStatusFlagEnd(EnumFlowStatus.FLOW_STATUS3.getCode());
-                }
-            }
             this.workorderInfoShowList.clear();
-            workorderInfoShowList = workorderInfoService.selectCttByStatusFlagBegin_End(workorderInfoShowQry);
-
+            workorderInfoShowList =
+                    workorderInfoService.getWorkorderShowInfoListByModelShow(workorderInfoShowQry);
             if(strQryMsgOutPara.equals("true"))  {
                 if (workorderInfoShowList.isEmpty()) {
                     MessageUtil.addWarn("没有查询到数据。");
@@ -137,22 +89,17 @@ public class WorkorderInfoAction {
         return null;
     }
 
-    public void resetActionForAdd(){
+    public void initForAdd(){
         strSubmitType="Add";
         workorderInfoShowAdd = new WorkorderInfoShow();
+        workorderInfoShowAdd.setId(workorderInfoService.getMaxNoPlusOne());
     }
-    public void selectRecordAction(
-                                   String strSubmitTypePara,
-                                   WorkorderInfoShow workorderInfoShowPara) {
+    public void selectRecordAction(String strSubmitTypePara,WorkorderInfoShow workorderInfoShowPara) {
         try {
             strSubmitType = strSubmitTypePara;
             // 查询
-            workorderInfoShowPara.setCreatedByName(workorderInfoService.getUserName(workorderInfoShowPara.getCreatedBy()));
-            workorderInfoShowPara.setLastUpdByName(workorderInfoService.getUserName(workorderInfoShowPara.getLastUpdBy()));
             if (strSubmitTypePara.equals("Sel")) {
                  workorderInfoShowSel = (WorkorderInfoShow) BeanUtils.cloneBean(workorderInfoShowPara);
-            }else if (strSubmitTypePara.equals("Add")) {
-                workorderInfoShowAdd = (WorkorderInfoShow) BeanUtils.cloneBean(workorderInfoShowPara);
             }else if (strSubmitTypePara.equals("Upd")) {
                  workorderInfoShowUpd = (WorkorderInfoShow) BeanUtils.cloneBean(workorderInfoShowPara);
             }else if (strSubmitTypePara.equals("Del")){
@@ -177,16 +124,10 @@ public class WorkorderInfoAction {
             MessageUtil.addError("请输入签订日期！");
             return false;
         }
-        if (StringUtils.isEmpty(workorderInfoShowPara.getSignPartA())) {
-            MessageUtil.addError("请输入签订甲方！");
-            return false;
-        } else if (StringUtils.isEmpty(workorderInfoShowPara.getSignPartB())) {
-            MessageUtil.addError("请输入签订乙方！");
-            return false;
-        } else if (StringUtils.isEmpty(workorderInfoShowPara.getCttStartDate())) {
+        else if (StringUtils.isEmpty(workorderInfoShowPara.getStartDate())) {
             MessageUtil.addError("请输入合同开始时间！");
             return false;
-        } else if (StringUtils.isEmpty(workorderInfoShowPara.getCttEndDate())) {
+        } else if (StringUtils.isEmpty(workorderInfoShowPara.getEndDate())) {
             MessageUtil.addError("请输入合同截止时间！");
             return false;
         }
@@ -202,14 +143,8 @@ public class WorkorderInfoAction {
             if (!submitPreCheck(workorderInfoShowAdd)) {
                 return;
             }
-            WorkorderInfoShow workorderInfoShowTemp =new WorkorderInfoShow();
-            if (workorderInfoService.getListByModelShow(workorderInfoShowTemp).size()>0) {
-                MessageUtil.addError("该记录已存在，请重新录入！");
-            } else {
-                addRecordAction(workorderInfoShowAdd);
-                MessageUtil.addInfo("新增数据完成。");
-                resetActionForAdd();
-            }
+            addRecordAction(workorderInfoShowAdd);
+            MessageUtil.addInfo("新增数据完成。");
         } else if (strSubmitType.equals("Upd")) {
 			if (!submitPreCheck(workorderInfoShowUpd)) {
 	         return;
@@ -220,7 +155,7 @@ public class WorkorderInfoAction {
             deleteRecordAction(workorderInfoShowDel);
             MessageUtil.addInfo("删除数据完成。");
         }
-        onQueryAction("Mng","false");
+        onQueryAction("false");
     }
 
     private void addRecordAction(WorkorderInfoShow workorderInfoShowPara) {
