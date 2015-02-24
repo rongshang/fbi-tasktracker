@@ -47,45 +47,28 @@
     </ui:define>
     <ui:define name="content">
         <h:form id="form" enctype="multipart/form-data">
-	    <div style="margin:5px;">
+            <div style="margin:5px;">
                 <p:growl id="msgs" showDetail="true"/>
                 <p:focus for="id"/>
                 <p:panel>
                     <h:panelGrid id="pdQry" columns="2" style="width: 100%">
-                        <h:panelGrid>
-                            <h:panelGrid columns="6">
-                                <p:outputLabel value="合同编号：" for="id"/>
-                                <p:inputText id="id" value="#{tkcttInfoAction.cttInfoShowQry.id}"/>
-                                <p:outputLabel value="合同名称：" for="cttName"/>
-                                <p:inputText id="cttName" value="#{tkcttInfoAction.cttInfoShowQry.name}"/>
-                                <p:outputLabel value="签订甲方：" for="signPartA"/>
-                                <p:selectOneMenu id="signPartA" value="#{tkcttInfoAction.cttInfoShowQry.signPartA}"
-                                                 disabled="#{tkcttInfoAction.styleModel.disabled_Flag}">
-                                    <f:selectItems value="#{esCommon.customerlist}"/>
-                                </p:selectOneMenu>
-                                <p:outputLabel value="签订日期：" for="signDate"/>
-                                <p:inputText id="signDate" value="#{tkcttInfoAction.cttInfoShowQry.signDate}"
-                                             onclick="WdatePicker({dateFmt:'yyyy-MM-dd'})"/>
-                                <p:outputLabel value="备注内容：" for="remark"/>
-                                <p:inputText id="remark" value="#{tkcttInfoAction.cttInfoShowQry.remark}"/>
-                                <p:outputLabel value="签订乙方：" for="signPartB"/>
-                                <p:selectOneMenu id="signPartB" value="#{tkcttInfoAction.cttInfoShowQry.signPartB}"
-                                                 disabled="#{tkcttInfoAction.styleModel.disabled_Flag}">
-                                    <f:selectItems value="#{esCommon.customerlist}"/>
-                                </p:selectOneMenu>
-                            </h:panelGrid>
+                        <h:panelGrid columns="4">
+                            <p:outputLabel value="工单编号：" for="id"/>
+                            <p:inputText id="id" value="#{workorderInfoAction.workorderInfoShowQry.id}"
+                                         style="width: 200px"/>
+                            <p:outputLabel value="工单主题：" for="cttName"/>
+                            <p:inputText id="cttName" value="#{workorderInfoAction.workorderInfoShowQry.name}"
+                                         style="width: 360px"/>
                         </h:panelGrid>
-                        <h:panelGrid columns="2">
-                            <h:panelGrid>
-                                <p:commandButton id="qryBtn" value="查询"
-                                                 action="#{tkcttInfoAction.onQueryAction('Qry','true')}"
-                                                 update="pdt,msgs">
-                                </p:commandButton>
-                                <p:commandButton id="resetBtn" value="重置"
-                                                 type="reset"
-                                                 update="pdQry,msgs">
-                                </p:commandButton>
-                            </h:panelGrid>
+                        <h:panelGrid columns="3">
+                            <p:commandButton id="qryBtn" value="查询"
+                                             action="#{workorderInfoAction.onQueryAction('true')}"
+                                             update="pdt,msgs">
+                            </p:commandButton>
+                            <p:commandButton id="resetBtn" value="重置"
+                                             type="reset"
+                                             update="pdQry,msgs">
+                            </p:commandButton>
                             <p:ajaxStatus style="width:16px;height:16px;">
                                 <f:facet name="start">
                                     <h:graphicImage value="/images/ajaxloading.gif"/>
@@ -98,23 +81,25 @@
                     </h:panelGrid>
                 </p:panel>
                 <p:dataTable id="pdt" style="width:100%;"
-                             value="#{tkcttInfoAction.cttInfoShowList}"
+                             value="#{workorderInfoAction.workorderInfoShowList}"
                              var="record"
                              rowKey="#{record.pkid}"
+                             selectionMode="single"
+                             resizableColumns="true"
                              paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks}
-                                 {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                            {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                              paginator="true"
                              paginatorPosition="bottom"
-                             rows="15"
+                             rows="20"
                              rowIndexVar="row"
-                             rowsPerPageTemplate="500,200,100,45,30,15"
+                             rowsPerPageTemplate="200,100,50,30,20,10"
                              emptyMessage="数据记录为空..."
                              widgetVar="DtInitTkcttList"
                              scrollable="true">
-                    <p:column headerText="操作" style="width:40px;text-align: center;">
+                    <p:column headerText="操作" style="width:60px;text-align: center;">
                         <p:commandButton  icon="ui-icon-search"
                                           style="height:18px;width:18px"
-                                          action="#{tkcttInfoAction.selectRecordAction('Sel',record)}"
+                                          action="#{workorderInfoAction.selectRecordAction('Sel',record)}"
                                           update="pdt,:form:pgView,:form:msgs"
                                           onclick="PF('wVDlgView').show()">
                         </p:commandButton>
@@ -126,101 +111,95 @@
                     <p:column headerText="序号" style="width:30px">
                         <h:outputText value="#{row + 1}"/>
                     </p:column>
-                    <p:column headerText="总包合同号" style="width:120px;text-align:center">
+                    <p:column headerText="工单编号" style="width:120px;text-align:center">
                         <h:outputText value="#{record.id}"/>
                     </p:column>
-                    <p:column headerText="总包合同名" style="width:400px;text-align:left">
+                    <p:column headerText="工单主题" style="width:300px;text-align:left">
                         <h:outputText value="#{record.name}"/>
                     </p:column>
-                    <p:column headerText="签订甲方" style="width:200px;text-align:left">
-                        <h:outputText value="#{esCommon.getCustNameByCustIdFromList(record.signPartA)}"/>
+                    <p:column headerText="开始时间" style="width:120px;text-align:center">
+                        <h:outputText value="#{record.startDate}"/>
                     </p:column>
-                    <p:column headerText="签订乙方" style="width:200px;text-align:left">
-                        <h:outputText value="#{esCommon.getCustNameByCustIdFromList(record.signPartB)}"/>
+                    <p:column headerText="截止时间" style="width:120px;text-align:center">
+                        <h:outputText value="#{record.endDate}"/>
                     </p:column>
-                    <p:column headerText="状态标志" style="width:60px;text-align:center">
-                        <h:outputText value="#{esFlowControl.getLabelByValueInStatusFlaglist(record.flowStatus)}"/>
-                    </p:column>
-                    <p:column headerText="原因" style="width:60px;text-align:center">
-                        <h:outputText value="#{esFlowControl.getLabelByValueInPreStatusFlaglist(record.flowStatusReason)}"/>
-                    </p:column>
-                    <p:column headerText="开始时间" style="width:66px;text-align:center">
-                        <h:outputText value="#{record.cttStartDate}"/>
-                    </p:column>
-                    <p:column headerText="截止时间" style="width:66px;text-align:center">
-                        <h:outputText value="#{record.cttEndDate}"/>
-                    </p:column>
-                    <p:column headerText="签订日期" style="width:66px;text-align:center">
+                    <p:column headerText="制定日期" style="width:120px;text-align:center">
                         <h:outputText value="#{record.signDate}"/>
                     </p:column>
+                    <p:column headerText="备注内容" style="width:600px;text-align:left">
+                        <h:outputText value="#{record.remark}"/>
+                    </p:column>
                 </p:dataTable>
-                <p:dialog id="dlgView" header="总包合同信息" widgetVar="wVDlgView"
+                <p:dialog id="dlgView" header="工单信息" widgetVar="wVDlgView"
                           resizable="false" modal="true"
                           showEffect="clip" hideEffect="fold">
                     <h:panelGrid id="pgView">
-                        <h:panelGrid columns="2">
-                            <p:outputLabel value="合同编号：" for="idForDlg"/>
-                            <p:inputText id="idForDlg" value="#{tkcttInfoAction.cttInfoShowSel.id}"
-                                         readonly="true"
-                                         style="background-color:gainsboro;"/>
-                            <p:outputLabel value="合同名称：" for="cttNameForDlg"/>
-                            <p:inputText id="cttNameForDlg" value="#{tkcttInfoAction.cttInfoShowSel.name}"
-                                         readonly="true"
-                                         style="background-color:gainsboro;width:328px;"/>
-                        </h:panelGrid>
-                        <h:panelGrid columns="4">
-                            <p:outputLabel value="备注内容：" for="remarkForDlg"/>
-                            <p:inputText id="remarkForDlg" value="#{tkcttInfoAction.cttInfoShowSel.remark}"
-                                         readonly="true"
-                                         style="background-color:gainsboro;"/>
-                            <p:outputLabel value="签订日期：" for="signDateForDlg"/>
-                            <p:inputText id="signDateForDlg" value="#{tkcttInfoAction.cttInfoShowSel.signDate}"
-                                         readonly="true"
-                                         style="background-color:gainsboro;"/>
-                            <p:outputLabel value="开始时间：" for="cttStartDateForDlg"/>
-                            <p:inputText id="cttStartDateForDlg" value="#{tkcttInfoAction.cttInfoShowSel.cttStartDate}"
-                                         readonly="true"
-                                         style="background-color:gainsboro;"/>
-                            <p:outputLabel value="截止时间：" for="cttEndDateForDlg"/>
-                            <p:inputText id="cttEndDateForDlg" value="#{tkcttInfoAction.cttInfoShowSel.cttEndDate}"
-                                         readonly="true"
-                                         style="background-color:gainsboro;"/>
+                        <h:panelGrid columns="3">
+                            <p:outputLabel value="工单编号：" for="idForSel"/>
+                            <p:inputText id="idForSel"
+                                         value="#{workorderInfoAction.workorderInfoShowSel.id}"
+                                         style="background-color:gainsboro"
+                                         readonly="true"/>
                         </h:panelGrid>
                         <h:panelGrid columns="2">
-                            <p:outputLabel value="签订甲方：" for="signPartAForDlg"/>
-                            <p:inputText id="signPartAForDlg" value="#{tkcttInfoAction.cttInfoShowSel.signPartAName}"
-                                         readonly="true"
-                                         style="background-color:gainsboro;width:328px;">
-                            </p:inputText>
-                            <p:outputLabel value="签订乙方：" for="signPartBForDlg"/>
-                            <p:inputText id="signPartBForDlg" value="#{tkcttInfoAction.cttInfoShowSel.signPartBName}"
-                                         readonly="true"
-                                         style="background-color:gainsboro;width:328px;">
-                            </p:inputText>
+                            <p:outputLabel value="工单主题：" for="cttNameForSel"/>
+                            <p:inputText id="cttNameForSel"
+                                         value="#{workorderInfoAction.workorderInfoShowSel.name}"
+                                         style="width:328px;background-color:gainsboro"
+                                         readonly="true"/>
                         </h:panelGrid>
                         <h:panelGrid columns="4">
-                            <p:outputLabel for="createdByNameSel" value="创建人：" />
-                            <h:inputText id="createdByNameSel"
-                                         value="#{tkcttInfoAction.cttInfoShowSel.createdByName}"
-                                         style="background-color:gainsboro" readonly="true"/>
-                            <p:outputLabel for="createdTimeSel" value="创建时间：" />
-                            <h:inputText id="createdTimeSel"
-                                         value="#{tkcttInfoAction.cttInfoShowSel.createdTime}"
-                                         style="background-color:gainsboro" readonly="true"/>
-                            <p:outputLabel for="lastUpdByNameSel" value="修改人：" />
-                            <h:inputText id="lastUpdByNameSel"
-                                         value="#{tkcttInfoAction.cttInfoShowSel.lastUpdByName}"
-                                         style="background-color:gainsboro" readonly="true"/>
-                            <p:outputLabel for="lastUpdTimeSel" value="修改时间：" />
-                            <h:inputText id="lastUpdTimeSel"
-                                         value="#{tkcttInfoAction.cttInfoShowSel.lastUpdTime}"
-                                         style="background-color:gainsboro" readonly="true"/>
-                            <p:outputLabel for="recVersionSel" value="修改次数：" />
-                            <h:inputText id="recVersionSel"
-                                         value="#{tkcttInfoAction.cttInfoShowSel.recVersion}"
-                                         style="background-color:gainsboro;text-align:right;" readonly="true">
+                            <p:outputLabel value="制定日期：" for="signDateForSel"/>
+                            <p:inputText id="signDateForSel"
+                                         value="#{workorderInfoAction.workorderInfoShowSel.signDate}"
+                                         style="background-color:gainsboro"
+                                         readonly="true"/>
+                            <p:outputLabel value="开始时间：" for="startDateForSel"/>
+                            <p:inputText id="startDateForSel"
+                                         value="#{workorderInfoAction.workorderInfoShowSel.startDate}"
+                                         style="background-color:gainsboro"
+                                         readonly="true"/>
+                            <p:outputLabel value="截止时间：" for="endDateForSel"/>
+                            <p:inputText id="endDateForSel"
+                                         value="#{workorderInfoAction.workorderInfoShowSel.endDate}"
+                                         style="background-color:gainsboro"
+                                         readonly="true"/>
+                        </h:panelGrid>
+                        <h:panelGrid columns="2">
+                            <p:outputLabel value="备注内容：" for="remarkForSel"/>
+                            <p:inputText id="remarkForSel"
+                                         value="#{workorderInfoAction.workorderInfoShowSel.remark}"
+                                         style="width:328px;background-color:gainsboro"
+                                         readonly="true"/>
+                        </h:panelGrid>
+                        <h:panelGrid columns="4">
+                            <p:outputLabel for="createdByNameSel" value="创建人："/>
+                            <p:inputText id="createdByNameSel"
+                                         value="#{workorderInfoAction.workorderInfoShowSel.createdByName}"
+                                         style="background-color:gainsboro"
+                                         readonly="true"/>
+                            <p:outputLabel for="createdTimeSel" value="创建时间："/>
+                            <p:inputText id="createdTimeSel"
+                                         value="#{workorderInfoAction.workorderInfoShowSel.createdTime}"
+                                         style="background-color:gainsboro"
+                                         readonly="true"/>
+                            <p:outputLabel for="lastUpdByNameSel" value="修改人："/>
+                            <p:inputText id="lastUpdByNameSel"
+                                         value="#{workorderInfoAction.workorderInfoShowSel.lastUpdByName}"
+                                         style="background-color:gainsboro"
+                                         readonly="true"/>
+                            <p:outputLabel for="lastUpdTimeSel" value="修改时间："/>
+                            <p:inputText id="lastUpdTimeSel"
+                                         value="#{workorderInfoAction.workorderInfoShowSel.lastUpdTime}"
+                                         style="background-color:gainsboro"
+                                         readonly="true"/>
+                            <p:outputLabel for="recVersionSel" value="修改次数："/>
+                            <p:inputText id="recVersionSel"
+                                         value="#{workorderInfoAction.workorderInfoShowSel.recVersion}"
+                                         style="background-color:gainsboro;text-align:right;"
+                                         readonly="true">
                                 <f:convertNumber type="number" pattern="#,###,###,###,##0"/>
-                            </h:inputText>
+                            </p:inputText>
                         </h:panelGrid>
                     </h:panelGrid>
                 </p:dialog>
