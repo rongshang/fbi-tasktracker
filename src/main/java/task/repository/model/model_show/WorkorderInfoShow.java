@@ -11,13 +11,12 @@ import java.io.Serializable;
  */
 public class WorkorderInfoShow implements Serializable {
     private String pkid;
-    private String parentPkid;
     private String id;
-    private String type;
     private String name;
+    private String type;
     private String signDate;
-    private String startDate;
-    private String endDate;
+    private String startTime;
+    private String endTime;
     private String attachment;
     private String remark;
     private String archivedFlag;
@@ -29,29 +28,11 @@ public class WorkorderInfoShow implements Serializable {
     private String lastUpdTime;
     private Integer recVersion;
     private Boolean isSeled;
+    private String parentPkid;
+    private String finishFlag;
+    private String tid;
     public String getPkid() {
         return pkid;
-    }
-
-    public WorkorderInfoShow(String pkid, String id,String name, String remark,
-                             String lastUpdBy,String lastUpdTime, Integer recVersion, Boolean isSeled) {
-        this.pkid = pkid;
-        this.id = id;
-        this.name = name;
-        this.remark = remark;
-        this.lastUpdBy=lastUpdBy;
-        this.lastUpdTime=lastUpdTime;
-        this.recVersion = recVersion;
-        this.isSeled=isSeled;
-    }
-
-    public WorkorderInfoShow(String id, String name, String remark,
-                             String cttStartDate, String cttEndDate) {
-        this.id = id;
-        this.name = name;
-        this.remark = remark;
-        this.startDate = cttStartDate;
-        this.endDate = cttEndDate;
     }
 
     public WorkorderInfoShow() {
@@ -93,20 +74,20 @@ public class WorkorderInfoShow implements Serializable {
         this.signDate = signDate == null ? null : signDate.trim();
     }
 
-    public String getStartDate() {
-        return startDate;
+    public String getStartTime() {
+        return startTime;
     }
 
-    public void setStartDate(String startDate) {
-        this.startDate = startDate;
+    public void setStartTime(String startTime) {
+        this.startTime = startTime;
     }
 
-    public String getEndDate() {
-        return endDate;
+    public String getEndTime() {
+        return endTime;
     }
 
-    public void setEndDate(String endDate) {
-        this.endDate = endDate;
+    public void setEndTime(String endTime) {
+        this.endTime = endTime;
     }
 
     public String getAttachment() {
@@ -205,4 +186,19 @@ public class WorkorderInfoShow implements Serializable {
         this.isSeled = isSeled;
     }
 
+    public String getFinishFlag() {
+        return finishFlag;
+    }
+
+    public void setFinishFlag(String finishFlag) {
+        this.finishFlag = finishFlag;
+    }
+
+    public String getTid() {
+        return tid;
+    }
+
+    public void setTid(String tid) {
+        this.tid = tid;
+    }
 }

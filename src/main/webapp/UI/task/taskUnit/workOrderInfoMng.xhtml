@@ -22,7 +22,7 @@
                         "resizable:yes;scroll:yes;status:no;minimize:yes;maximize:yes;";
                 var arg = new Object();
                 arg.doType = "select";
-                var rtn = dialog("../item/workorderItemMng.xhtml?strFlowType=Mng&amp;strCttInfoPkid=" + pkid + "", arg, sfeature);
+                var rtn = dialog("../taskUnit/workorderItemMng.xhtml?strWorkorderInfoPkid=" + pkid + "", arg, sfeature);
                 document.getElementById("form:qryBtn").click();
             }
         </script>
@@ -111,10 +111,10 @@
                         <h:outputText value="#{record.name}"/>
                     </p:column>
                     <p:column headerText="开始时间" style="width:120px;text-align:center">
-                        <h:outputText value="#{record.startDate}"/>
+                        <h:outputText value="#{record.startTime}"/>
                     </p:column>
                     <p:column headerText="截止时间" style="width:120px;text-align:center">
-                        <h:outputText value="#{record.endDate}"/>
+                        <h:outputText value="#{record.endTime}"/>
                     </p:column>
                     <p:column headerText="制定日期" style="width:120px;text-align:center">
                         <h:outputText value="#{record.signDate}"/>
@@ -147,13 +147,13 @@
                             <p:inputText id="signDateForAdd"
                                          value="#{workorderInfoAction.workorderInfoShowAdd.signDate}"
                                          onclick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss'})"/>
-                            <p:outputLabel value="开始时间：" for="startDateForAdd"/>
-                            <p:inputText id="startDateForAdd"
-                                         value="#{workorderInfoAction.workorderInfoShowAdd.startDate}"
+                            <p:outputLabel value="开始时间：" for="startTimeForAdd"/>
+                            <p:inputText id="startTimeForAdd"
+                                         value="#{workorderInfoAction.workorderInfoShowAdd.startTime}"
                                          onclick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss'})"/>
-                            <p:outputLabel value="截止时间：" for="endDateForAdd"/>
-                            <p:inputText id="endDateForAdd"
-                                         value="#{workorderInfoAction.workorderInfoShowAdd.endDate}"
+                            <p:outputLabel value="截止时间：" for="endTimeForAdd"/>
+                            <p:inputText id="endTimeForAdd"
+                                         value="#{workorderInfoAction.workorderInfoShowAdd.endTime}"
                                          onclick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss'})"/>
                         </h:panelGrid>
                         <h:panelGrid columns="2">
@@ -199,13 +199,13 @@
                             <p:inputText id="signDateForUpd" 
                                          value="#{workorderInfoAction.workorderInfoShowUpd.signDate}"
                                          onclick="WdatePicker({dateFmt:'yyyy-MM-dd'})"/>
-                            <p:outputLabel value="开始时间：" for="startDateForUpd"/>
-                            <p:inputText id="startDateForUpd" 
-                                         value="#{workorderInfoAction.workorderInfoShowUpd.startDate}"
+                            <p:outputLabel value="开始时间：" for="startTimeForUpd"/>
+                            <p:inputText id="startTimeForUpd"
+                                         value="#{workorderInfoAction.workorderInfoShowUpd.startTime}"
                                          onclick="WdatePicker({dateFmt:'yyyy-MM-dd'})"/>
-                            <p:outputLabel value="截止时间：" for="endDateForUpd"/>
-                            <p:inputText id="endDateForUpd" 
-                                         value="#{workorderInfoAction.workorderInfoShowUpd.endDate}"
+                            <p:outputLabel value="截止时间：" for="endTimeForUpd"/>
+                            <p:inputText id="endTimeForUpd"
+                                         value="#{workorderInfoAction.workorderInfoShowUpd.endTime}"
                                          onclick="WdatePicker({dateFmt:'yyyy-MM-dd'})"/>
                         </h:panelGrid>
                         <h:panelGrid columns="2">
@@ -277,14 +277,14 @@
                                          value="#{workorderInfoAction.workorderInfoShowDel.signDate}"
                                          style="background-color:gainsboro"
                                          readonly="true"/>
-                            <p:outputLabel value="开始时间：" for="startDateForDel"/>
-                            <p:inputText id="startDateForDel"
-                                         value="#{workorderInfoAction.workorderInfoShowDel.startDate}"
+                            <p:outputLabel value="开始时间：" for="startTimeForDel"/>
+                            <p:inputText id="startTimeForDel"
+                                         value="#{workorderInfoAction.workorderInfoShowDel.startTime}"
                                          style="background-color:gainsboro"
                                          readonly="true"/>
-                            <p:outputLabel value="截止时间：" for="endDateForDel"/>
-                            <p:inputText id="endDateForDel"
-                                         value="#{workorderInfoAction.workorderInfoShowDel.endDate}"
+                            <p:outputLabel value="截止时间：" for="endTimeForDel"/>
+                            <p:inputText id="endTimeForDel"
+                                         value="#{workorderInfoAction.workorderInfoShowDel.endTime}"
                                          style="background-color:gainsboro"
                                          readonly="true"/>
                         </h:panelGrid>

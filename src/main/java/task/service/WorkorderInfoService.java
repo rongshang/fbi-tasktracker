@@ -45,16 +45,13 @@ public class WorkorderInfoService {
         WorkorderInfoExample.Criteria criteria = example.createCriteria();
         //可以为NULL的项
         if(!ToolUtil.getStrIgnoreNull(workorderInfoShowPara.getId()).equals("")){
-            criteria.andIdEqualTo(ToolUtil.getStrIgnoreNull(workorderInfoShowPara.getId()));
+            criteria.andIdLike("%"+ workorderInfoShowPara.getId()+"%");
         }
         if(!ToolUtil.getStrIgnoreNull(workorderInfoShowPara.getName()).equals("")){
-            criteria.andNameEqualTo(ToolUtil.getStrIgnoreNull(workorderInfoShowPara.getName()));
-        }
-        if(!ToolUtil.getStrIgnoreNull(workorderInfoShowPara.getParentPkid()).equals("")){
-            criteria.andParentPkidEqualTo(ToolUtil.getStrIgnoreNull(workorderInfoShowPara.getParentPkid()));
+            criteria.andNameLike("%"+ workorderInfoShowPara.getName()+"%");
         }
         if(!ToolUtil.getStrIgnoreNull(workorderInfoShowPara.getSignDate()).equals("")){
-            criteria.andSignDateLike(ToolUtil.getStrIgnoreNull(workorderInfoShowPara.getSignDate()));
+            criteria.andSignDateLike("%"+ workorderInfoShowPara.getSignDate()+"%");
         }
         example.setOrderByClause("ID ASC") ;
         return workorderInfoMapper.selectByExample(example);
@@ -168,34 +165,34 @@ public class WorkorderInfoService {
     public WorkorderInfo fromModelShowToModel(WorkorderInfoShow workorderInfoShowPara) {
         WorkorderInfo workorderInfoTemp = new WorkorderInfo();
         workorderInfoTemp.setPkid(workorderInfoShowPara.getPkid());
-        workorderInfoTemp.setParentPkid(workorderInfoShowPara.getParentPkid());
         workorderInfoTemp.setId(workorderInfoShowPara.getId());
-        workorderInfoTemp.setType(workorderInfoShowPara.getType());
         workorderInfoTemp.setName(workorderInfoShowPara.getName());
-        workorderInfoTemp.setStartTime(workorderInfoShowPara.getStartDate());
-        workorderInfoTemp.setEndTime(workorderInfoShowPara.getEndDate());
+        workorderInfoTemp.setType(workorderInfoShowPara.getType());
         workorderInfoTemp.setSignDate(workorderInfoShowPara.getSignDate());
-        workorderInfoTemp.setRemark(workorderInfoShowPara.getRemark());
+        workorderInfoTemp.setStartTime(workorderInfoShowPara.getStartTime());
+        workorderInfoTemp.setEndTime(workorderInfoShowPara.getEndTime());
         workorderInfoTemp.setAttachment(workorderInfoShowPara.getAttachment());
         workorderInfoTemp.setArchivedFlag(workorderInfoShowPara.getArchivedFlag());
         workorderInfoTemp.setCreatedBy(workorderInfoShowPara.getCreatedBy());
         workorderInfoTemp.setCreatedTime(workorderInfoShowPara.getCreatedTime());
         workorderInfoTemp.setLastUpdBy(workorderInfoShowPara.getLastUpdBy());
         workorderInfoTemp.setLastUpdTime(workorderInfoShowPara.getLastUpdTime());
+        workorderInfoTemp.setRemark(workorderInfoShowPara.getRemark());
         workorderInfoTemp.setRecVersion(workorderInfoShowPara.getRecVersion());
+        workorderInfoTemp.setParentPkid(workorderInfoShowPara.getParentPkid());
+        workorderInfoTemp.setFinishFlag(workorderInfoShowPara.getFinishFlag());
+        workorderInfoTemp.setTid(workorderInfoShowPara.getTid());
         return workorderInfoTemp;
     }
     public WorkorderInfoShow fromModelToModelShow(WorkorderInfo workorderInfoPara) {
         WorkorderInfoShow workorderInfoShowTemp = new WorkorderInfoShow();
         workorderInfoShowTemp.setPkid(workorderInfoPara.getPkid());
-        workorderInfoShowTemp.setParentPkid(workorderInfoPara.getParentPkid());
         workorderInfoShowTemp.setId(workorderInfoPara.getId());
         workorderInfoShowTemp.setType(workorderInfoPara.getType());
         workorderInfoShowTemp.setName(workorderInfoPara.getName());
-        workorderInfoShowTemp.setStartDate(workorderInfoPara.getStartTime());
-        workorderInfoShowTemp.setEndDate(workorderInfoPara.getEndTime());
         workorderInfoShowTemp.setSignDate(workorderInfoPara.getSignDate());
-        workorderInfoShowTemp.setRemark(workorderInfoPara.getRemark());
+        workorderInfoShowTemp.setStartTime(workorderInfoPara.getStartTime());
+        workorderInfoShowTemp.setEndTime(workorderInfoPara.getEndTime());
         workorderInfoShowTemp.setAttachment(workorderInfoPara.getAttachment());
         workorderInfoShowTemp.setArchivedFlag(workorderInfoPara.getArchivedFlag());
         workorderInfoShowTemp.setCreatedBy(workorderInfoPara.getCreatedBy());
@@ -204,7 +201,11 @@ public class WorkorderInfoService {
         workorderInfoShowTemp.setLastUpdBy(workorderInfoPara.getLastUpdBy());
         workorderInfoShowTemp.setLastUpdByName(getUserName(workorderInfoPara.getLastUpdBy()));
         workorderInfoShowTemp.setLastUpdTime(workorderInfoPara.getLastUpdTime());
+        workorderInfoShowTemp.setRemark(workorderInfoPara.getRemark());
         workorderInfoShowTemp.setRecVersion(workorderInfoPara.getRecVersion());
+        workorderInfoShowTemp.setParentPkid(workorderInfoPara.getParentPkid());
+        workorderInfoShowTemp.setFinishFlag(workorderInfoPara.getFinishFlag());
+        workorderInfoShowTemp.setTid(workorderInfoPara.getTid());
         return workorderInfoShowTemp;
     }
 }

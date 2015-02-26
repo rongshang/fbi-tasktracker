@@ -83,8 +83,8 @@ public class WorkorderInfoAction {
                 }
             }
         } catch (Exception e) {
-            logger.error("合同信息查询失败", e);
-            MessageUtil.addError("合同信息查询失败");
+            logger.error("工单信息查询失败", e);
+            MessageUtil.addError("工单信息查询失败");
         }
         return null;
     }
@@ -99,9 +99,9 @@ public class WorkorderInfoAction {
             strSubmitType = strSubmitTypePara;
             // 查询
             if (strSubmitTypePara.equals("Sel")) {
-                 workorderInfoShowSel = (WorkorderInfoShow) BeanUtils.cloneBean(workorderInfoShowPara);
+                workorderInfoShowSel = (WorkorderInfoShow) BeanUtils.cloneBean(workorderInfoShowPara);
             }else if (strSubmitTypePara.equals("Upd")) {
-                 workorderInfoShowUpd = (WorkorderInfoShow) BeanUtils.cloneBean(workorderInfoShowPara);
+                workorderInfoShowUpd = (WorkorderInfoShow) BeanUtils.cloneBean(workorderInfoShowPara);
             }else if (strSubmitTypePara.equals("Del")){
                 workorderInfoShowDel = (WorkorderInfoShow) BeanUtils.cloneBean(workorderInfoShowPara);
             }
@@ -115,20 +115,20 @@ public class WorkorderInfoAction {
      */
     private boolean submitPreCheck(WorkorderInfoShow workorderInfoShowPara) {
         if (StringUtils.isEmpty(workorderInfoShowPara.getId())) {
-            MessageUtil.addError("请输入合同号！");
+            MessageUtil.addError("请输入工单号！");
             return false;
         } else if (StringUtils.isEmpty(workorderInfoShowPara.getName())) {
-            MessageUtil.addError("请输入合同名！");
+            MessageUtil.addError("请输入工单名！");
             return false;
         } else if (StringUtils.isEmpty(workorderInfoShowPara.getSignDate())) {
             MessageUtil.addError("请输入签订日期！");
             return false;
         }
-        else if (StringUtils.isEmpty(workorderInfoShowPara.getStartDate())) {
-            MessageUtil.addError("请输入合同开始时间！");
+        else if (StringUtils.isEmpty(workorderInfoShowPara.getStartTime())) {
+            MessageUtil.addError("请输入工单开始时间！");
             return false;
-        } else if (StringUtils.isEmpty(workorderInfoShowPara.getEndDate())) {
-            MessageUtil.addError("请输入合同截止时间！");
+        } else if (StringUtils.isEmpty(workorderInfoShowPara.getEndTime())) {
+            MessageUtil.addError("请输入工单截止时间！");
             return false;
         }
         return true;
@@ -139,21 +139,23 @@ public class WorkorderInfoAction {
      * @param
      */
     public void onClickForMngAction() {
-        if (strSubmitType.equals("Add")) {
-            if (!submitPreCheck(workorderInfoShowAdd)) {
-                return;
-            }
-            addRecordAction(workorderInfoShowAdd);
-            MessageUtil.addInfo("新增数据完成。");
-        } else if (strSubmitType.equals("Upd")) {
-			if (!submitPreCheck(workorderInfoShowUpd)) {
-	         return;
-	        }
-            updRecordAction(workorderInfoShowUpd);
-            MessageUtil.addInfo("更新数据完成。");
-        } else if (strSubmitType.equals("Del")) {
+        if (strSubmitType.equals("Del")) {
             deleteRecordAction(workorderInfoShowDel);
             MessageUtil.addInfo("删除数据完成。");
+        }else {
+            if (strSubmitType.equals("Add")) {
+                if (!submitPreCheck(workorderInfoShowAdd)) {
+                    return;
+                }
+                addRecordAction(workorderInfoShowAdd);
+                MessageUtil.addInfo("新增数据完成。");
+            } else if (strSubmitType.equals("Upd")) {
+                if (!submitPreCheck(workorderInfoShowUpd)) {
+                    return;
+                }
+                updRecordAction(workorderInfoShowUpd);
+                MessageUtil.addInfo("更新数据完成。");
+            }
         }
         onQueryAction("false");
     }
@@ -176,8 +178,10 @@ public class WorkorderInfoAction {
     }
     private void deleteRecordAction(WorkorderInfoShow workorderInfoShowPara) {
         try {
-            int deleteRecordNumOfCttItem= workorderItemService.deleteRecord(workorderInfoShowPara);
-            int deleteRecordNumOfCtt= workorderInfoService.deleteRecord(workorderInfoShowPara.getPkid());
+            int deleteRecordNumOfCttItem=
+                    workorderItemService.deleteRecordByInfoPkid(workorderInfoShowPara.getPkid());
+            int deleteRecordNumOfCtt=
+                    workorderInfoService.deleteRecord(workorderInfoShowPara.getPkid());
             if (deleteRecordNumOfCtt<=0&&deleteRecordNumOfCttItem<=0){
                 MessageUtil.addInfo("该记录已删除。");
                 return;
