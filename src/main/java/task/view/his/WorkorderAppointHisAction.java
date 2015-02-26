@@ -1,7 +1,7 @@
 package task.view.his;
 
-import task.repository.model.FlowHis;
-import task.service.FlowHisService;
+import task.repository.model.WorkorderAppointHis;
+import task.service.WorkorderAppointHisService;
 import task.service.WorkorderInfoService;
 /*import task.service.FlowHisService;*/
 import org.slf4j.Logger;
@@ -24,16 +24,16 @@ import java.util.List;
  */
 @ManagedBean
 @ViewScoped
-public class FlowHisAction {
-    private static final Logger logger = LoggerFactory.getLogger(FlowHisAction.class);
+public class WorkorderAppointHisAction {
+    private static final Logger logger = LoggerFactory.getLogger(WorkorderAppointHisAction.class);
 
-    @ManagedProperty(value = "#{flowHisService}")
-    private FlowHisService flowHisService;
+    @ManagedProperty(value = "#{workorderAppointHisService}")
+    private WorkorderAppointHisService workorderAppointHisService;
     @ManagedProperty(value = "#{workorderInfoService}")
     private WorkorderInfoService workorderInfoService;
 
-    private FlowHis flowHis;
-    private List<FlowHis> flowHisList;
+    private WorkorderAppointHis workorderAppointHis;
+    private List<WorkorderAppointHis> workorderAppointHisList;
 
     private String strRendered1;
     private String strRendered2;
@@ -44,8 +44,8 @@ public class FlowHisAction {
 
     @PostConstruct
     public void init() {
-        flowHis=new FlowHis();
-        this.flowHisList = new ArrayList<FlowHis>();
+        workorderAppointHis =new WorkorderAppointHis();
+        this.workorderAppointHisList = new ArrayList<WorkorderAppointHis>();
         esInitCtt1List=new ArrayList<SelectItem> ();
         esInitCtt2List=new ArrayList<SelectItem> ();
         strRendered1="false";
@@ -55,9 +55,9 @@ public class FlowHisAction {
 
     public String onQueryAction(String strQryMsgOutPara) {
         try {
-            this.flowHisList = flowHisService.getListByModel(flowHis);
+            this.workorderAppointHisList = workorderAppointHisService.getListByModel(workorderAppointHis);
             if(strQryMsgOutPara.equals("true")){
-                if (flowHisList.isEmpty()) {
+                if (workorderAppointHisList.isEmpty()) {
                     MessageUtil.addWarn("没有查询到数据。");
                 }
             }
@@ -68,12 +68,12 @@ public class FlowHisAction {
         return null;
     }
 
-    public FlowHisService getFlowHisService() {
-        return flowHisService;
+    public WorkorderAppointHisService getWorkorderAppointHisService() {
+        return workorderAppointHisService;
     }
 
-    public void setFlowHisService(FlowHisService flowHisService) {
-        this.flowHisService = flowHisService;
+    public void setWorkorderAppointHisService(WorkorderAppointHisService workorderAppointHisService) {
+        this.workorderAppointHisService = workorderAppointHisService;
     }
 
     public WorkorderInfoService getWorkorderInfoService() {
@@ -132,19 +132,19 @@ public class FlowHisAction {
         this.esInitCtt2List = esInitCtt2List;
     }
 
-    public FlowHis getFlowHis() {
-        return flowHis;
+    public WorkorderAppointHis getWorkorderAppointHis() {
+        return workorderAppointHis;
     }
 
-    public void setFlowHis(FlowHis flowHis) {
-        this.flowHis = flowHis;
+    public void setWorkorderAppointHis(WorkorderAppointHis workorderAppointHis) {
+        this.workorderAppointHis = workorderAppointHis;
     }
 
-    public List<FlowHis> getFlowHisList() {
-        return flowHisList;
+    public List<WorkorderAppointHis> getWorkorderAppointHisList() {
+        return workorderAppointHisList;
     }
 
-    public void setFlowHisList(List<FlowHis> flowHisList) {
-        this.flowHisList = flowHisList;
+    public void setWorkorderAppointHisList(List<WorkorderAppointHis> workorderAppointHisList) {
+        this.workorderAppointHisList = workorderAppointHisList;
     }
 }

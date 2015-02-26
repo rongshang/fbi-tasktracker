@@ -1,10 +1,10 @@
 package task.view.appoint;
 
 import task.common.enums.EnumArchivedFlag;
-import task.repository.model.OperRes;
+import task.repository.model.MenuAppoint;
 import task.repository.model.Ptmenu;
 import task.repository.model.model_show.DeptOperShow;
-import task.repository.model.model_show.OperResShow;
+import task.repository.model.model_show.MenuAppointShow;
 import task.service.*;
 import org.primefaces.model.DefaultTreeNode;
 import org.primefaces.model.TreeNode;
@@ -21,19 +21,19 @@ import java.util.*;
 
 @ManagedBean
 @ViewScoped
-public class ResAppointOperAction implements Serializable{
-    private static final Logger logger = LoggerFactory.getLogger(ResAppointOperAction.class);
+public class MenuAppointOperAction implements Serializable{
+    private static final Logger logger = LoggerFactory.getLogger(MenuAppointOperAction.class);
     @ManagedProperty(value = "#{deptOperService}")
     private DeptOperService deptOperService;
-    @ManagedProperty(value = "#{operResService}")
-    private OperResService operResService;
+    @ManagedProperty(value = "#{operMenuService}")
+    private OperMenuService operMenuService;
     @ManagedProperty(value = "#{menuService}")
     private MenuService menuService;
 
-    private OperResShow operResShowSeled;
+    private MenuAppointShow menuAppointShowSeled;
 
-    private List<OperResShow> operResShowList;
-    private List<OperResShow> filteredOperResShowList;
+    private List<MenuAppointShow> menuAppointShowList;
+    private List<MenuAppointShow> filteredMenuAppointShowList;
 
     private List<DeptOperShow> deptOperShowSeledList;
     private TreeNode deptOperRoot;
@@ -41,44 +41,44 @@ public class ResAppointOperAction implements Serializable{
     @PostConstruct
     public void init() {
         try {
-            operResShowList = new ArrayList<>();
-            filteredOperResShowList= new ArrayList<>();
+            menuAppointShowList = new ArrayList<>();
+            filteredMenuAppointShowList = new ArrayList<>();
             deptOperShowSeledList = new ArrayList<>();
 
             // 资源-用户-功能
-            initRes();
-            filteredOperResShowList.addAll(operResShowList);
+            initMenu();
+            filteredMenuAppointShowList.addAll(menuAppointShowList);
             initDeptOperAppoint();
         }catch (Exception e){
             MessageUtil.addError(e.getMessage());
             logger.error("初始化失败", e);
         }
     }
-    private void initRes(){
+    private void initMenu(){
         deptOperShowSeledList.clear();
-        operResShowList.clear();
+        menuAppointShowList.clear();
         Ptmenu ptmenuTemp=new Ptmenu();
         List<Ptmenu> ptmenuListTemp=menuService.selectListByModel(ptmenuTemp);
-        OperRes operResTemp=new OperRes();
-        List<OperResShow> operResShowListTemp=operResService.selectOperaResRecordsByModel(operResTemp);
+        MenuAppoint menuAppointTemp =new MenuAppoint();
+        List<MenuAppointShow> menuAppointShowListTemp = operMenuService.selectOperaResRecordsByModel(menuAppointTemp);
         for(Ptmenu ptmenuUnit:ptmenuListTemp){
             String strInputOperName="";
-            for(OperResShow operResShowUnit:operResShowListTemp){
-                if(ptmenuUnit.getPkid().equals(operResShowUnit.getResPkid())){
+            for(MenuAppointShow menuAppointShowUnit : menuAppointShowListTemp){
+                if(ptmenuUnit.getPkid().equals(menuAppointShowUnit.getMenuPkid())){
                     if(strInputOperName.length()==0){
                         strInputOperName =
-                                ToolUtil.getStrIgnoreNull(operResShowUnit.getOperName());
+                                ToolUtil.getStrIgnoreNull(menuAppointShowUnit.getOperName());
                     }else {
                         strInputOperName = strInputOperName + "," +
-                                ToolUtil.getStrIgnoreNull(operResShowUnit.getOperName());
+                                ToolUtil.getStrIgnoreNull(menuAppointShowUnit.getOperName());
                     }
                 }
             }
-            OperResShow operResShowTemp=new OperResShow();
-            operResShowTemp.setResPkid(ptmenuUnit.getPkid());
-            operResShowTemp.setResName(ptmenuUnit.getMenulabel());
-            operResShowTemp.setOperName(strInputOperName);
-            operResShowList.add(operResShowTemp);
+            MenuAppointShow menuAppointShowTemp =new MenuAppointShow();
+            menuAppointShowTemp.setMenuPkid(ptmenuUnit.getPkid());
+            menuAppointShowTemp.setResName(ptmenuUnit.getMenulabel());
+            menuAppointShowTemp.setOperName(strInputOperName);
+            menuAppointShowList.add(menuAppointShowTemp);
         }
     }
 
@@ -101,8 +101,8 @@ public class ResAppointOperAction implements Serializable{
         }
     }
     private void recursiveOperTreeNodeForExpand(
-            TreeNode treeNodePara,List<OperResShow> operResShowListPara) {
-        if (operResShowListPara==null||operResShowListPara.size()==0){
+            TreeNode treeNodePara,List<MenuAppointShow> menuAppointShowListPara) {
+        if (menuAppointShowListPara ==null|| menuAppointShowListPara.size()==0){
             return;
         }
         if (treeNodePara.getChildCount() != 0) {
@@ -110,8 +110,8 @@ public class ResAppointOperAction implements Serializable{
                 TreeNode treeNodeTemp = treeNodePara.getChildren().get(i);
                 DeptOperShow deptOperShowTemp = (DeptOperShow) treeNodeTemp.getData();
                 if (deptOperShowTemp.getPkid()!=null&&"1".equals(deptOperShowTemp.getType())){
-                    for (int j = 0; j < operResShowListPara.size(); j++) {
-                        if (deptOperShowTemp.getPkid().equals(operResShowListPara.get(j).getOperPkid())) {
+                    for (int j = 0; j < menuAppointShowListPara.size(); j++) {
+                        if (deptOperShowTemp.getPkid().equals(menuAppointShowListPara.get(j).getOperPkid())) {
                             deptOperShowTemp.setIsSeled(true);
                             deptOperShowSeledList.add(deptOperShowTemp);
                             while (!(treeNodeTemp.getParent()==null)){
@@ -120,24 +120,24 @@ public class ResAppointOperAction implements Serializable{
                                 }
                                 treeNodeTemp=treeNodeTemp.getParent();
                             }
-                            operResShowListPara.remove(j);
+                            menuAppointShowListPara.remove(j);
                             break;
                         }
                     }
                 }
-                recursiveOperTreeNodeForExpand(treeNodeTemp, operResShowListPara);
+                recursiveOperTreeNodeForExpand(treeNodeTemp, menuAppointShowListPara);
             }
         }
     }
 
-    public void selectRecordAction(OperResShow operResShowPara) {
+    public void selectRecordAction(MenuAppointShow menuAppointShowPara) {
         try {
-            operResShowSeled=operResShowPara;
+            menuAppointShowSeled = menuAppointShowPara;
             initDeptOperAppoint();
-            OperRes operResTemp=new OperRes();
-            operResTemp.setResPkid(operResShowSeled.getResPkid());
-            List<OperResShow> operResShowListTemp=operResService.selectOperaResRecordsByModel(operResTemp);
-            recursiveOperTreeNodeForExpand(deptOperRoot,operResShowListTemp);
+            MenuAppoint menuAppointTemp =new MenuAppoint();
+            menuAppointTemp.setMenuPkid(menuAppointShowSeled.getMenuPkid());
+            List<MenuAppointShow> menuAppointShowListTemp = operMenuService.selectOperaResRecordsByModel(menuAppointTemp);
+            recursiveOperTreeNodeForExpand(deptOperRoot, menuAppointShowListTemp);
         } catch (Exception e) {
             MessageUtil.addError(e.getMessage());
         }
@@ -158,23 +158,23 @@ public class ResAppointOperAction implements Serializable{
     public void onClickForMngAction(String strSubmitTypePara) {
         try {
             if (strSubmitTypePara.equals("Power")) {
-                OperRes operResTemp = new OperRes();
-                operResTemp.setResPkid(operResShowSeled.getResPkid());
-                operResService.deleteRecordByResPkid(operResTemp);
-                operResTemp.setArchivedFlag(EnumArchivedFlag.ARCHIVED_FLAG0.getCode());
+                MenuAppoint menuAppointTemp = new MenuAppoint();
+                menuAppointTemp.setMenuPkid(menuAppointShowSeled.getMenuPkid());
+                operMenuService.deleteRecordByMenuPkid(menuAppointTemp);
+                menuAppointTemp.setArchivedFlag(EnumArchivedFlag.ARCHIVED_FLAG0.getCode());
                 for (DeptOperShow deptOperShowUnit : deptOperShowSeledList) {
-                    operResTemp.setOperPkid(deptOperShowUnit.getPkid());
-                    operResService.insertRecord(operResTemp);
+                    menuAppointTemp.setOperPkid(deptOperShowUnit.getPkid());
+                    operMenuService.insertRecord(menuAppointTemp);
                 }
                 MessageUtil.addInfo("权限添加成功!");
             }
-            initRes();
+            initMenu();
             //过滤需要和原数据同步
-            int selIndex=filteredOperResShowList.indexOf(operResShowSeled);
-            filteredOperResShowList.remove(operResShowSeled);
-            for(OperResShow operResShowUnit:operResShowList){
-                if(operResShowUnit.getResPkid().equals(operResShowSeled.getResPkid())){
-                    filteredOperResShowList.add(selIndex,operResShowUnit);
+            int selIndex= filteredMenuAppointShowList.indexOf(menuAppointShowSeled);
+            filteredMenuAppointShowList.remove(menuAppointShowSeled);
+            for(MenuAppointShow menuAppointShowUnit : menuAppointShowList){
+                if(menuAppointShowUnit.getMenuPkid().equals(menuAppointShowSeled.getMenuPkid())){
+                    filteredMenuAppointShowList.add(selIndex, menuAppointShowUnit);
                 }
             }
         }catch (Exception e){
@@ -200,28 +200,28 @@ public class ResAppointOperAction implements Serializable{
         this.deptOperShowSeledList = deptOperShowSeledList;
     }
 
-    public List<OperResShow> getOperResShowList() {
-        return operResShowList;
+    public List<MenuAppointShow> getMenuAppointShowList() {
+        return menuAppointShowList;
     }
 
-    public void setOperResShowList(List<OperResShow> operResShowList) {
-        this.operResShowList = operResShowList;
+    public void setMenuAppointShowList(List<MenuAppointShow> menuAppointShowList) {
+        this.menuAppointShowList = menuAppointShowList;
     }
 
-    public List<OperResShow> getFilteredOperResShowList() {
-        return filteredOperResShowList;
+    public List<MenuAppointShow> getFilteredMenuAppointShowList() {
+        return filteredMenuAppointShowList;
     }
 
-    public void setFilteredOperResShowList(List<OperResShow> filteredOperResShowList) {
-        this.filteredOperResShowList = filteredOperResShowList;
+    public void setFilteredMenuAppointShowList(List<MenuAppointShow> filteredMenuAppointShowList) {
+        this.filteredMenuAppointShowList = filteredMenuAppointShowList;
     }
 
-    public OperResShow getOperResShowSeled() {
-        return operResShowSeled;
+    public MenuAppointShow getMenuAppointShowSeled() {
+        return menuAppointShowSeled;
     }
 
-    public void setOperResShowSeled(OperResShow operResShowSeled) {
-        this.operResShowSeled = operResShowSeled;
+    public void setMenuAppointShowSeled(MenuAppointShow menuAppointShowSeled) {
+        this.menuAppointShowSeled = menuAppointShowSeled;
     }
 
     public MenuService getMenuService() {
@@ -240,11 +240,11 @@ public class ResAppointOperAction implements Serializable{
         this.deptOperService = deptOperService;
     }
 
-    public OperResService getOperResService() {
-        return operResService;
+    public OperMenuService getOperMenuService() {
+        return operMenuService;
     }
 
-    public void setOperResService(OperResService operResService) {
-        this.operResService = operResService;
+    public void setOperMenuService(OperMenuService operMenuService) {
+        this.operMenuService = operMenuService;
     }
 }

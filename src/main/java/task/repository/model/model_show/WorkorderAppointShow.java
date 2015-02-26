@@ -1,6 +1,6 @@
 package task.repository.model.model_show;
 
-public class FlowShow {
+public class WorkorderAppointShow {
 
     private String powerType;
     private String powerPkid;

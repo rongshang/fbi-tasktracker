@@ -25,12 +25,12 @@
                 <p:panel id="ppDataTable">
                     <p:dataTable id="resDataTable"
                                  widgetVar="widResDataTable"
-                                 value="#{resAppointOperAction.operResShowList}"
+                                 value="#{menuAppointOperAction.menuAppointShowList}"
                                  var="record"
-                                 rowKey="#{record.resPkid}"
+                                 rowKey="#{record.menuPkid}"
                                  resizableColumns="true"
                                  selectionMode="single"
-                                 filteredValue="#{resAppointOperAction.filteredOperResShowList}"
+                                 filteredValue="#{menuAppointOperAction.filteredMenuAppointShowList}"
                                  emptyMessage="数据记录为空..."
                                  rowIndexVar="row"
                                  scrollable="true"
@@ -53,8 +53,8 @@
                         <p:column headerText="操作" style="width:20px;text-align:center;" >
                             <p:commandButton icon="ui-icon-search"
                                              style="height:18px;width:18px"
-                                             action="#{resAppointOperAction.selectRecordAction(record)}"
-                                             rendered="#{record.resPkid eq 'ROOT'?'false':'true'}"
+                                             action="#{menuAppointOperAction.selectRecordAction(record)}"
+                                             rendered="#{record.menuPkid eq 'ROOT'?'false':'true'}"
                                              update=":form:pgViewForRes,:form:msgs"
                                              onclick="wVDlgViewForRes.show()"
                                              title="View">
@@ -66,7 +66,7 @@
                         </p:column>
                     </p:dataTable>
                     <p:dialog id="dlgViewForRes"
-                              header="#{resAppointOperAction.operResShowSeled.resName}_人员指派"
+                              header="#{menuAppointOperAction.menuAppointShowSeled.resName}_人员指派"
                               widgetVar="wVDlgViewForRes"
                               resizable="false" modal="true"
                               showEffect="clip" hideEffect="fold">
@@ -74,7 +74,7 @@
                             <h:panelGrid columns="2">
                                 <p:commandButton id="submitBtnForRes"
                                                  value="提交"
-                                                 action="#{resAppointOperAction.onClickForMngAction('Power')}"
+                                                 action="#{menuAppointOperAction.onClickForMngAction('Power')}"
                                                  update=":form:resDataTable,msgs"
                                                  oncomplete="wVDlgViewForRes.hide()">
                                 </p:commandButton>
@@ -82,7 +82,7 @@
                             </h:panelGrid>
                             <p:panel header="人员列表">
                                 <p:treeTable id="operTreeTable"
-                                             value="#{resAppointOperAction.deptOperRoot}"
+                                             value="#{menuAppointOperAction.deptOperRoot}"
                                              var="node"
                                              dynamic="true"
                                              cache="false"
@@ -98,7 +98,7 @@
                                     <p:column headerText="选择" style="width:30px;text-align:center">
                                         <p:selectBooleanCheckbox value="#{node.isSeled}"
                                                 rendered="#{node.type eq '0'?'false':node.pkid eq 'ROOT'?'false':'true'}">
-                                            <p:ajax  listener="#{resAppointOperAction.selOperRecordAction(node)}"/>
+                                            <p:ajax  listener="#{menuAppointOperAction.selOperRecordAction(node)}"/>
                                         </p:selectBooleanCheckbox>
                                     </p:column>
                                 </p:treeTable>

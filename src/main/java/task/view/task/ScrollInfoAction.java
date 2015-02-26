@@ -1,7 +1,6 @@
 package task.view.task;
 
 import task.repository.model.model_show.TaskShow;
-import task.service.TaskService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import skyline.util.ToolUtil;
@@ -11,6 +10,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -20,9 +20,6 @@ import java.util.List;
 @ViewScoped
 public class ScrollInfoAction implements Serializable {
     private static final Logger logger = LoggerFactory.getLogger(ScrollInfoAction.class);
-    @ManagedProperty(value = "#{taskService}")
-    private TaskService taskService;
-
     private String strCurrentViewMng;
     private String strLastViewMng;
 
@@ -40,7 +37,7 @@ public class ScrollInfoAction implements Serializable {
     }
 
     public void getViewMsg() {
-        List<TaskShow> taskShowTempList =taskService.initTodoTaskShowList();
+        List<TaskShow> taskShowTempList =new ArrayList<>();//taskService.initTodoTaskShowList();
         if (taskShowTempList != null) {
             String strViewMngTemp="待处理任务：";
             for (TaskShow taskShowItem : taskShowTempList) {
@@ -67,13 +64,5 @@ public class ScrollInfoAction implements Serializable {
 
     public void setStrCurrentViewMng(String strCurrentViewMng) {
         this.strCurrentViewMng = strCurrentViewMng;
-    }
-
-    public TaskService getTaskService() {
-        return taskService;
-    }
-
-    public void setTaskService(TaskService taskService) {
-        this.taskService = taskService;
     }
 }

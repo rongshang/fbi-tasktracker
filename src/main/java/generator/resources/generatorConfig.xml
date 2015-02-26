@@ -31,7 +31,15 @@
         </javaClientGenerator>
 
         <!--业务类例子 -->
-        <table schema="task" tableName="WORKORDER_INFO">
+        <table schema="task" tableName="MENU_APPOINT">
+            <property name="ignoreQualifiersAtRuntime" value="true" />
+            <generatedKey column="pkid" sqlStatement="select sys_guid() from dual" identity="false"/>
+        </table>
+        <table schema="task" tableName="WORKORDER_APPOINT">
+            <property name="ignoreQualifiersAtRuntime" value="true" />
+            <generatedKey column="pkid" sqlStatement="select sys_guid() from dual" identity="false"/>
+        </table>
+        <table schema="task" tableName="WORKORDER_APPOINT_HIS">
             <property name="ignoreQualifiersAtRuntime" value="true" />
             <generatedKey column="pkid" sqlStatement="select sys_guid() from dual" identity="false"/>
         </table>
@@ -39,19 +47,11 @@
             <property name="ignoreQualifiersAtRuntime" value="true" />
             <generatedKey column="pkid" sqlStatement="select sys_guid() from dual" identity="false"/>
         </table>
-        <table schema="task" tableName="FLOW">
-            <property name="ignoreQualifiersAtRuntime" value="true" />
-            <generatedKey column="pkid" sqlStatement="select sys_guid() from dual" identity="false"/>
-        </table>
-        <table schema="task" tableName="FLOW_HIS">
+        <table schema="task" tableName="MENU_APPOINT">
             <property name="ignoreQualifiersAtRuntime" value="true" />
             <generatedKey column="pkid" sqlStatement="select sys_guid() from dual" identity="false"/>
         </table>
         <table schema="task" tableName="OPER">
-            <property name="ignoreQualifiersAtRuntime" value="true" />
-            <generatedKey column="pkid" sqlStatement="select sys_guid() from dual" identity="false"/>
-        </table>
-        <table schema="task" tableName="OPER_RES">
             <property name="ignoreQualifiersAtRuntime" value="true" />
             <generatedKey column="pkid" sqlStatement="select sys_guid() from dual" identity="false"/>
         </table>
@@ -60,6 +60,14 @@
             <generatedKey column="pkid" sqlStatement="select sys_guid() from dual" identity="false"/>
         </table>
         <table schema="task" tableName="PTMENU">
+            <property name="ignoreQualifiersAtRuntime" value="true" />
+            <generatedKey column="pkid" sqlStatement="select sys_guid() from dual" identity="false"/>
+        </table>
+        <table schema="task" tableName="WORKORDER_APPOINT">
+            <property name="ignoreQualifiersAtRuntime" value="true" />
+            <generatedKey column="pkid" sqlStatement="select sys_guid() from dual" identity="false"/>
+        </table>
+        <table schema="task" tableName="WORKORDER_APPOINT_HIS">
             <property name="ignoreQualifiersAtRuntime" value="true" />
             <generatedKey column="pkid" sqlStatement="select sys_guid() from dual" identity="false"/>
         </table>

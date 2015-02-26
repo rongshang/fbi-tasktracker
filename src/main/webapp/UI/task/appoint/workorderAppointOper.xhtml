@@ -41,7 +41,7 @@
                         <p:column headerText="名称" style="width:400px;">
                             <h:outputText value="#{document.resName}"/>
                         </p:column>
-                        <p:column headerText="操作2222" style="width:75px;text-align: left;">
+                        <p:column headerText="操作" style="width:75px;text-align: left;">
                             <p:commandButton
                                     icon="ui-icon-plus"
                                     style="height:18px;width:18px"
@@ -56,7 +56,7 @@
                                     icon="ui-icon-pencil"
                                     style="height:18px;width:18px"
                                     action="#{operFuncBusiResMngAction.selectRecordAction('Upd',document)}"
-                                    rendered="#{document.resPkid eq 'ROOT'?'false':
+                                    rendered="#{document.menuPkid eq 'ROOT'?'false':
                                                             document.resType eq '0' ? 'true':
                                                             document.resType eq '1' ? 'true':
                                                             document.resType eq '2' ? 'true':'false'}"
@@ -246,7 +246,7 @@
                             </p:column>
                             <p:column headerText="选择" style="width:30px;text-align:center">
                                 <p:selectBooleanCheckbox value="#{node.isSeled}"
-                                                         rendered="#{node.type eq '0'?'false':node.pkid eq 'ROOT'?'false':'true'}">
+                                     rendered="#{node.type eq '0'?'false':node.pkid eq 'ROOT'?'false':'true'}">
                                     <p:ajax listener="#{operFuncBusiResMngAction.selOperRecordAction(node)}"/>
                                 </p:selectBooleanCheckbox>
                             </p:column>

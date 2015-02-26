@@ -1,9 +1,8 @@
 package task.repository.dao.not_mybatis;
 
-import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Component;
-import task.repository.model.model_show.OperResShow;
+import task.repository.model.model_show.MenuAppointShow;
 
 import java.util.List;
 
@@ -15,17 +14,17 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 @Component
-public interface MyOperResMapper {
-    List<OperResShow> selectOperResRecordsByModelShow(OperResShow operResShowPara);
+public interface MyMenuAppointMapper {
+    List<MenuAppointShow> selectOperResRecordsByModelShow(MenuAppointShow menuAppointShowPara);
 
     @Select("select" +
             "   opr.OPER_PKID as operPkid," +
             "   pm.MENULABEL as resName" +
             " from " +
-            "   OPER_RES opr" +
+            "   MENU_APPOINT opr" +
             " inner join" +
             "   PTMENU pm" +
             " on" +
-            "   opr.RES_PKID=pm.PKID")
-    List<OperResShow> getOperResPtmenuList();
+            "   opr.MENU_PKID=pm.PKID")
+    List<MenuAppointShow> getOperResPtmenuList();
 }

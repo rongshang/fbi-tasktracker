@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="task.repository.dao.not_mybatis.MyOperResMapper">
-    <resultMap id="BaseResultMapOperRes" type="task.repository.model.model_show.OperResShow">
+<mapper namespace="task.repository.dao.not_mybatis.MyMenuAppointMapper">
+    <resultMap id="BaseResultMapOperRes" type="task.repository.model.model_show.MenuAppointShow">
         <result column="PKID" jdbcType="VARCHAR" property="pkid" />
         <result column="TID" jdbcType="VARCHAR" property="tid" />
         <result column="OPER_PKID" jdbcType="VARCHAR" property="operPkid" />
         <result column="OPER_ID" jdbcType="VARCHAR" property="operId" />
         <result column="OPER_NAME" jdbcType="VARCHAR" property="operName" />
-        <result column="RES_PKID" jdbcType="VARCHAR" property="resPkid" />
+        <result column="MENU_PKID" jdbcType="VARCHAR" property="menuPkid" />
         <result column="RES_NAME" jdbcType="VARCHAR" property="resName" />
         <result column="ARCHIVED_FLAG" jdbcType="CHAR" property="archivedFlag" />
         <result column="CREATED_BY" jdbcType="VARCHAR" property="createdBy" />
@@ -19,7 +19,7 @@
         <result column="REMARK" jdbcType="VARCHAR" property="remark" />
         <result column="REC_VERSION" jdbcType="DECIMAL" property="recVersion" />
     </resultMap>
-    <select id="selectOperResRecordsByModelShow" parameterType="task.repository.model.model_show.OperResShow"
+    <select id="selectOperResRecordsByModelShow" parameterType="task.repository.model.model_show.MenuAppointShow"
             resultMap="BaseResultMapOperRes">
         <![CDATA[
             select
@@ -28,7 +28,7 @@
                 t.OPER_PKID,
                 o.ID as OPER_ID,
                 o.NAME as OPER_NAME,
-                t.RES_PKID,
+                t.MENU_PKID,
                 t.ARCHIVED_FLAG,
                 t.CREATED_BY,
                 (select name from oper where PKID=t.CREATED_BY) as CREATED_BY_NAME,
@@ -39,7 +39,7 @@
                 t.REMARK,
                 t.REC_VERSION
             from
-                OPER_RES t
+                MENU_APPOINT t
             left join
                 OPER o
             on
@@ -53,8 +53,8 @@
         <if test="operPkid != null and operPkid != ''">
             and t.OPER_PKID=#{operPkid}
         </if>
-        <if test="resPkid != null and resPkid != ''">
-            and t.RES_PKID=#{resPkid}
+        <if test="menuPkid != null and menuPkid != ''">
+            and t.MENU_PKID=#{menuPkid}
         </if>
     </select>
 </mapper>

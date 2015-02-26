@@ -188,13 +188,13 @@ public class DatabaseAgent {
                 "                 m.targetmachine" +
                 //人工指派资源
                 " FROM" +
-                "       OPER_RES r" +
+                "       MENU_APPOINT r" +
                 " INNER JOIN" +
                 "       PTMENU m" +
                 " ON" +
                 "       r.OPER_PKID='" + strOperPkidPara + "' " +
                 " and" +
-                "       r.RES_PKID=m.PKID" +
+                "       r.MENU_PKID=m.PKID" +
                 " and" +
                 "       m.targetmachine = '" + targetMachinePara + "' " +
                 " ORDER BY m.menuLevel," +
@@ -203,7 +203,7 @@ public class DatabaseAgent {
         DatabaseConnection dc = null;
         RecordSet rs = null;
 
-        List<MenuItemBean> listTemp = new ArrayList();
+        List<MenuItemBean> listTemp=new ArrayList<>();
         try {
             cm = ConnectionManager.getInstance();
             dc = cm.getConnection();

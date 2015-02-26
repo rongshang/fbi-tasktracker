@@ -20,7 +20,6 @@ import task.repository.model.*;
 import task.repository.model.model_show.WorkorderInfoShow;
 import task.repository.model.model_show.WorkorderItemShow;
 import task.service.*;
-import task.view.flow.EsCommon;
 import jxl.write.WriteException;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.StringUtils;
@@ -46,8 +45,6 @@ public class WorkorderItemAction {
     private WorkorderInfoService workorderInfoService;
     @ManagedProperty(value = "#{workorderItemService}")
     private WorkorderItemService workorderItemService;
-    @ManagedProperty(value = "#{esCommon}")
-    private EsCommon esCommon;
 
     private WorkorderInfoShow workorderInfoShow;
     private WorkorderItemShow workorderItemShowSel;
@@ -335,12 +332,6 @@ public class WorkorderItemAction {
     }
     public void setWorkorderItemService(WorkorderItemService workorderItemService) {
         this.workorderItemService = workorderItemService;
-    }
-    public EsCommon getEsCommon() {
-        return esCommon;
-    }
-    public void setEsCommon(EsCommon esCommon) {
-        this.esCommon = esCommon;
     }
     public WorkorderItemShow getWorkorderItemShowSel() {
         return workorderItemShowSel;

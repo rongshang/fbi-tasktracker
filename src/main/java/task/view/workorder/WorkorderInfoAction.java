@@ -2,7 +2,6 @@ package task.view.workorder;
 
 import task.repository.model.model_show.WorkorderInfoShow;
 import task.service.*;
-import task.view.flow.EsCommon;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -32,8 +31,6 @@ public class WorkorderInfoAction {
     private WorkorderInfoService workorderInfoService;
     @ManagedProperty(value = "#{workorderItemService}")
     private WorkorderItemService workorderItemService;
-    @ManagedProperty(value = "#{esCommon}")
-    private EsCommon esCommon;
 
     private WorkorderInfoShow workorderInfoShowQry;
     private WorkorderInfoShow workorderInfoShowSel;
@@ -208,14 +205,6 @@ public class WorkorderInfoAction {
 
     public void setWorkorderInfoService(WorkorderInfoService workorderInfoService) {
         this.workorderInfoService = workorderInfoService;
-    }
-
-    public EsCommon getEsCommon() {
-        return esCommon;
-    }
-
-    public void setEsCommon(EsCommon esCommon) {
-        this.esCommon = esCommon;
     }
 
     public WorkorderInfoShow getWorkorderInfoShowQry() {

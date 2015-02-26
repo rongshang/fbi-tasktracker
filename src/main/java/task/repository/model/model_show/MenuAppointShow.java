@@ -1,12 +1,12 @@
 package task.repository.model.model_show;
 
-public class OperResShow {
+public class MenuAppointShow {
     private String pkid;
     private String tid;
     private String operId;
     private String operPkid;
     private String operName;
-    private String resPkid;
+    private String menuPkid;
     private String resName;
     private String archivedFlag;
     private String createdBy;
@@ -43,12 +43,12 @@ public class OperResShow {
         this.operPkid = operPkid == null ? null : operPkid.trim();
     }
 
-    public String getResPkid() {
-        return resPkid;
+    public String getMenuPkid() {
+        return menuPkid;
     }
 
-    public void setResPkid(String resPkid) {
-        this.resPkid = resPkid;
+    public void setMenuPkid(String menuPkid) {
+        this.menuPkid = menuPkid;
     }
 
     public String getResName() {
