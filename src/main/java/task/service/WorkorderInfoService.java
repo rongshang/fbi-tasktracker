@@ -2,6 +2,7 @@ package task.service;
 
 import org.apache.commons.lang.StringUtils;
 import skyline.util.MessageUtil;
+import task.common.enums.EnumInputFinishFlag;
 import task.repository.dao.WorkorderInfoMapper;
 import task.repository.dao.not_mybatis.MyWorkorderInfoMapper;
 import task.repository.dao.not_mybatis.MyDeptAndOperMapper;
@@ -65,8 +66,11 @@ public class WorkorderInfoService {
         return workorderInfoShowListTemp;
     }
 
-    public WorkorderInfo getCttInfoByPkId(String strPkid) {
+    public WorkorderInfo getWorkorderInfoByPkId(String strPkid) {
         return workorderInfoMapper.selectByPrimaryKey(strPkid);
+    }
+    public WorkorderInfoShow getWorkorderInfoShowByPkId(String strPkid) {
+        return fromModelToModelShow(getWorkorderInfoByPkId(strPkid));
     }
 
     /*public FlowHis fromCttInfoToFlowCtrlHis(CttInfo cttInfoPara,String strOperTypePara){
@@ -88,30 +92,19 @@ public class WorkorderInfoService {
 
     @Transactional
     public void insertRecord(WorkorderInfoShow workorderInfoShowPara) {
-        String strOperatorIdTemp=ToolUtil.getOperatorManager().getOperator().getPkid();
-        String strLastUpdTimeTemp=ToolUtil.getStrLastUpdTime();
-        WorkorderInfo workorderInfoTemp =fromModelShowToModel(workorderInfoShowPara);
-        workorderInfoTemp.setArchivedFlag("0");
-        workorderInfoTemp.setCreatedBy(strOperatorIdTemp);
-        workorderInfoTemp.setCreatedTime(strLastUpdTimeTemp);
-        workorderInfoTemp.setLastUpdBy(strOperatorIdTemp);
-        workorderInfoTemp.setLastUpdTime(strLastUpdTimeTemp);
-        workorderInfoMapper.insertSelective(workorderInfoTemp);
-       /* flowCtrlHisService.insertRecord(
-                fromCttInfoToFlowCtrlHis(cttInfoTemp,EnumOperType.OPER_TYPE0.getCode()));*/
+        insertRecord(fromModelShowToModel(workorderInfoShowPara));
     }
     @Transactional
     public void insertRecord(WorkorderInfo workorderInfoPara) {
         String strOperatorIdTemp=ToolUtil.getOperatorManager().getOperator().getPkid();
         String strLastUpdTimeTemp=ToolUtil.getStrLastUpdTime();
         workorderInfoPara.setArchivedFlag("0");
+        workorderInfoPara.setFinishFlag("0");
         workorderInfoPara.setCreatedBy(strOperatorIdTemp);
         workorderInfoPara.setCreatedTime(strLastUpdTimeTemp);
         workorderInfoPara.setLastUpdBy(strOperatorIdTemp);
         workorderInfoPara.setLastUpdTime(strLastUpdTimeTemp);
         workorderInfoMapper.insertSelective(workorderInfoPara);
-        /*flowCtrlHisService.insertRecord(
-                fromCttInfoToFlowCtrlHis(cttInfoPara,EnumOperType.OPER_TYPE0.getCode()));*/
     }
     @Transactional
     public String updateRecord(WorkorderInfoShow workorderInfoShowPara){
@@ -120,7 +113,7 @@ public class WorkorderInfoService {
     }
     @Transactional
     public String updateRecord(WorkorderInfo workorderInfoPara){
-        WorkorderInfo workorderInfoTemp =getCttInfoByPkId(workorderInfoPara.getPkid());
+        WorkorderInfo workorderInfoTemp =getWorkorderInfoByPkId(workorderInfoPara.getPkid());
         if(workorderInfoTemp !=null){
             //此条记录目前在数据库中的版本
             int intRecVersionInDB=ToolUtil.getIntIgnoreNull(workorderInfoTemp.getRecVersion());
@@ -141,9 +134,7 @@ public class WorkorderInfoService {
     }
     @Transactional
     public int deleteRecord(String strCttInfoPkidPara){
-        WorkorderInfo workorderInfoTemp = getCttInfoByPkId(strCttInfoPkidPara);
-        /*flowCtrlHisService.insertRecord(
-                fromCttInfoToFlowCtrlHis(cttInfoTemp,EnumOperType.OPER_TYPE1.getCode()));*/
+        WorkorderInfo workorderInfoTemp = getWorkorderInfoByPkId(strCttInfoPkidPara);
         return workorderInfoMapper.deleteByPrimaryKey(strCttInfoPkidPara);
     }
 
@@ -205,6 +196,8 @@ public class WorkorderInfoService {
         workorderInfoShowTemp.setRecVersion(workorderInfoPara.getRecVersion());
         workorderInfoShowTemp.setParentPkid(workorderInfoPara.getParentPkid());
         workorderInfoShowTemp.setFinishFlag(workorderInfoPara.getFinishFlag());
+        workorderInfoShowTemp.setFinishFlagName(
+                EnumInputFinishFlag.getValueByKey(workorderInfoPara.getFinishFlag()).getTitle());
         workorderInfoShowTemp.setTid(workorderInfoPara.getTid());
         return workorderInfoShowTemp;
     }

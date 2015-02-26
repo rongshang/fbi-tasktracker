@@ -9,21 +9,15 @@ import java.util.Hashtable;
  * Time: 9:58:32
  * To change this template use File | Settings | File Templates.
  */
-public enum EnumFlowStatusReason {
-    FLOW_STATUS_REASON0("0","录入完毕"),
-    FLOW_STATUS_REASON1("1","审核通过"),
-    FLOW_STATUS_REASON2("2","审核未过"),
-    FLOW_STATUS_REASON3("3","复核通过"),
-    FLOW_STATUS_REASON4("4","复核未过"),
-    FLOW_STATUS_REASON5("5","批准通过"),
-    FLOW_STATUS_REASON6("6","批准未过"),
-    FLOW_STATUS_REASON7("7","记账通过"),
-    FLOW_STATUS_REASON8("8","归档成功");
+public enum EnumOriginFlag {
+    ORIGIN_FLAGI("I","系统录入"),
+    ORIGIN_FLAGO("O","外部导入"),
+    ORIGIN_FLAGS("S","系统保留");
     private String code = null;
     private String title = null;
-    private static Hashtable<String, EnumFlowStatusReason> aliasEnums;
+    private static Hashtable<String, EnumOriginFlag> aliasEnums;
 
-    EnumFlowStatusReason(String code, String title){
+    EnumOriginFlag(String code, String title){
         this.init(code, title);
     }
 
@@ -40,7 +34,7 @@ public enum EnumFlowStatusReason {
         aliasEnums.put(title, this);
     }
 
-    public static EnumFlowStatusReason getValueByKey(String alias) {
+    public static EnumOriginFlag getValueByKey(String alias) {
         return aliasEnums.get(alias);
     }
 

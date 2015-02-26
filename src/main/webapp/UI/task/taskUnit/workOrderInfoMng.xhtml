@@ -5,7 +5,7 @@
                 xmlns:p="http://primefaces.org/ui"
                 template="/templates/ui.xhtml">
     <ui:define name="head">
-        <link type="text/css" href="#{request.contextPath}/css/epss.css" rel="stylesheet"/>
+        <link type="text/css" href="#{request.contextPath}/css/task.css" rel="stylesheet"/>
         <script type="text/javascript" src="#{request.contextPath}/js/pub.js"/>
         <script type="text/javascript" language="javascript">
             document.onkeydown = function TabReplace() {
@@ -110,6 +110,9 @@
                     <p:column headerText="工单主题" style="width:300px;text-align:left">
                         <h:outputText value="#{record.name}"/>
                     </p:column>
+                    <p:column headerText="是否录入完成" style="width:80px;text-align:left">
+                        <h:outputText value="#{record.finishFlagName}"/>
+                    </p:column>
                     <p:column headerText="开始时间" style="width:120px;text-align:center">
                         <h:outputText value="#{record.startTime}"/>
                     </p:column>
@@ -211,7 +214,8 @@
                         <h:panelGrid columns="2">
                             <p:outputLabel value="备注内容：" for="remarkForUpd"/>
                             <p:inputText id="remarkForUpd"
-                                         value="#{workorderInfoAction.workorderInfoShowUpd.remark}"/>
+                                         value="#{workorderInfoAction.workorderInfoShowUpd.remark}"
+                                         style="width:328px"/>
                         </h:panelGrid>
                         <h:panelGrid columns="4">
                             <p:outputLabel for="createdByNameUpd" value="创建人："/>

@@ -9,18 +9,14 @@ import java.util.Hashtable;
  * Time: 9:58:32
  * To change this template use File | Settings | File Templates.
  */
-public enum EnumFlowStatus {
-    FLOW_STATUS0("0","录入"),
-    FLOW_STATUS1("1","审核"),
-    FLOW_STATUS2("2","复核"),
-    FLOW_STATUS3("3","批准"),
-    FLOW_STATUS4("4","记账"),
-    FLOW_STATUS5("5","归档");
+public enum EnumInputFinishFlag {
+    INPUT_FINISH_FLAG0("0","工单录入未完"),
+    INPUT_FINISH_FLAG1("1","工单录入完成");
     private String code = null;
     private String title = null;
-    private static Hashtable<String, EnumFlowStatus> aliasEnums;
+    private static Hashtable<String, EnumInputFinishFlag> aliasEnums;
 
-    EnumFlowStatus(String code, String title){
+    EnumInputFinishFlag(String code, String title){
         this.init(code, title);
     }
 
@@ -37,7 +33,7 @@ public enum EnumFlowStatus {
         aliasEnums.put(title, this);
     }
 
-    public static EnumFlowStatus getValueByKey(String alias) {
+    public static EnumInputFinishFlag getValueByKey(String alias) {
         return aliasEnums.get(alias);
     }
 

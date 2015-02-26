@@ -20,8 +20,10 @@ public class WorkorderItemShow implements Serializable {
     private String itemContent;
     /*task.ES_ITEM_INFO.ARCHIVED_FLAG*/
     private String archivedFlag;
+    private String archivedFlagName;
     /*task.ES_ITEM_INFO.ORIGIN_FLAG*/
     private String originFlag;
+    private String originFlagName;
     /*task.ES_ITEM_INFO.CREATED_BY*/
     private String createdBy;
     private String createdByName;
@@ -37,7 +39,7 @@ public class WorkorderItemShow implements Serializable {
     /*task.ES_ITEM_INFO.REC_VERSION*/
     private Integer recVersion;
     /*task.ES_ITEM_INFO.LEVELIDX*/
-    private Integer levelidx;
+    private String levelidx;
     /*task.WORKORDER_ITEM.PARENT_PKID*/
     private String parentPkid;
     /*task.WORKORDER_ITEM.INFO_PKID*/
@@ -74,6 +76,22 @@ public class WorkorderItemShow implements Serializable {
 
     public void setOriginFlag(String originFlag) {
         this.originFlag = originFlag;
+    }
+
+    public String getArchivedFlagName() {
+        return archivedFlagName;
+    }
+
+    public void setArchivedFlagName(String archivedFlagName) {
+        this.archivedFlagName = archivedFlagName;
+    }
+
+    public String getOriginFlagName() {
+        return originFlagName;
+    }
+
+    public void setOriginFlagName(String originFlagName) {
+        this.originFlagName = originFlagName;
     }
 
     public String getCreatedBy() {
@@ -164,11 +182,11 @@ public class WorkorderItemShow implements Serializable {
         this.itemContent = itemContent;
     }
 
-    public Integer getLevelidx() {
+    public String getLevelidx() {
         return levelidx;
     }
 
-    public void setLevelidx(Integer levelidx) {
+    public void setLevelidx(String levelidx) {
         this.levelidx = levelidx;
     }
 

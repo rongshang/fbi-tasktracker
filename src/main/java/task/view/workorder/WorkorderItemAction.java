@@ -7,6 +7,7 @@ package task.view.workorder;
  * Time: 下午1:53
  * To change this template use File | Settings | File Templates.
  */
+import task.common.enums.EnumInputFinishFlag;
 import task.repository.model.model_show.AttachmentModel;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.DefaultStreamedContent;
@@ -16,6 +17,7 @@ import skyline.util.JxlsManager;
 import skyline.util.StyleModel;
 import skyline.util.ToolUtil;
 import task.repository.model.*;
+import task.repository.model.model_show.WorkorderInfoShow;
 import task.repository.model.model_show.WorkorderItemShow;
 import task.service.*;
 import task.view.flow.EsCommon;
@@ -47,12 +49,11 @@ public class WorkorderItemAction {
     @ManagedProperty(value = "#{esCommon}")
     private EsCommon esCommon;
 
-    private WorkorderInfo workorderInfo;
+    private WorkorderInfoShow workorderInfoShow;
     private WorkorderItemShow workorderItemShowSel;
     private WorkorderItemShow workorderItemShowAdd;
     private WorkorderItemShow workorderItemShowUpd;
     private WorkorderItemShow workorderItemShowDel;
-    private List<WorkorderItem> workorderItemList;
     private List<WorkorderItemShow> workorderItemShowList;
 
     //附件
@@ -68,8 +69,6 @@ public class WorkorderItemAction {
     private String strSubmitType;
 
     //显示的控制
-    private String strNotPassToStatus;
-    private String strFlowType;
     private List<WorkorderItemShow> workorderItemShowListExcel;
     private Map beansMap;
 
@@ -80,7 +79,7 @@ public class WorkorderItemAction {
             beansMap = new HashMap();
             if (parammap.containsKey("strWorkorderInfoPkid")) {
                 strWorkorderInfoPkid = parammap.get("strWorkorderInfoPkid").toString();
-                workorderInfo = workorderInfoService.getCttInfoByPkId(strWorkorderInfoPkid);
+                workorderInfoShow = workorderInfoService.getWorkorderInfoShowByPkId(strWorkorderInfoPkid);
                 resetAction();
                 initData();
             }
@@ -93,16 +92,15 @@ public class WorkorderItemAction {
     private void initData() {
         /*形成关系树*/
         try {
-            workorderItemList =new ArrayList<>();
             workorderItemShowList =new ArrayList<>();
             attachmentList=new ArrayList<>();
 
             /*初始化流程状态列表*/
             if(ToolUtil.getStrIgnoreNull(strWorkorderInfoPkid).length()!=0) {
                 // 输出Excel表头
-                beansMap.put("workorderInfo", workorderInfo);
+                beansMap.put("workorderInfoShow", workorderInfoShow);
                 // 附件记录变成List
-                attachmentList=ToolUtil.getListAttachmentByStrAttachment(workorderInfo.getAttachment());
+                attachmentList=ToolUtil.getListAttachmentByStrAttachment(workorderInfoShow.getAttachment());
                 workorderItemShowList = workorderItemService.getWorkorderItemListByInfoPkid(strWorkorderInfoPkid);
                 // Excel报表形成
                 workorderItemShowListExcel = new ArrayList<>();
@@ -130,7 +128,7 @@ public class WorkorderItemAction {
         strSubmitType="Add";
         workorderItemShowAdd = new WorkorderItemShow();
         workorderItemShowAdd.setInfoPkid(strWorkorderInfoPkid);
-        workorderItemShowAdd.setLevelidx(workorderItemService.getMaxLevelidxPlusOne(strWorkorderInfoPkid));
+        workorderItemShowAdd.setLevelidx(workorderItemService.getMaxLevelidxPlusOne(strWorkorderInfoPkid).toString());
     }
     /*右单击事件*/
     public void selectRecordAction(String strSubmitTypePara, WorkorderItemShow workorderItemShowPara) {
@@ -150,16 +148,12 @@ public class WorkorderItemAction {
     }
 
     /*提交前的检查：必须项的输入*/
-    private Boolean subMitActionPreCheck() {
-        WorkorderItemShow workorderItemShowTemp = new WorkorderItemShow(strWorkorderInfoPkid);
-        if (strSubmitType.equals("Add")) {
-            workorderItemShowTemp = workorderItemShowAdd;
-        }
-        if (strSubmitType.equals("Upd")) {
-            workorderItemShowTemp = workorderItemShowUpd;
-        }
-        if (StringUtils.isEmpty(workorderItemShowTemp.getId())) {
+    private Boolean subMitActionPreCheck(WorkorderItemShow workorderItemShowPara) {
+        if (StringUtils.isEmpty(workorderItemShowPara.getId())) {
             MessageUtil.addError("请输入编号！");
+            return false;
+        }else if (workorderItemShowPara.getLevelidx().equals("")) {
+            MessageUtil.addError("请输入顺序号！");
             return false;
         }
         return true;
@@ -167,19 +161,21 @@ public class WorkorderItemAction {
     public void submitThisRecordAction(){
         try{
             /*提交前的检查*/
-            if(strSubmitType .equals("Del")) {
+            if(strSubmitType .equals("Add")) {
+                if(!subMitActionPreCheck(workorderItemShowAdd)){
+                    return;
+                }
+                workorderItemService.insertRecord(workorderItemShowAdd);
+                initForAdd();
+            }else if(strSubmitType .equals("Upd")) {
+                if(!subMitActionPreCheck(workorderItemShowUpd)) {
+                    return;
+                }
+                workorderItemService.updateRecord(workorderItemShowUpd);
+            }else if(strSubmitType .equals("Del")) {
                 workorderItemService.deleteRecordByPkid(workorderItemShowDel.getPkid()) ;
-            }else{
-                if(!subMitActionPreCheck()){
-                    return ;
-                }
-                if(strSubmitType .equals("Upd")) {
-                    workorderItemService.updateRecord(workorderItemShowUpd) ;
-                }
-                else if(strSubmitType .equals("Add")) {
-                    workorderItemService.insertRecord(workorderItemShowAdd);
-                }
             }
+
             switch (strSubmitType){
                 case "Add" : MessageUtil.addInfo("增加数据完成。");
                     break;
@@ -198,74 +194,39 @@ public class WorkorderItemAction {
             }
         }
     }
-
-    /*根据数据库中层级关系数据列表得到某一节点下的子节点*/
-    private List<WorkorderItem> getEsCttItemListByParentPkid(String strLevelParentPkid,
-             List<WorkorderItem> workorderItemListPara) {
-        List<WorkorderItem> tempWorkorderItemList =new ArrayList<WorkorderItem>();
-        /*避开重复链接数据库*/
-        for(WorkorderItem itemUnit: workorderItemListPara){
-            if(strLevelParentPkid.equalsIgnoreCase(itemUnit.getParentPkid())){
-                tempWorkorderItemList.add(itemUnit);
-            }
-        }
-        return tempWorkorderItemList;
-    }
-    /*在总包合同列表中根据编号找到项*/
-    private WorkorderItemShow getEsCttItemByStrNo(
-             String strNo,
-             List<WorkorderItemShow> workorderItemShowListPara){
-        WorkorderItemShow workorderItemShowTemp =null;
-        try{
-            for(WorkorderItemShow itemUnit: workorderItemShowListPara){
-                if(ToolUtil.getIgnoreSpaceOfStr(itemUnit.getId()).equals(strNo)) {
-                    workorderItemShowTemp =(WorkorderItemShow)BeanUtils.cloneBean(itemUnit);
-                    break;
-                }
-            }
-        } catch (Exception e) {
-            MessageUtil.addError(e.getMessage());
-        }
-        return workorderItemShowTemp;
-    }
-
-    private boolean checkPreMng(WorkorderInfo workorderInfoPara) {
-        if (StringUtils.isEmpty(workorderInfoPara.getId())) {
-            return false;
-        } else if (StringUtils.isEmpty(workorderInfoPara.getName())) {
-            return false;
-        } else if (StringUtils.isEmpty(workorderInfoPara.getSignDate())) {
-            return false;
-        }
-        return true;
-    }
     /**
      * 根据权限进行审核
      *
      * @param strPowerTypePara
      */
-    public void onClickForPowerAction(String strPowerTypePara) {
+    public void onClickForWorkorderFinish(String strPowerTypePara) {
         try {
-            strPowerTypePara=strFlowType+strPowerTypePara;
-                if (strPowerTypePara.equals("MngPass")) {
-
-                    //cttInfoService.updateRecord(cttInfo);
-                    MessageUtil.addInfo("数据录入完成！");
-                } else if (strPowerTypePara.equals("MngFail")) {
-
-                    //cttInfoService.updateRecord(cttInfo);
-                    MessageUtil.addInfo("数据录入未完！");
+            if (strPowerTypePara.equals("MngPass")) {
+                workorderInfoShow.setFinishFlag(EnumInputFinishFlag.INPUT_FINISH_FLAG1.getCode());
+                String strResult= workorderInfoService.updateRecord(workorderInfoShow);
+                if(("0").equals(strResult)){
+                    MessageUtil.addInfo("工单录入完成！");
+                }else if(("1").equals(strResult)){
+                    MessageUtil.addError("当前数据已被更新，请重新取得！");
                 }
-
+            } else if (strPowerTypePara.equals("MngFail")) {
+                workorderInfoShow.setFinishFlag(EnumInputFinishFlag.INPUT_FINISH_FLAG0.getCode());
+                String strResult= workorderInfoService.updateRecord(workorderInfoShow);
+                if(("0").equals(strResult)){
+                    MessageUtil.addInfo("工单重新录入！");
+                }else if(("1").equals(strResult)){
+                    MessageUtil.addError("当前数据已被更新，请重新取得！");
+                }
+            }
         } catch (Exception e) {
-            logger.error("数据流程化失败，", e);
+            logger.error("工单录入完成操作失败，", e);
             MessageUtil.addError(e.getMessage());
         }
     }
     public void onExportExcel()throws IOException, WriteException {
-        String excelFilename = "总包合同-" + new SimpleDateFormat("yyyyMMdd").format(new Date()) + ".xls";
+        String excelFilename = "工单-" + workorderInfoShow.getSignDate() + ".xls";
         JxlsManager jxls = new JxlsManager();
-        jxls.exportList(excelFilename, beansMap,"oriTkctt.xls");
+        jxls.exportList(excelFilename, beansMap,"workorderItem.xls");
     }
 
     // 附件
@@ -281,8 +242,8 @@ public class WorkorderItemAction {
             for (AttachmentModel item : attachmentList) {
                 sbTemp.append(item.getCOLUMN_PATH() + ";");
             }
-            workorderInfo.setAttachment(sbTemp.toString());
-            workorderInfoService.updateRecord(workorderInfo);
+            workorderInfoShow.setAttachment(sbTemp.toString());
+            workorderInfoService.updateRecord(workorderInfoShow);
         } catch (Exception e) {
             logger.error("删除数据失败，", e);
             MessageUtil.addError(e.getMessage());
@@ -337,8 +298,8 @@ public class WorkorderItemAction {
                 MessageUtil.addError("附件路径("+sb.toString()+")长度已超过最大允许值4000，不能入库，请联系系统管理员！");
                 return;
             }
-            workorderInfo.setAttachment(sb.toString());
-            workorderInfoService.updateRecord(workorderInfo);
+            workorderInfoShow.setAttachment(sb.toString());
+            workorderInfoService.updateRecord(workorderInfoShow);
             try {
                 inStream = new BufferedInputStream(uploadedFile.getInputstream());
                 fileOutputStream = new FileOutputStream(descFile);
@@ -420,21 +381,6 @@ public class WorkorderItemAction {
     public void setWorkorderItemShowUpd(WorkorderItemShow workorderItemShowUpd) {
         this.workorderItemShowUpd = workorderItemShowUpd;
     }
-    public String getStrNotPassToStatus() {
-        return strNotPassToStatus;
-    }
-    public void setStrNotPassToStatus(String strNotPassToStatus) {
-        this.strNotPassToStatus = strNotPassToStatus;
-    }
-    public String getStrFlowType() {
-        return strFlowType;
-    }
-    public void setStrFlowType(String strFlowType) {
-        this.strFlowType = strFlowType;
-    }
-    public WorkorderInfo getWorkorderInfo() {
-        return workorderInfo;
-    }
     public WorkorderInfoService getWorkorderInfoService() {
         return workorderInfoService;
     }
@@ -447,8 +393,13 @@ public class WorkorderItemAction {
     public void setWorkorderItemShowListExcel(List<WorkorderItemShow> workorderItemShowListExcel) {
         this.workorderItemShowListExcel = workorderItemShowListExcel;
     }
-    public void setWorkorderInfo(WorkorderInfo workorderInfo) {
-        this.workorderInfo = workorderInfo;
+
+    public WorkorderInfoShow getWorkorderInfoShow() {
+        return workorderInfoShow;
+    }
+
+    public void setWorkorderInfoShow(WorkorderInfoShow workorderInfoShow) {
+        this.workorderInfoShow = workorderInfoShow;
     }
 
     public Map getBeansMap() {

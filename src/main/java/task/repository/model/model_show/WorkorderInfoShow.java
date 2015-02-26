@@ -30,6 +30,7 @@ public class WorkorderInfoShow implements Serializable {
     private Boolean isSeled;
     private String parentPkid;
     private String finishFlag;
+    private String finishFlagName;
     private String tid;
     public String getPkid() {
         return pkid;
@@ -192,6 +193,14 @@ public class WorkorderInfoShow implements Serializable {
 
     public void setFinishFlag(String finishFlag) {
         this.finishFlag = finishFlag;
+    }
+
+    public String getFinishFlagName() {
+        return finishFlagName;
+    }
+
+    public void setFinishFlagName(String finishFlagName) {
+        this.finishFlagName = finishFlagName;
     }
 
     public String getTid() {

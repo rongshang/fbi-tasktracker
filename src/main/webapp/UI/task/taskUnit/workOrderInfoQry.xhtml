@@ -5,7 +5,7 @@
                 xmlns:p="http://primefaces.org/ui"
                 template="/templates/ui.xhtml">
     <ui:define name="head">
-        <link type="text/css" href="#{request.contextPath}/css/epss.css" rel="stylesheet"/>
+        <link type="text/css" href="#{request.contextPath}/css/task.css" rel="stylesheet"/>
         <script type="text/javascript" src="#{request.contextPath}/js/pub.js"/>
         <script type="text/javascript" language="javascript">
             document.onkeydown = function TabReplace() {
@@ -32,7 +32,7 @@
                          "resizable:yes;scroll:yes;status:no;minimize:yes;maximize:yes;";
                  var arg = new Object();
                  arg.doType = "select";
-                 var rtn = dialog("../taskUnit/workorderItemQry.xhtml?strCttInfoPkid=" + pkid + "", arg, sfeature);
+                 var rtn = dialog("../taskUnit/workorderItemQry.xhtml?strWorkorderInfoPkid=" + pkid + "", arg, sfeature);
             }
             /*function actSelect(obj, ind) {
                 // 寻找当前行的PKID思路：从此节点直到找到Table再找到相应的行和列
@@ -125,6 +125,9 @@
                     </p:column>
                     <p:column headerText="工单主题" style="width:300px;text-align:left">
                         <h:outputText value="#{record.name}"/>
+                    </p:column>
+                    <p:column headerText="是否录入完成" style="width:80px;text-align:left">
+                        <h:outputText value="#{record.finishFlagName}"/>
                     </p:column>
                     <p:column headerText="开始时间" style="width:120px;text-align:center">
                         <h:outputText value="#{record.startTime}"/>

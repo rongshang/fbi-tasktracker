@@ -1,6 +1,5 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:h="http://java.sun.com/jsf/html"
-                xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:p="http://primefaces.org/ui"
                 template="/templates/ui.xhtml">
@@ -28,24 +27,26 @@
                         <h:panelGrid columns="2" style="width:100%;">
                             <h:panelGrid columns="4">
                                 <p:outputLabel value="工单编号：" for="idForSel"/>
-                                <p:inputText id="idForSel" value="#{workorderItemAction.workorderInfo.id}"
+                                <p:inputText id="idForSel" value="#{workorderItemAction.workorderInfoShow.id}"
                                              readonly="true" style="background-color:gainsboro;"/>
                                 <p:outputLabel value="工单名称：" for="nameForSel"/>
-                                <p:inputText id="nameForSel" value="#{workorderItemAction.workorderInfo.name}"
+                                <p:inputText id="nameForSel" value="#{workorderItemAction.workorderInfoShow.name}"
                                              readonly="true" style="background-color:gainsboro;"/>
                             </h:panelGrid>
-                            <h:panelGrid columns="4">
+                            <h:panelGrid columns="6">
+                                <p:outputLabel value="工单状态：" for="finishFlagNameForSel"/>
+                                <p:inputText id="finishFlagNameForSel"
+                                             value="#{workorderItemAction.workorderInfoShow.finishFlagName}"
+                                             readonly="true" style="background-color:gainsboro;"/>
                                 <p:commandButton value="录入完成"
-                                                 action="#{workorderItemAction.onClickForPowerAction('Pass')}"
+                                                 rendered="#{workorderItemAction.workorderInfoShow.finishFlag eq '0'? 'true':'false'}"
+                                                 action="#{workorderItemAction.onClickForWorkorderFinish('Pass')}"
                                                  update="msgs,ppInfo,ppDetail">
                                 </p:commandButton>
-                                <p:commandButton value="录入未完"
-                                                 action="#{workorderItemAction.onClickForPowerAction('Fail')}"
+                                <p:commandButton value="重新录入"
+                                                 rendered="#{workorderItemAction.workorderInfoShow.finishFlag eq '1'? 'true':'false'}"
+                                                 action="#{workorderItemAction.onClickForWorkorderFinish('Fail')}"
                                                  update="msgs,ppInfo,ppDetail">
-                                </p:commandButton>
-                                <p:commandButton value="附件"
-                                                 update=":form:msgs"
-                                                 onclick="PF('wvAttachmentList').show()">
                                 </p:commandButton>
                                 <p:commandButton value="导出到EXCEL"
                                                  action="#{workorderItemAction.onExportExcel}"
@@ -89,10 +90,7 @@
                                                  onclick="PF('wVDlgViewForDel').show()">
                                 </p:commandButton>
                             </p:column>
-                            <p:column style="width:42px" headerText="序号">
-                                <h:outputText value="#{row + 1}"/>
-                            </p:column>
-                            <p:column style="width:120px" headerText="编号">
+                            <p:column style="width:40px" headerText="编号">
                                 <h:outputText value="#{record.id}" escape="false"/>
                             </p:column>
                             <p:column style="width:360px" headerText="內容">
@@ -101,8 +99,13 @@
                             <p:column style="width:300px" headerText="备注">
                                 <h:outputText value="#{record.remark}" />
                             </p:column>
+                            <p:column style="width:80px" headerText="顺序号">
+                                <h:outputText value="#{record.levelidx}"
+                                              style="float: right">
+                                </h:outputText>
+                            </p:column>
                             <p:column style="width:100px" headerText="数据来源">
-                                <h:outputText value="#{record.originFlag}" />
+                                <h:outputText value="#{record.originFlagName}" />
                             </p:column>
                             <p:column style="width:100px" headerText="创建人">
                                 <h:outputText value="#{record.createdByName}" />
@@ -200,15 +203,15 @@
                                     </h:inputText>
                                     <p:outputLabel for="itemContentForAdd" value="內容：" />
                                     <h:inputTextarea id="itemContentForAdd"
-                                                     rows="4"
+                                                     rows="5"
                                                      autoResize="false"
-                                                     style="width:400px"
+                                                     style="width:600px"
                                                      value="#{workorderItemAction.workorderItemShowAdd.itemContent}"/>
                                     <p:outputLabel for="remarkForAdd" value="备注：" />
                                     <h:inputTextarea id="remarkForAdd"
-                                                     rows="4"
+                                                     rows="5"
                                                      autoResize="false"
-                                                     style="width:400px"
+                                                     style="width:600px"
                                                      value="#{workorderItemAction.workorderItemShowAdd.remark}"/>
                                     <p:outputLabel for="levelidxForAdd" value="序号：" />
                                     <h:inputText id="levelidxForAdd"
@@ -241,19 +244,20 @@
                                     </h:inputText>
                                     <p:outputLabel for="itemContentForUpd" value="內容:" />
                                     <h:inputTextarea id="itemContentForUpd"
-                                                     rows="4"
+                                                     rows="5"
                                                      autoResize="false"
-                                                     style="width:400px"
+                                                     style="width:600px"
                                                      value="#{workorderItemAction.workorderItemShowUpd.itemContent}"/>
                                     <p:outputLabel for="remarkForUpd" value="备注:" />
                                     <h:inputTextarea id="remarkForUpd"
-                                                     rows="4"
+                                                     rows="5"
                                                      autoResize="false"
-                                                     style="width:400px"
+                                                     style="width:600px"
                                                      value="#{workorderItemAction.workorderItemShowUpd.remark}"/>
                                     <p:outputLabel for="levelidxForUpd" value="序号:" />
                                     <h:inputText id="levelidxForUpd"
-                                                 value="#{workorderItemAction.workorderItemShowUpd.levelidx}"/>
+                                                 value="#{workorderItemAction.workorderItemShowUpd.levelidx}"
+                                                 style="text-align:right"/>
                                 </h:panelGrid>
                                 <h:panelGrid id="pgOperBtnForUpd" columns="2">
                                     <p:commandButton id="submitBtnForUpd"
@@ -283,20 +287,20 @@
                                     </h:inputText>
                                     <p:outputLabel for="itemContentForDel" value="內容:" />
                                     <h:inputTextarea id="itemContentForDel"
-                                                     rows="4"
+                                                     rows="5"
                                                      autoResize="false"
-                                                     style="width:400px;background-color:gainsboro" readonly="true"
+                                                     style="width:600px;background-color:gainsboro" readonly="true"
                                                      value="#{workorderItemAction.workorderItemShowDel.itemContent}"/>
                                     <p:outputLabel for="remarkForDel" value="备注:" />
                                     <h:inputTextarea id="remarkForDel"
-                                                     rows="4"
+                                                     rows="5"
                                                      autoResize="false"
-                                                     style="width:400px;background-color:gainsboro" readonly="true"
+                                                     style="width:600px;background-color:gainsboro" readonly="true"
                                                      value="#{workorderItemAction.workorderItemShowDel.remark}"/>
                                     <p:outputLabel for="levelidxForDel" value="序号:" />
                                     <h:inputText id="levelidxForDel"
                                                  value="#{workorderItemAction.workorderItemShowDel.levelidx}"
-                                                 style="background-color:gainsboro" readonly="true"/>
+                                                 style="text-align:right;background-color:gainsboro" readonly="true"/>
                                 </h:panelGrid>
                                 <h:panelGrid id="pgOperBtnForDel">
                                     <p:commandButton id="submitBtnForDel"

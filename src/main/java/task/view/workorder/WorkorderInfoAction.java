@@ -1,6 +1,5 @@
 package task.view.workorder;
 
-import task.common.enums.EnumFlowStatus;
 import task.repository.model.model_show.WorkorderInfoShow;
 import task.service.*;
 import task.view.flow.EsCommon;
@@ -10,7 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import skyline.util.MessageUtil;
 import skyline.util.StyleModel;
-import skyline.util.ToolUtil;
+
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
@@ -149,6 +148,7 @@ public class WorkorderInfoAction {
                 }
                 addRecordAction(workorderInfoShowAdd);
                 MessageUtil.addInfo("新增数据完成。");
+                initForAdd();
             } else if (strSubmitType.equals("Upd")) {
                 if (!submitPreCheck(workorderInfoShowUpd)) {
                     return;

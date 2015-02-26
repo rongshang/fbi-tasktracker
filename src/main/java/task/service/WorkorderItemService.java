@@ -2,6 +2,8 @@ package task.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import skyline.util.ToolUtil;
+import task.common.enums.EnumArchivedFlag;
+import task.common.enums.EnumOriginFlag;
 import task.repository.dao.WorkorderItemMapper;
 import task.repository.dao.not_mybatis.MyDeptAndOperMapper;
 import task.repository.dao.not_mybatis.MyWorkorderItemMapper;
@@ -61,7 +63,7 @@ public class WorkorderItemService {
         String strLastUpdTimeTemp=ToolUtil.getStrLastUpdTime();
         WorkorderItem workorderItemTemp =fromModelShowToModel(workorderItemShowPara);
         workorderItemTemp.setArchivedFlag("0");
-        workorderItemTemp.setOriginFlag("0");
+        workorderItemTemp.setOriginFlag("I");
         workorderItemTemp.setCreatedBy(strOperatorIdTemp);
         workorderItemTemp.setCreatedTime(strLastUpdTimeTemp);
         workorderItemTemp.setLastUpdBy(strOperatorIdTemp);
@@ -96,7 +98,7 @@ public class WorkorderItemService {
         workorderItemTemp.setRecVersion(workorderItemShowPara.getRecVersion());
         workorderItemTemp.setParentPkid(workorderItemShowPara.getParentPkid());
         workorderItemTemp.setInfoPkid(workorderItemShowPara.getInfoPkid());
-        workorderItemTemp.setLevelidx(workorderItemShowPara.getLevelidx());
+        workorderItemTemp.setLevelidx(Integer.parseInt(workorderItemShowPara.getLevelidx()));
         workorderItemTemp.setTid(workorderItemShowPara.getTid());
         return workorderItemTemp;
     }
@@ -107,7 +109,11 @@ public class WorkorderItemService {
         workorderItemShowTemp.setId(workorderItemPara.getId());
         workorderItemShowTemp.setItemContent(workorderItemPara.getItemContent());
         workorderItemShowTemp.setArchivedFlag(workorderItemPara.getArchivedFlag());
+        workorderItemShowTemp.setArchivedFlagName(
+             EnumArchivedFlag.getValueByKey(workorderItemPara.getArchivedFlag()).getTitle());
         workorderItemShowTemp.setOriginFlag(workorderItemPara.getOriginFlag());
+        workorderItemShowTemp.setOriginFlagName(
+               EnumOriginFlag.getValueByKey(workorderItemPara.getOriginFlag()).getTitle());
         workorderItemShowTemp.setCreatedBy(workorderItemPara.getCreatedBy());
         workorderItemShowTemp.setCreatedByName(getUserName(workorderItemPara.getCreatedBy()));
         workorderItemShowTemp.setCreatedTime(workorderItemPara.getCreatedTime());
@@ -118,7 +124,7 @@ public class WorkorderItemService {
         workorderItemShowTemp.setRecVersion(workorderItemPara.getRecVersion());
         workorderItemShowTemp.setParentPkid(workorderItemPara.getParentPkid());
         workorderItemShowTemp.setInfoPkid(workorderItemPara.getInfoPkid());
-        workorderItemShowTemp.setLevelidx(workorderItemPara.getLevelidx());
+        workorderItemShowTemp.setLevelidx(workorderItemPara.getLevelidx().toString());
         workorderItemShowTemp.setTid(workorderItemPara.getTid());
         return workorderItemShowTemp;
     }
@@ -127,8 +133,6 @@ public class WorkorderItemService {
         WorkorderItem workorderItemTemp =fromModelShowToModel(workorderItemShowPara);
         workorderItemTemp.setRecVersion(
                 ToolUtil.getIntIgnoreNull(workorderItemTemp.getRecVersion())+1);
-        workorderItemTemp.setArchivedFlag("0");
-        workorderItemTemp.setOriginFlag("0");
         workorderItemTemp.setLastUpdBy(ToolUtil.getOperatorManager().getOperator().getPkid());
         workorderItemTemp.setLastUpdTime(ToolUtil.getStrLastUpdTime());
         workorderItemMapper.updateByPrimaryKey(workorderItemTemp) ;
