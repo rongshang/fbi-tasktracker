@@ -12,8 +12,6 @@ import org.apache.commons.lang.StringUtils;
 import org.primefaces.model.StreamedContent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import task.service.ToolsService;
-
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
@@ -33,10 +31,6 @@ import java.util.*;
 @ViewScoped
 public class EsCommon implements Serializable {
     private static final Logger logger = LoggerFactory.getLogger(EsCommon.class);
-
-    @ManagedProperty(value = "#{toolsService}")
-    private ToolsService toolsService;
-
     private HtmlGraphicImage image;
 
     private List<SelectItem> originFlagList;
@@ -55,21 +49,6 @@ public class EsCommon implements Serializable {
     private List<SelectItem> flowStatusList;
     private List<SelectItem> flowStatusReasonList;
     private List<SelectItem> achivedFlagList;
-
-    @PostConstruct
-    public void init() {
-        try {
-            this.originFlagList = toolsService.getEnuSelectItemList("ORIGIN_FLAG", false, false);
-            this.resTypeList = toolsService.getEnuSelectItemList("RES_TYPE", true, false);
-            this.cstplItemNamelist = toolsService.getEnuSelectItemList("CSTPLITEM_NAME", false, false);
-            this.subcttItemNamelist= toolsService.getEnuSelectItemList("SUBCTTITEM_NAME", false, false);
-            this.flowStatusReasonList= toolsService.getEnuSelectItemList("FLOW_STATUS_REASON", true, false);
-            this.flowStatusList = toolsService.getEnuSelectItemList("FLOW_STATUS", true, false);
-            this.achivedFlagList = toolsService.getEnuSelectItemList("ARCHIVED_FLAG", true, false);
-        }catch (Exception e){
-            logger.error("≥ı ºªØ ß∞‹", e);
-        }
-    }
 
     public String getCustNameByCustIdFromList(String strCustId){
         for(SelectItem itemUnit:customerlist){
@@ -159,14 +138,6 @@ public class EsCommon implements Serializable {
 
     public void setAchivedFlagList(List<SelectItem> achivedFlagList) {
         this.achivedFlagList = achivedFlagList;
-    }
-
-    public ToolsService getToolsService() {
-        return toolsService;
-    }
-
-    public void setToolsService(ToolsService toolsService) {
-        this.toolsService = toolsService;
     }
 
     public HtmlGraphicImage getImage() {

@@ -15,12 +15,10 @@ import org.primefaces.model.UploadedFile;
 import skyline.util.JxlsManager;
 import skyline.util.StyleModel;
 import skyline.util.ToolUtil;
-import task.common.enums.*;
 import task.repository.model.*;
 import task.repository.model.model_show.WorkorderItemShow;
 import task.service.*;
 import task.view.flow.EsCommon;
-import task.view.flow.EsFlowControl;
 import jxl.write.WriteException;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.StringUtils;
@@ -35,7 +33,6 @@ import javax.faces.bean.ViewScoped;
 import javax.faces.component.html.HtmlGraphicImage;
 import javax.faces.context.FacesContext;
 import java.io.*;
-import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -49,8 +46,6 @@ public class WorkorderItemAction {
     private WorkorderItemService workorderItemService;
     @ManagedProperty(value = "#{esCommon}")
     private EsCommon esCommon;
-    @ManagedProperty(value = "#{esFlowControl}")
-    private EsFlowControl esFlowControl;
 
     private WorkorderInfo workorderInfo;
     private WorkorderItemShow workorderItemShowSel;
@@ -66,44 +61,26 @@ public class WorkorderItemAction {
     //上传下载文件
     private StreamedContent downloadFile;
 
-    /*所属类型*/
-    private String strBelongToType;
     /*所属号*/
-    private String strCttInfoPkid;
+    private String strWorkorderInfoPkid;
 
     /*提交类型*/
     private String strSubmitType;
 
-    /*控制控件在画面上的可用与现实Start*/
-    private StyleModel styleModelNo;
-    private StyleModel styleModel;
     //显示的控制
-    private String strPassVisible;
-    private String strPassFailVisible;
     private String strNotPassToStatus;
     private String strFlowType;
     private List<WorkorderItemShow> workorderItemShowListExcel;
     private Map beansMap;
-    // 录入备注
-    private String strFlowStatusRemark;
 
     @PostConstruct
     public void init() {
         try {
             Map parammap = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
             beansMap = new HashMap();
-            strBelongToType = EnumResType.RES_TYPE0.getCode();
-
-            if (parammap.containsKey("strFlowType")) {
-                strFlowType = parammap.get("strFlowType").toString();
-            }
-
-            if (parammap.containsKey("strCttInfoPkid")) {
-                strCttInfoPkid = parammap.get("strCttInfoPkid").toString();
-                workorderInfo = workorderInfoService.getCttInfoByPkId(strCttInfoPkid);
-
-                strPassVisible = "true";
-                strPassFailVisible = "true";
+            if (parammap.containsKey("strWorkorderInfoPkid")) {
+                strWorkorderInfoPkid = parammap.get("strWorkorderInfoPkid").toString();
+                workorderInfo = workorderInfoService.getCttInfoByPkId(strWorkorderInfoPkid);
                 resetAction();
                 initData();
             }
@@ -119,33 +96,22 @@ public class WorkorderItemAction {
             workorderItemList =new ArrayList<>();
             workorderItemShowList =new ArrayList<>();
             attachmentList=new ArrayList<>();
+
             /*初始化流程状态列表*/
-            if(ToolUtil.getStrIgnoreNull(strCttInfoPkid).length()!=0) {
+            if(ToolUtil.getStrIgnoreNull(strWorkorderInfoPkid).length()!=0) {
+                // 输出Excel表头
+                beansMap.put("workorderInfo", workorderInfo);
                 // 附件记录变成List
                 attachmentList=ToolUtil.getListAttachmentByStrAttachment(workorderInfo.getAttachment());
-                // 输出Excel表头
-                beansMap.put("cttInfo", workorderInfo);
-                workorderItemList = workorderItemService.getEsItemList(
-                        strBelongToType, strCttInfoPkid);
-                recursiveDataTable("root", workorderItemList);
-                workorderItemShowList = getTkcttItemList_DoFromatNo(workorderItemShowList);
-                setTkcttItemList_AddTotal();
+                workorderItemShowList = workorderItemService.getWorkorderItemListByInfoPkid(strWorkorderInfoPkid);
                 // Excel报表形成
                 workorderItemShowListExcel = new ArrayList<>();
                 for (WorkorderItemShow itemUnit : workorderItemShowList) {
-                    // 合同单价，工程量，金额
-                    itemUnit.setUnitPrice(
-                                ToolUtil.getBdFrom0ToNull(itemUnit.getUnitPrice()));
-                    itemUnit.setQuantity(
-                                ToolUtil.getBdFrom0ToNull(itemUnit.getQuantity()));
-                    itemUnit.setAmount(
-                                ToolUtil.getBdFrom0ToNull(itemUnit.getAmount()));
-
                     WorkorderItemShow itemUnitTemp = (WorkorderItemShow) BeanUtils.cloneBean(itemUnit);
-                    itemUnitTemp.setStrNo(ToolUtil.getIgnoreSpaceOfStr(itemUnitTemp.getStrNo()));
+                    itemUnitTemp.setId(ToolUtil.getIgnoreSpaceOfStr(itemUnitTemp.getId()));
                     workorderItemShowListExcel.add(itemUnitTemp);
                 }
-                beansMap.put("cttItemShowListExcel", workorderItemShowListExcel);
+                beansMap.put("workorderItemShowListExcel", workorderItemShowListExcel);
             }
         }catch (Exception e){
             logger.error("初始化失败", e);
@@ -153,173 +119,29 @@ public class WorkorderItemAction {
         }
     }
 
-    /*根据数据库中层级关系数据列表得到总包合同*/
-    private void recursiveDataTable(String strLevelParentId, List<WorkorderItem> workorderItemListPara) {
-        // 根据父层级号获得该父层级下的子节点
-        List<WorkorderItem> subWorkorderItemList = new ArrayList<>();
-        // 通过父层id查找它的孩子
-        subWorkorderItemList = getEsCttItemListByParentPkid(strLevelParentId, workorderItemListPara);
-        for (WorkorderItem itemUnit : subWorkorderItemList) {
-            WorkorderItemShow workorderItemShowTemp = null;
-            String strCreatedByName = workorderInfoService.getUserName(itemUnit.getCreatedBy());
-            String strLastUpdByName = workorderInfoService.getUserName(itemUnit.getLastUpdBy());
-            // 层级项
-            workorderItemShowTemp = new WorkorderItemShow(
-                    itemUnit.getPkid(),
-                    itemUnit.getBelongToPkid(),
-                    itemUnit.getParentPkid(),
-                    itemUnit.getGrade(),
-                    itemUnit.getOrderid(),
-                    itemUnit.getName(),
-                    itemUnit.getUnit(),
-                    itemUnit.getUnitPrice(),
-                    itemUnit.getQuantity(),
-                    itemUnit.getAmount(),
-                    itemUnit.getArchivedFlag(),
-                    itemUnit.getOriginFlag(),
-                    itemUnit.getCreatedBy(),
-                    strCreatedByName,
-                    itemUnit.getCreatedTime(),
-                    itemUnit.getLastUpdBy(),
-                    strLastUpdByName,
-                    itemUnit.getLastUpdTime(),
-                    itemUnit.getRecVersion(),
-                    itemUnit.getRemark(),
-                    "",
-                    ""
-            );
-            workorderItemShowList.add(workorderItemShowTemp);
-            recursiveDataTable(workorderItemShowTemp.getPkid(), workorderItemListPara);
-        }
-    }
-
-    /*根据group和orderid临时编制编号strNo*/
-    private List<WorkorderItemShow> getTkcttItemList_DoFromatNo(
-            List<WorkorderItemShow> workorderItemShowListPara) {
-        String strTemp = "";
-        Integer intBeforeGrade = -1;
-        for (WorkorderItemShow itemUnit : workorderItemShowListPara) {
-            if (itemUnit.getGrade().equals(intBeforeGrade)) {
-                if (strTemp.lastIndexOf(".") < 0) {
-                    strTemp = itemUnit.getOrderid().toString();
-                } else {
-                    strTemp = strTemp.substring(0, strTemp.lastIndexOf(".")) + "." + itemUnit.getOrderid().toString();
-                }
-            } else {
-                if (itemUnit.getGrade() == 1) {
-                    strTemp = itemUnit.getOrderid().toString();
-                } else {
-                    if (!itemUnit.getGrade().equals(intBeforeGrade)) {
-                        if (itemUnit.getGrade().compareTo(intBeforeGrade) > 0) {
-                            strTemp = strTemp + "." + itemUnit.getOrderid().toString();
-                        } else {
-                            Integer intTemp = ToolUtil.lookIndex(strTemp, '.', itemUnit.getGrade() - 1);
-                            strTemp = strTemp.substring(0, intTemp);
-                            strTemp = strTemp + "." + itemUnit.getOrderid().toString();
-                        }
-                    }
-                }
-            }
-            intBeforeGrade = itemUnit.getGrade();
-            itemUnit.setStrNo(ToolUtil.padLeft_DoLevel(itemUnit.getGrade(), strTemp));
-        }
-        return workorderItemShowListPara;
-    }
-
-    private void setTkcttItemList_AddTotal() {
-        List<WorkorderItemShow> workorderItemShowListTemp = new ArrayList<WorkorderItemShow>();
-        workorderItemShowListTemp.addAll(workorderItemShowList);
-
-        workorderItemShowList.clear();
-        // 小计
-        BigDecimal bdTotal = new BigDecimal(0);
-        BigDecimal bdAllTotal = new BigDecimal(0);
-        WorkorderItemShow itemUnit = new WorkorderItemShow();
-        WorkorderItemShow itemUnitNext = new WorkorderItemShow();
-        for (int i = 0; i < workorderItemShowListTemp.size(); i++) {
-            itemUnit = workorderItemShowListTemp.get(i);
-            bdTotal = bdTotal.add(ToolUtil.getBdIgnoreNull(itemUnit.getAmount()));
-            bdAllTotal = bdAllTotal.add(ToolUtil.getBdIgnoreNull(itemUnit.getAmount()));
-            workorderItemShowList.add(itemUnit);
-
-            if (i + 1 < workorderItemShowListTemp.size()) {
-                itemUnitNext = workorderItemShowListTemp.get(i + 1);
-                if (itemUnitNext.getParentPkid().equals("root")) {
-                    WorkorderItemShow workorderItemShowTemp = new WorkorderItemShow();
-                    workorderItemShowTemp.setName("合计");
-                    workorderItemShowTemp.setPkid("total" + i);
-                    workorderItemShowTemp.setAmount(bdTotal);
-                    workorderItemShowList.add(workorderItemShowTemp);
-                    bdTotal = new BigDecimal(0);
-                }
-            } else if (i + 1 == workorderItemShowListTemp.size()) {
-                WorkorderItemShow workorderItemShowTemp = new WorkorderItemShow();
-                workorderItemShowTemp.setName("合计");
-                workorderItemShowTemp.setPkid("total" + i);
-                workorderItemShowTemp.setAmount(bdTotal);
-                workorderItemShowList.add(workorderItemShowTemp);
-                bdTotal = new BigDecimal(0);
-
-                // 总合计
-                workorderItemShowTemp = new WorkorderItemShow();
-                workorderItemShowTemp.setName("总合计");
-                workorderItemShowTemp.setPkid("total_all" + i);
-                workorderItemShowTemp.setAmount(bdAllTotal);
-                workorderItemShowList.add(workorderItemShowTemp);
-            }
-        }
-    }
-
     /*重置*/
     public void resetAction() {
-        strSubmitType = "Add";
-        styleModelNo = new StyleModel();
-        styleModelNo.setDisabled_Flag("false");
-        styleModel = new StyleModel();
-        styleModel.setDisabled_Flag("false");
-        workorderItemShowSel = new WorkorderItemShow(strCttInfoPkid);
-        workorderItemShowAdd = new WorkorderItemShow(strCttInfoPkid);
-        workorderItemShowUpd = new WorkorderItemShow(strCttInfoPkid);
-        workorderItemShowDel = new WorkorderItemShow(strCttInfoPkid);
+        workorderItemShowSel = new WorkorderItemShow(strWorkorderInfoPkid);
+        workorderItemShowAdd = new WorkorderItemShow(strWorkorderInfoPkid);
+        workorderItemShowUpd = new WorkorderItemShow(strWorkorderInfoPkid);
+        workorderItemShowDel = new WorkorderItemShow(strWorkorderInfoPkid);
     }
-
-    public void blurCalculateAmountAction() {
-        BigDecimal bigDecimal;
-        if (strSubmitType.equals("Add")) {
-            if (workorderItemShowAdd.getUnitPrice() == null || workorderItemShowAdd.getQuantity() == null) {
-                bigDecimal = null;
-            } else {
-                bigDecimal = workorderItemShowAdd.getUnitPrice().multiply(workorderItemShowAdd.getQuantity());
-            }
-            workorderItemShowAdd.setAmount(bigDecimal);
-        }
-        if (strSubmitType.equals("Upd")) {
-            if (workorderItemShowUpd.getUnitPrice() == null || workorderItemShowUpd.getQuantity() == null) {
-                bigDecimal = null;
-            } else {
-                bigDecimal = workorderItemShowUpd.getUnitPrice().multiply(workorderItemShowUpd.getQuantity());
-            }
-            workorderItemShowUpd.setAmount(bigDecimal);
-        }
+    public void initForAdd(){
+        strSubmitType="Add";
+        workorderItemShowAdd = new WorkorderItemShow();
+        workorderItemShowAdd.setInfoPkid(strWorkorderInfoPkid);
+        workorderItemShowAdd.setLevelidx(workorderItemService.getMaxLevelidxPlusOne(strWorkorderInfoPkid));
     }
-
     /*右单击事件*/
     public void selectRecordAction(String strSubmitTypePara, WorkorderItemShow workorderItemShowPara) {
         try {
-            if (strSubmitTypePara.equals("Add")) {
-                return;
-            }
             strSubmitType = strSubmitTypePara;
             if (strSubmitTypePara.equals("Sel")) {
                 workorderItemShowSel = (WorkorderItemShow) BeanUtils.cloneBean(workorderItemShowPara);
-                workorderItemShowSel.setStrNo(ToolUtil.getIgnoreSpaceOfStr(workorderItemShowSel.getStrNo()));
-            }
-            if (strSubmitTypePara.equals("Upd")) {
+            } else  if (strSubmitTypePara.equals("Upd")) {
                 workorderItemShowUpd = (WorkorderItemShow) BeanUtils.cloneBean(workorderItemShowPara);
-                workorderItemShowUpd.setStrNo(ToolUtil.getIgnoreSpaceOfStr(workorderItemShowUpd.getStrNo()));
             } else if (strSubmitTypePara.equals("Del")) {
                 workorderItemShowDel = (WorkorderItemShow) BeanUtils.cloneBean(workorderItemShowPara);
-                workorderItemShowDel.setStrNo(ToolUtil.getIgnoreSpaceOfStr(workorderItemShowDel.getStrNo()));
             }
         } catch (Exception e) {
             logger.error("选择数据失败，", e);
@@ -327,110 +149,18 @@ public class WorkorderItemAction {
         }
     }
 
-    public Boolean blurStrNoToGradeAndOrderidAction() {
-        WorkorderItemShow workorderItemShowTemp = new WorkorderItemShow(strCttInfoPkid);
-        if (strSubmitType.equals("Add")) {
-            workorderItemShowTemp = workorderItemShowAdd;
-        }
-        if (strSubmitType.equals("Upd")) {
-            workorderItemShowTemp = workorderItemShowUpd;
-        }
-        String strIgnoreSpaceOfStr = ToolUtil.getIgnoreSpaceOfStr(workorderItemShowTemp.getStrNo());
-        if (StringUtils.isEmpty(strIgnoreSpaceOfStr)) {
-            return true;
-        }
-        String strRegex = "[1-9]\\d*(\\.[1-9]\\d*)*";
-        if (!strIgnoreSpaceOfStr.matches(strRegex)) {
-            MessageUtil.addError("请确认输入的编号，编号" + strIgnoreSpaceOfStr + "格式不正确！");
-            return strNoBlurFalse();
-        }
-
-        //该编码已经存在
-        if(!strSubmitType.equals("Upd")){
-            if(getEsCttItemByStrNo(strIgnoreSpaceOfStr, workorderItemShowList)!=null){
-            }
-            else{ //该编码不存在
-            }
-        }
-        Integer intLastIndexof=strIgnoreSpaceOfStr.lastIndexOf(".");
-
-        if (intLastIndexof < 0) {
-            List<WorkorderItem> itemHieRelapListSubTemp = new ArrayList<>();
-            itemHieRelapListSubTemp = getEsCttItemListByParentPkid("root", workorderItemList);
-
-            if (itemHieRelapListSubTemp.size() == 0) {
-                if (!strIgnoreSpaceOfStr.equals("1")) {
-                    MessageUtil.addError("请确认输入的编号！该编号不符合规范，应输入1！");
-                    return strNoBlurFalse();
-                }
-            } else {
-                if (itemHieRelapListSubTemp.size() + 1 < Integer.parseInt(strIgnoreSpaceOfStr)) {
-                    MessageUtil.addError("请确认输入的编号！该编号不符合规范，应输入" + (itemHieRelapListSubTemp.size() + 1) + "！");
-                    return strNoBlurFalse();
-                }
-            }
-            workorderItemShowTemp.setGrade(1) ;
-            workorderItemShowTemp.setOrderid(Integer.parseInt(strIgnoreSpaceOfStr));
-            workorderItemShowTemp.setParentPkid("root");
-        } else {
-            String strParentNo = strIgnoreSpaceOfStr.substring(0, intLastIndexof);
-            WorkorderItemShow workorderItemShowTemp1 = new WorkorderItemShow();
-            workorderItemShowTemp1 = getEsCttItemByStrNo(strParentNo, workorderItemShowList);
-            if (workorderItemShowTemp1 == null || workorderItemShowTemp1.getPkid() == null) {
-                MessageUtil.addError("请确认输入的编号！父层" + strParentNo + "不存在！");
-                return strNoBlurFalse();
-            } else {
-                List<WorkorderItem> itemHieRelapListSubTemp = new ArrayList<>();
-                itemHieRelapListSubTemp = getEsCttItemListByParentPkid(
-                        workorderItemShowTemp1.getPkid(),
-                        workorderItemList);
-                if (itemHieRelapListSubTemp.size() == 0) {
-                    if (!workorderItemShowTemp.getStrNo().equals(strParentNo + ".1")) {
-                        MessageUtil.addError("请确认输入的编号！该编号不符合规范，应输入" + strParentNo + ".1！");
-                        return strNoBlurFalse();
-                    }
-                } else {
-                    String strOrderid = strIgnoreSpaceOfStr.substring(intLastIndexof + 1);
-                    if (itemHieRelapListSubTemp.size() + 1 < Integer.parseInt(strOrderid)) {
-                        MessageUtil.addError("请确认输入的编号！该编号不符合规范，应输入" + strParentNo + "." +
-                                (itemHieRelapListSubTemp.size() + 1) + "！");
-                        return strNoBlurFalse();
-                    }
-                }
-                String strTemps[] = strIgnoreSpaceOfStr.split("\\.");
-                workorderItemShowTemp.setGrade(strTemps.length);
-                workorderItemShowTemp.setOrderid(Integer.parseInt(strTemps[strTemps.length - 1]));
-                workorderItemShowTemp.setParentPkid(workorderItemShowTemp1.getPkid());
-            }
-        }
-        return true ;
-    }
     /*提交前的检查：必须项的输入*/
     private Boolean subMitActionPreCheck() {
-        WorkorderItemShow workorderItemShowTemp = new WorkorderItemShow(strCttInfoPkid);
+        WorkorderItemShow workorderItemShowTemp = new WorkorderItemShow(strWorkorderInfoPkid);
         if (strSubmitType.equals("Add")) {
             workorderItemShowTemp = workorderItemShowAdd;
         }
         if (strSubmitType.equals("Upd")) {
             workorderItemShowTemp = workorderItemShowUpd;
         }
-        if (StringUtils.isEmpty(workorderItemShowTemp.getStrNo())) {
+        if (StringUtils.isEmpty(workorderItemShowTemp.getId())) {
             MessageUtil.addError("请输入编号！");
             return false;
-        }
-        if (StringUtils.isEmpty(workorderItemShowTemp.getName())) {
-            MessageUtil.addError("请输入名称！");
-            return false;
-        }
-        if ((workorderItemShowTemp.getUnitPrice() != null &&
-                workorderItemShowTemp.getUnitPrice().compareTo(BigDecimal.ZERO) != 0) ||
-                (workorderItemShowTemp.getQuantity() != null &&
-                        workorderItemShowTemp.getQuantity().compareTo(BigDecimal.ZERO) != 0)) {
-            /*绑定前台控件,可输入的BigDecimal类型本来为null的，自动转换为0，不可输入的，还是null*/
-            if (StringUtils.isEmpty(workorderItemShowTemp.getUnit())) {
-                MessageUtil.addError("请输入单位！");
-                return false;
-            }
         }
         return true;
     }
@@ -438,26 +168,16 @@ public class WorkorderItemAction {
         try{
             /*提交前的检查*/
             if(strSubmitType .equals("Del")) {
-                workorderItemService.setAfterThisOrderidSubOneByNode(workorderItemShowDel);
+                workorderItemService.deleteRecordByPkid(workorderItemShowDel.getPkid()) ;
             }else{
                 if(!subMitActionPreCheck()){
-                    return ;
-                }
-                /*itemUnitConstruct的grade,orderid,parentpkid*/
-                if(!blurStrNoToGradeAndOrderidAction()){
                     return ;
                 }
                 if(strSubmitType .equals("Upd")) {
                     workorderItemService.updateRecord(workorderItemShowUpd) ;
                 }
                 else if(strSubmitType .equals("Add")) {
-                     WorkorderItem workorderItemTemp = workorderItemService.fromModelShowToModel(workorderItemShowAdd);
-                    if (workorderItemService.isExistSameRecordInDb(workorderItemTemp)){
-                        MessageUtil.addInfo("该编号对应记录已存在，请重新录入。");
-                        return;
-                    }
-                    workorderItemService.setAfterThisOrderidPlusOneByNode(workorderItemShowAdd);
-                    resetAction();
+                    workorderItemService.insertRecord(workorderItemShowAdd);
                 }
             }
             switch (strSubmitType){
@@ -498,7 +218,7 @@ public class WorkorderItemAction {
         WorkorderItemShow workorderItemShowTemp =null;
         try{
             for(WorkorderItemShow itemUnit: workorderItemShowListPara){
-                if(ToolUtil.getIgnoreSpaceOfStr(itemUnit.getStrNo()).equals(strNo)) {
+                if(ToolUtil.getIgnoreSpaceOfStr(itemUnit.getId()).equals(strNo)) {
                     workorderItemShowTemp =(WorkorderItemShow)BeanUtils.cloneBean(itemUnit);
                     break;
                 }
@@ -508,13 +228,7 @@ public class WorkorderItemAction {
         }
         return workorderItemShowTemp;
     }
-    private Boolean strNoBlurFalse(){
-        workorderItemShowSel.setPkid("") ;
-        workorderItemShowSel.setParentPkid("");
-        workorderItemShowSel.setGrade(null);
-        workorderItemShowSel.setOrderid(null);
-        return false;
-    }
+
     private boolean checkPreMng(WorkorderInfo workorderInfoPara) {
         if (StringUtils.isEmpty(workorderInfoPara.getId())) {
             return false;
@@ -525,7 +239,29 @@ public class WorkorderItemAction {
         }
         return true;
     }
+    /**
+     * 根据权限进行审核
+     *
+     * @param strPowerTypePara
+     */
+    public void onClickForPowerAction(String strPowerTypePara) {
+        try {
+            strPowerTypePara=strFlowType+strPowerTypePara;
+                if (strPowerTypePara.equals("MngPass")) {
 
+                    //cttInfoService.updateRecord(cttInfo);
+                    MessageUtil.addInfo("数据录入完成！");
+                } else if (strPowerTypePara.equals("MngFail")) {
+
+                    //cttInfoService.updateRecord(cttInfo);
+                    MessageUtil.addInfo("数据录入未完！");
+                }
+
+        } catch (Exception e) {
+            logger.error("数据流程化失败，", e);
+            MessageUtil.addError(e.getMessage());
+        }
+    }
     public void onExportExcel()throws IOException, WriteException {
         String excelFilename = "总包合同-" + new SimpleDateFormat("yyyyMMdd").format(new Date()) + ".xls";
         JxlsManager jxls = new JxlsManager();
@@ -658,25 +394,13 @@ public class WorkorderItemAction {
         this.workorderItemShowList = workorderItemShowList;
     }
     public String getStrBelongToPkid() {
-        return strCttInfoPkid;
+        return strWorkorderInfoPkid;
     }
-    public void setStrBelongToPkid(String strCttInfoPkid) {
-        this.strCttInfoPkid = strCttInfoPkid;
-    }
-    public EsFlowControl getEsFlowControl() {
-        return esFlowControl;
-    }
-    public void setEsFlowControl(EsFlowControl esFlowControl) {
-        this.esFlowControl = esFlowControl;
+    public void setStrBelongToPkid(String strWorkorderInfoPkid) {
+        this.strWorkorderInfoPkid = strWorkorderInfoPkid;
     }
     public String getStrSubmitType() {
         return strSubmitType;
-    }
-    public StyleModel getStyleModelNo() {
-        return styleModelNo;
-    }
-    public StyleModel getStyleModel() {
-        return styleModel;
     }
     public WorkorderItemShow getWorkorderItemShowAdd() {
         return workorderItemShowAdd;
@@ -753,22 +477,6 @@ public class WorkorderItemAction {
     }
     public void setDownloadFile(StreamedContent downloadFile) {
         this.downloadFile = downloadFile;
-    }
-
-    public String getStrPassVisible() {
-        return strPassVisible;
-    }
-
-    public String getStrPassFailVisible() {
-        return strPassFailVisible;
-    }
-
-    public String getStrFlowStatusRemark() {
-        return strFlowStatusRemark;
-    }
-
-    public void setStrFlowStatusRemark(String strFlowStatusRemark) {
-        this.strFlowStatusRemark = strFlowStatusRemark;
     }
 /*智能字段End*/
 }

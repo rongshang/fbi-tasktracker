@@ -1,0 +1,316 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/templates/ui.xhtml">
+    <ui:define name="head">
+        <link type="text/css" href="#{request.contextPath}/css/task.css" rel="stylesheet"/>
+        <script type="text/javascript" src="#{request.contextPath}/js/pub.js"/>
+        <script type="text/javascript" language="javascript">
+            /*$(function(){ $("html").css("overflowX","hidden");});*/
+            document.onkeydown = function TabReplace() {
+                if (event.keyCode == 13) {
+                    if (event.srcElement.tagName != 'BUTTON')
+                        event.keyCode = 9;
+                    else
+                        event.srcElement.click();
+                }
+            }
+        </script>
+    </ui:define>
+    <ui:define name="content">
+        <h:form id="form">
+            <div style="margin:5px;">
+                <p:panel>
+                    <p:growl id="msgs" showDetail="true"/>
+                    <p:panel id="ppInfo" header="工单信息" >
+                        <h:panelGrid columns="2" style="width:100%;">
+                            <h:panelGrid columns="4">
+                                <p:outputLabel value="工单编号：" for="idForSel"/>
+                                <p:inputText id="idForSel" value="#{workorderItemAction.workorderInfo.id}"
+                                             readonly="true" style="background-color:gainsboro;"/>
+                                <p:outputLabel value="工单名称：" for="nameForSel"/>
+                                <p:inputText id="nameForSel" value="#{workorderItemAction.workorderInfo.name}"
+                                             readonly="true" style="background-color:gainsboro;"/>
+                            </h:panelGrid>
+                            <h:panelGrid columns="4">
+                                <p:commandButton value="录入完成"
+                                                 action="#{workorderItemAction.onClickForPowerAction('Pass')}"
+                                                 update="msgs,ppInfo,ppDetail">
+                                </p:commandButton>
+                                <p:commandButton value="录入未完"
+                                                 action="#{workorderItemAction.onClickForPowerAction('Fail')}"
+                                                 update="msgs,ppInfo,ppDetail">
+                                </p:commandButton>
+                                <p:commandButton value="附件"
+                                                 update=":form:msgs"
+                                                 onclick="PF('wvAttachmentList').show()">
+                                </p:commandButton>
+                                <p:commandButton value="导出到EXCEL"
+                                                 action="#{workorderItemAction.onExportExcel}"
+                                                 ajax="false">
+                                </p:commandButton>
+                            </h:panelGrid>
+                        </h:panelGrid>
+                    </p:panel>
+                    <p:panel id="ppDetail" header="工单内容">
+                        <p:commandButton value="增加项"
+                                         action="#{workorderItemAction.initForAdd()}"
+                                         update="pgViewForAdd,msgs"
+                                         onclick="PF('wVDlgViewForAdd').show()">
+                        </p:commandButton>
+                        <p:dataTable id="pdt"
+                                 value="#{workorderItemAction.workorderItemShowList}"
+                                 var="record"
+                                 rowKey="#{record.pkid}"
+                                 selectionMode="single"
+                                 paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks}
+                                               {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                 paginator="true"
+                                 paginatorPosition="bottom"
+                                 rows="15"
+                                 rowsPerPageTemplate="480,240,120,60,30,15"
+                                 rowIndexVar="row"
+                                 emptyMessage="数据记录为空..."
+                                 scrollable="true"
+                                 scrollHeight="360">
+                            <p:column headerText="操作" style="width:44px;text-align: center;">
+                                <p:commandButton icon="ui-icon-pencil"
+                                                 style="height:18px;width:18px"
+                                                 action="#{workorderItemAction.selectRecordAction('Upd',record)}"
+                                                 update=":form:pgViewForUpd,:form:msgs"
+                                                 onclick="PF('wVDlgViewForUpd').show()">
+                                </p:commandButton>
+                                <p:commandButton icon="ui-icon-trash"
+                                                 style="height:18px;width:18px"
+                                                 action="#{workorderItemAction.selectRecordAction('Del',record)}"
+                                                 update=":form:pgViewForDel,:form:msgs"
+                                                 onclick="PF('wVDlgViewForDel').show()">
+                                </p:commandButton>
+                            </p:column>
+                            <p:column style="width:42px" headerText="序号">
+                                <h:outputText value="#{row + 1}"/>
+                            </p:column>
+                            <p:column style="width:120px" headerText="编号">
+                                <h:outputText value="#{record.id}" escape="false"/>
+                            </p:column>
+                            <p:column style="width:360px" headerText="內容">
+                                <h:outputText value="#{record.itemContent}" />
+                            </p:column>
+                            <p:column style="width:300px" headerText="备注">
+                                <h:outputText value="#{record.remark}" />
+                            </p:column>
+                            <p:column style="width:100px" headerText="数据来源">
+                                <h:outputText value="#{record.originFlag}" />
+                            </p:column>
+                            <p:column style="width:100px" headerText="创建人">
+                                <h:outputText value="#{record.createdByName}" />
+                            </p:column>
+                            <p:column style="width:120px" headerText="创建时间">
+                                <h:outputText value="#{record.createdTime}" />
+                            </p:column>
+                            <p:column style="width:100px" headerText="修改人">
+                                <h:outputText value="#{record.lastUpdByName}" />
+                            </p:column>
+                            <p:column style="width:120px" headerText="修改时间">
+                                <h:outputText value="#{record.lastUpdTime}" />
+                            </p:column>
+                            <p:column style="width:80px" headerText="修改次数">
+                                <h:outputText value="#{record.recVersion}" style="float: right">
+                                </h:outputText>
+                            </p:column>
+                        </p:dataTable>
+                        <p:dialog id="dLAttachmentList" widgetVar="wvAttachmentList" modal="true"
+                                  showEffect="clip" hideEffect="fold" header="附件列表">
+                            <p:growl id="messages" showDetail="true"/>
+                            <h:panelGrid id="pgAttachmentView">
+                                <p:fileUpload id="attachmentName" fileUploadListener="#{workorderItemAction.upload}"
+                                              mode="advanced"
+                                              sizeLimit="1000000"
+                                              multiple="true"
+                                              label="选择" showButtons="true"
+                                              cancelLabel="全部取消" uploadLabel="全部上传" process="@this"
+                                              allowTypes="/(\.|\/)(gif|jpe?g|png|xls|xlsx|doc|docx)$/"
+                                              update="pdtAttachmentList,attachmentName">
+                                </p:fileUpload>
+                                <p:dataTable id="pdtAttachmentList" style="width:100%;"
+                                             value="#{workorderItemAction.attachmentList}"
+                                             var="recordAttachment"
+                                             rowKey="#{recordAttachment.COLUMN_NAME}"
+                                             selectionMode="single"
+                                             paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks}
+                                                     {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                             paginator="true"
+                                             paginatorPosition="bottom"
+                                             rows="5"
+                                             rowsPerPageTemplate="100,50,30,15,5"
+                                             emptyMessage="数据记录为空...">
+                                    <p:column headerText="附件ID" style="text-align:left">
+                                        <h:outputText value="#{recordAttachment.COLUMN_ID}"/>
+                                    </p:column>
+                                    <p:column headerText="附件名" style="text-align:left">
+                                        <h:outputText value="#{recordAttachment.COLUMN_NAME}"/>
+                                    </p:column>
+                                    <p:column headerText="缩略图" style="text-align:center" rendered="false">
+                                        <h:graphicImage value="/upload/#{recordAttachment.COLUMN_NAME}" styleClass="img"/>
+                                    </p:column>
+                                    <p:column headerText="预览">
+                                        <p:commandButton icon="ui-icon-search"
+                                                         id="selectButton"
+                                                         update=":form:pgImageShow"
+                                                         style="height:18px;width:18px"
+                                                         action="#{workorderItemAction.onViewAttachment(recordAttachment)}"
+                                                         onclick="dlgWvView.show()"
+                                                         title="View">
+                                        </p:commandButton>
+                                    </p:column>
+                                    <p:column headerText="操作" style="width:62px;text-align: center;">
+                                        <p:commandButton icon="ui-icon-arrowrefresh-1-w"
+                                                         style="height:18px;width:18px"
+                                                         ajax="false"
+                                                         actionListener="#{workorderItemAction.download(recordAttachment.COLUMN_PATH)}">
+                                            <p:fileDownload value="#{workorderItemAction.downloadFile}"/>
+                                        </p:commandButton>
+                                        <p:commandButton icon="ui-icon-trash"
+                                                         style="height:18px;width:18px"
+                                                         action="#{workorderItemAction.delAttachmentRecordAction(recordAttachment)}"
+                                                         update=":form:pgAttachmentView,:form:msgs">
+                                        </p:commandButton>
+                                    </p:column>
+                                </p:dataTable>
+                            </h:panelGrid>
+                        </p:dialog>
+                        <p:dialog id="imageShow" widgetVar="dlgWvView" height="400px" modal="true"
+                                  showEffect="clip" hideEffect="fold">
+                            <h:panelGrid id="pgImageShow">
+                                <p:graphicImage binding="#{workorderItemAction.image}"/>
+                            </h:panelGrid>
+                        </p:dialog>
+                        <p:dialog id="dlgViewForAdd"
+                                  header="工单内容增加信息"
+                                  widgetVar="wVDlgViewForAdd"
+                                  resizable="false" modal="true"
+                                  showEffect="clip" hideEffect="fold">
+                            <h:panelGrid id="pgViewForAdd">
+                                <h:panelGrid columns="2">
+                                    <p:outputLabel for="idForAdd" value="编号：" />
+                                    <h:inputText id="idForAdd"
+                                                 value="#{workorderItemAction.workorderItemShowAdd.id}">
+                                    </h:inputText>
+                                    <p:outputLabel for="itemContentForAdd" value="內容：" />
+                                    <h:inputTextarea id="itemContentForAdd"
+                                                     rows="4"
+                                                     autoResize="false"
+                                                     style="width:400px"
+                                                     value="#{workorderItemAction.workorderItemShowAdd.itemContent}"/>
+                                    <p:outputLabel for="remarkForAdd" value="备注：" />
+                                    <h:inputTextarea id="remarkForAdd"
+                                                     rows="4"
+                                                     autoResize="false"
+                                                     style="width:400px"
+                                                     value="#{workorderItemAction.workorderItemShowAdd.remark}"/>
+                                    <p:outputLabel for="levelidxForAdd" value="序号：" />
+                                    <h:inputText id="levelidxForAdd"
+                                                 value="#{workorderItemAction.workorderItemShowAdd.levelidx}"
+                                                 style="text-align:right"/>
+                                </h:panelGrid>
+                                <h:panelGrid id="pgOperBtnForAdd" columns="2">
+                                    <p:commandButton id="submitBtnForAdd"
+                                                     value="提交（增加）"
+                                                     action="#{workorderItemAction.submitThisRecordAction}"
+                                                     update="pgViewForAdd,pdt,msgs">
+                                    </p:commandButton>
+                                    <p:commandButton id="resetBtnForAdd" value="重置"
+                                                     type="reset"
+                                                     update="pgViewForAdd">
+                                    </p:commandButton>
+                                </h:panelGrid>
+                            </h:panelGrid>
+                        </p:dialog>
+                        <p:dialog id="dlgViewForUpd"
+                                  header="工单内容更新信息"
+                                  widgetVar="wVDlgViewForUpd"
+                                  resizable="false" modal="true"
+                                  showEffect="clip" hideEffect="fold">
+                            <h:panelGrid id="pgViewForUpd">
+                                <h:panelGrid columns="2">
+                                    <p:outputLabel for="idForUpd" value="编号:" />
+                                    <h:inputText id="idForUpd"
+                                                 value="#{workorderItemAction.workorderItemShowUpd.id}">
+                                    </h:inputText>
+                                    <p:outputLabel for="itemContentForUpd" value="內容:" />
+                                    <h:inputTextarea id="itemContentForUpd"
+                                                     rows="4"
+                                                     autoResize="false"
+                                                     style="width:400px"
+                                                     value="#{workorderItemAction.workorderItemShowUpd.itemContent}"/>
+                                    <p:outputLabel for="remarkForUpd" value="备注:" />
+                                    <h:inputTextarea id="remarkForUpd"
+                                                     rows="4"
+                                                     autoResize="false"
+                                                     style="width:400px"
+                                                     value="#{workorderItemAction.workorderItemShowUpd.remark}"/>
+                                    <p:outputLabel for="levelidxForUpd" value="序号:" />
+                                    <h:inputText id="levelidxForUpd"
+                                                 value="#{workorderItemAction.workorderItemShowUpd.levelidx}"/>
+                                </h:panelGrid>
+                                <h:panelGrid id="pgOperBtnForUpd" columns="2">
+                                    <p:commandButton id="submitBtnForUpd"
+                                                     value="提交（更新）"
+                                         action="#{workorderItemAction.submitThisRecordAction()}"
+                                         update="pgViewForUpd,pdt,msgs"
+                                         oncomplete="wVDlgViewForUpd.hide()">
+                                    </p:commandButton>
+                                    <p:commandButton id="resetBtnForUpd" value="重置"
+                                                     type="reset"
+                                                     update="pgViewForUpd">
+                                    </p:commandButton>
+                                </h:panelGrid>
+                            </h:panelGrid>
+                        </p:dialog>
+                        <p:dialog id="dlgViewForDel"
+                                  header="工单内容删除信息"
+                                  widgetVar="wVDlgViewForDel"
+                                  resizable="false" modal="true"
+                                  showEffect="clip" hideEffect="fold">
+                            <h:panelGrid id="pgViewForDel">
+                                <h:panelGrid columns="2">
+                                    <p:outputLabel for="idForDel" value="编号:" />
+                                    <h:inputText id="idForDel"
+                                                 value="#{workorderItemAction.workorderItemShowDel.id}"
+                                                 style="background-color:gainsboro" readonly="true">
+                                    </h:inputText>
+                                    <p:outputLabel for="itemContentForDel" value="內容:" />
+                                    <h:inputTextarea id="itemContentForDel"
+                                                     rows="4"
+                                                     autoResize="false"
+                                                     style="width:400px;background-color:gainsboro" readonly="true"
+                                                     value="#{workorderItemAction.workorderItemShowDel.itemContent}"/>
+                                    <p:outputLabel for="remarkForDel" value="备注:" />
+                                    <h:inputTextarea id="remarkForDel"
+                                                     rows="4"
+                                                     autoResize="false"
+                                                     style="width:400px;background-color:gainsboro" readonly="true"
+                                                     value="#{workorderItemAction.workorderItemShowDel.remark}"/>
+                                    <p:outputLabel for="levelidxForDel" value="序号:" />
+                                    <h:inputText id="levelidxForDel"
+                                                 value="#{workorderItemAction.workorderItemShowDel.levelidx}"
+                                                 style="background-color:gainsboro" readonly="true"/>
+                                </h:panelGrid>
+                                <h:panelGrid id="pgOperBtnForDel">
+                                    <p:commandButton id="submitBtnForDel"
+                                                     value="提交（删除）"
+                                         action="#{workorderItemAction.submitThisRecordAction()}"
+                                         update="pgViewForDel,pdt,msgs"
+                                         oncomplete="wVDlgViewForDel.hide()">
+                                    </p:commandButton>
+                                </h:panelGrid>
+                            </h:panelGrid>
+                        </p:dialog>
+                    </p:panel>
+                </p:panel>
+           </div>
+        </h:form>
+    </ui:define>
+</ui:composition>

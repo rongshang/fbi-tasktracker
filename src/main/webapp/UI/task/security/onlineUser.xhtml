@@ -26,6 +26,8 @@
                     <p:dataTable id="pdt" style="width:100%;"
                                  value="#{onlineUserAction.operList}"
                                  var="record"
+                                 resizableColumns="true"
+                                 selectionMode="single"
                                  rowKey="#{record.sessionKey}"
                                  rowIndexVar="row"
                                  emptyMessage="数据记录为空..."
