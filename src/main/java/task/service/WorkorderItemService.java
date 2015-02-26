@@ -12,6 +12,7 @@ import task.repository.model.model_show.WorkorderItemShow;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -36,6 +37,19 @@ public class WorkorderItemService {
         }else {
             return myDeptAndOperMapper.getUserName(ToolUtil.getStrIgnoreNull(operPkidPara));
         }
+    }
+
+    public List<WorkorderItemShow> getWorkorderItemListByInfoPkid(String strWorkorderInfoPkidPara){
+        WorkorderItemExample example = new WorkorderItemExample();
+        example.createCriteria()
+               .andInfoPkidEqualTo(strWorkorderInfoPkidPara);
+        example.setOrderByClause("LEVELIDX ASC") ;
+        List<WorkorderItem> workorderItemList = workorderItemMapper.selectByExample(example);
+        List<WorkorderItemShow> workorderItemShowList=new ArrayList<>();
+        for(WorkorderItem workorderItemUnit:workorderItemList){
+            workorderItemShowList.add(fromModelToModelShow(workorderItemUnit));
+        }
+        return workorderItemShowList;
     }
 
     public Integer getMaxLevelidxPlusOne(String strWorkorderInfoPkidPara){
@@ -78,7 +92,7 @@ public class WorkorderItemService {
         workorderItemTemp.setCreatedTime(workorderItemShowPara.getCreatedTime());
         workorderItemTemp.setLastUpdBy(workorderItemShowPara.getLastUpdBy());
         workorderItemTemp.setLastUpdTime(workorderItemShowPara.getLastUpdTime());
-        workorderItemTemp.setRemark(workorderItemShowPara.getArchivedFlag());
+        workorderItemTemp.setRemark(workorderItemShowPara.getRemark());
         workorderItemTemp.setRecVersion(workorderItemShowPara.getRecVersion());
         workorderItemTemp.setParentPkid(workorderItemShowPara.getParentPkid());
         workorderItemTemp.setInfoPkid(workorderItemShowPara.getInfoPkid());

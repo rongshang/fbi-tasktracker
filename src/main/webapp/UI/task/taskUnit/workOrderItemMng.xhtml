@@ -234,17 +234,26 @@
                                   resizable="false" modal="true"
                                   showEffect="clip" hideEffect="fold">
                             <h:panelGrid id="pgViewForUpd">
-                                <h:panelGrid columns="4">
+                                <h:panelGrid columns="2">
                                     <p:outputLabel for="idForUpd" value="编号:" />
                                     <h:inputText id="idForUpd"
                                                  value="#{workorderItemAction.workorderItemShowUpd.id}">
                                     </h:inputText>
                                     <p:outputLabel for="itemContentForUpd" value="內容:" />
-                                    <h:inputText id="itemContentForUpd" value="#{workorderItemAction.workorderItemShowUpd.itemContent}"/>
+                                    <h:inputTextarea id="itemContentForUpd"
+                                                     rows="4"
+                                                     autoResize="false"
+                                                     style="width:400px"
+                                                     value="#{workorderItemAction.workorderItemShowUpd.itemContent}"/>
                                     <p:outputLabel for="remarkForUpd" value="备注:" />
-                                    <h:inputText id="remarkForUpd" value="#{workorderItemAction.workorderItemShowUpd.remark}"/>
+                                    <h:inputTextarea id="remarkForUpd"
+                                                     rows="4"
+                                                     autoResize="false"
+                                                     style="width:400px"
+                                                     value="#{workorderItemAction.workorderItemShowUpd.remark}"/>
                                     <p:outputLabel for="levelidxForUpd" value="序号:" />
-                                    <h:inputText id="levelidxForUpd" value="#{workorderItemAction.workorderItemShowUpd.levelidx}"/>
+                                    <h:inputText id="levelidxForUpd"
+                                                 value="#{workorderItemAction.workorderItemShowUpd.levelidx}"/>
                                 </h:panelGrid>
                                 <h:panelGrid id="pgOperBtnForUpd" columns="2">
                                     <p:commandButton id="submitBtnForUpd"
@@ -266,17 +275,28 @@
                                   resizable="false" modal="true"
                                   showEffect="clip" hideEffect="fold">
                             <h:panelGrid id="pgViewForDel">
-                                <h:panelGrid columns="4">
+                                <h:panelGrid columns="2">
                                     <p:outputLabel for="idForDel" value="编号:" />
                                     <h:inputText id="idForDel"
-                                                 value="#{workorderItemAction.workorderItemShowDel.id}">
+                                                 value="#{workorderItemAction.workorderItemShowDel.id}"
+                                                 style="background-color:gainsboro" readonly="true">
                                     </h:inputText>
                                     <p:outputLabel for="itemContentForDel" value="內容:" />
-                                    <h:inputText id="itemContentForDel" value="#{workorderItemAction.workorderItemShowDel.itemContent}"/>
+                                    <h:inputTextarea id="itemContentForDel"
+                                                     rows="4"
+                                                     autoResize="false"
+                                                     style="width:400px;background-color:gainsboro" readonly="true"
+                                                     value="#{workorderItemAction.workorderItemShowDel.itemContent}"/>
                                     <p:outputLabel for="remarkForDel" value="备注:" />
-                                    <h:inputText id="remarkForDel" value="#{workorderItemAction.workorderItemShowDel.remark}"/>
+                                    <h:inputTextarea id="remarkForDel"
+                                                     rows="4"
+                                                     autoResize="false"
+                                                     style="width:400px;background-color:gainsboro" readonly="true"
+                                                     value="#{workorderItemAction.workorderItemShowDel.remark}"/>
                                     <p:outputLabel for="levelidxForDel" value="序号:" />
-                                    <h:inputText id="levelidxForDel" value="#{workorderItemAction.workorderItemShowDel.levelidx}"/>
+                                    <h:inputText id="levelidxForDel"
+                                                 value="#{workorderItemAction.workorderItemShowDel.levelidx}"
+                                                 style="background-color:gainsboro" readonly="true"/>
                                 </h:panelGrid>
                                 <h:panelGrid id="pgOperBtnForDel">
                                     <p:commandButton id="submitBtnForDel"

@@ -99,11 +99,11 @@ public class WorkorderItemAction {
 
             /*初始化流程状态列表*/
             if(ToolUtil.getStrIgnoreNull(strWorkorderInfoPkid).length()!=0) {
+                // 输出Excel表头
+                beansMap.put("workorderInfo", workorderInfo);
                 // 附件记录变成List
                 attachmentList=ToolUtil.getListAttachmentByStrAttachment(workorderInfo.getAttachment());
-                // 输出Excel表头
-                beansMap.put("cttInfo", workorderInfo);
-                //workorderItemList = workorderItemService.getEsItemList(strWorkorderInfoPkid);
+                workorderItemShowList = workorderItemService.getWorkorderItemListByInfoPkid(strWorkorderInfoPkid);
                 // Excel报表形成
                 workorderItemShowListExcel = new ArrayList<>();
                 for (WorkorderItemShow itemUnit : workorderItemShowList) {
@@ -111,7 +111,7 @@ public class WorkorderItemAction {
                     itemUnitTemp.setId(ToolUtil.getIgnoreSpaceOfStr(itemUnitTemp.getId()));
                     workorderItemShowListExcel.add(itemUnitTemp);
                 }
-                beansMap.put("cttItemShowListExcel", workorderItemShowListExcel);
+                beansMap.put("workorderItemShowListExcel", workorderItemShowListExcel);
             }
         }catch (Exception e){
             logger.error("初始化失败", e);
