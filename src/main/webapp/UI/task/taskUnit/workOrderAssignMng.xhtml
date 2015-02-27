@@ -1,0 +1,146 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+                template="/templates/ui.xhtml">
+<ui:define name="head">
+    <link type="text/css" href="#{request.contextPath}/css/epss.css" rel="stylesheet"/>
+    <script type="text/javascript" src="#{request.contextPath}/js/pub.js"/>
+    <script type="text/javascript" language="javascript">
+        document.onkeydown = function TabReplace() {
+            if (event.keyCode == 13) {
+                if (event.srcElement.tagName != 'BUTTON')
+                    event.keyCode = 9;
+                else
+                    event.srcElement.click();
+            }
+        }
+        function actSelect(obj) {
+            var pkid = obj;
+            var sfeature = "dialogwidth:1200px;dialogheight:610px;center:yes;location:no;help:no;" +
+                    "resizable:yes;scroll:yes;status:no;minimize:yes;maximize:yes;";
+            var arg = new Object();
+            arg.doType = "select";
+            var rtn = dialog("../taskUnit/workorderItemMng.xhtml?strWorkorderInfoPkid=" + pkid + "", arg, sfeature);
+            document.getElementById("form:qryBtn").click();
+        }
+    </script>
+</ui:define>
+<ui:define name="content">
+<h:form id="form">
+<div style="margin:5px;">
+<p:growl id="msgs" showDetail="true"/>
+<p:focus for="orderPkId"/>
+<p:panel>
+    <h:panelGrid id="pdQry" columns="2" style="width: 100%">
+        <h:panelGrid columns="4">
+            <p:outputLabel value="工单编号：" for="orderPkId"/>
+            <p:inputText id="orderPkId" value="#{workorderAssignAction.orderId}"
+                         style="width: 200px"/>
+            <p:outputLabel value="工单名称：" for="orderName"/>
+            <p:inputText id="orderName" value="#{workorderAssignAction.orderName}"
+                         style="width: 200px"/>
+        </h:panelGrid>
+        <h:panelGrid columns="3">
+            <p:commandButton id="qryBtn" value="查询"
+                             action="#{workorderAssignAction.getWorkorderInfoByIdOrName}"
+                             update="pdt,msgs">
+            </p:commandButton>
+            <p:commandButton id="resetBtn" value="重置"
+                             type="reset"
+                             update="pdQry,msgs">
+            </p:commandButton>
+            <p:ajaxStatus style="width:16px;height:16px;">
+                <f:facet name="start">
+                    <h:graphicImage value="/images/ajaxloading.gif"/>
+                </f:facet>
+                <f:facet name="complete">
+                    <h:outputText value=""/>
+                </f:facet>
+            </p:ajaxStatus>
+        </h:panelGrid>
+    </h:panelGrid>
+</p:panel>
+
+<p:dataTable id="pdt" style="width:100%;"
+             value="#{workorderAssignAction.workorderInfos}"
+             var="record"
+             rowKey="#{record.pkid}"
+             selectionMode="single"
+             resizableColumns="true"
+             paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks}
+                                            {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+             paginator="true"
+             paginatorPosition="bottom"
+             rows="20"
+             rowIndexVar="row"
+             rowsPerPageTemplate="200,100,50,30,20,10"
+             emptyMessage="数据记录为空..."
+             widgetVar="DtInitTkcttList"
+             scrollable="true">
+    <p:column headerText="操作" style="width:60px;text-align: center;">
+        <!--<p:commandButton icon="ui-icon-pencil"-->
+                         <!--style="height:18px;width:18px"-->
+                         <!--action="#{workOrderAssignAction.selectedWorkorderInfo}"-->
+                         <!--update="pdt,:form:pgViewForUpd,:form:msgs"-->
+                         <!--onclick="PF('wVDlgViewForUpd').show()">-->
+        <!--</p:commandButton>-->
+
+        <p:commandButton icon="ui-icon-triangle-1-e"
+                         style="height:18px;width:18px"
+                         onclick="actSelect('#{record.pkid}')">
+        </p:commandButton>
+    </p:column>
+    <p:column headerText="序号" style="width:30px">
+        <h:outputText value="#{row + 1}"/>
+    </p:column>
+    <p:column headerText="工单编号" style="width:120px;text-align:left">
+        <h:outputText value="#{record.id}"/>
+    </p:column>
+    <p:column headerText="工单名称" style="width:120px;text-align:center">
+        <h:outputText value="#{record.name}"/>
+    </p:column>
+    <p:column headerText="类别" style="width:120px;text-align:center">
+        <h:outputText value="#{record.type}"/>
+    </p:column>
+    <p:column headerText="制定日期" style="width:120px;text-align:center">
+        <h:outputText value="#{record.signDate}"/>
+    </p:column>
+    <p:column headerText="开始时间" style="width:120px;text-align:left">
+        <h:outputText value="#{record.startTime}"/>
+    </p:column>
+    <p:column headerText="截止时间" style="width:120px;text-align:left">
+        <h:outputText value="#{record.endTime}"/>
+    </p:column>
+    <p:column headerText="附件" style="width:120px;text-align:left">
+        <h:outputText value="#{record.attachment}"/>
+    </p:column>
+    <p:column headerText="备注" style="width:120px;text-align:left">
+        <h:outputText value="#{record.remark}"/>
+    </p:column>
+    <p:column headerText="创建人ID" style="width:120px;text-align:left">
+        <h:outputText value="#{record.createdBy}"/>
+    </p:column>
+    <p:column headerText="创建时间" style="width:120px;text-align:left">
+        <h:outputText value="#{record.createdTime}"/>
+    </p:column>
+    <p:column headerText="最近修改人ID" style="width:120px;text-align:left">
+        <h:outputText value="#{record.lastUpdBy}"/>
+    </p:column>
+    <p:column headerText="最近修改时间" style="width:120px;text-align:left">
+        <h:outputText value="#{record.lastUpdTime}"/>
+    </p:column>
+    <p:column headerText="修改次数" style="width:120px;text-align:left">
+        <h:outputText value="#{record.recVersion}"/>
+    </p:column>
+    <p:column headerText="所属ID" style="width:120px;text-align:left">
+        <h:outputText value="#{record.tid}"/>
+    </p:column>
+</p:dataTable>
+
+</div>
+</h:form>
+</ui:define>
+</ui:composition>
