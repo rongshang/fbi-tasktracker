@@ -19,6 +19,12 @@ public class TaskShow {
     private String isOwnTaskFlowFlag;
     private String taskDoneFlag;
     private String taskDoneFlagName;
+    private String taskpkid;
+    private String taskid;
+    private String taskname;
+    private String recer;
+    private String createby;
+    private String createtime;
 
     public String getType() {
         return type;
@@ -162,5 +168,53 @@ public class TaskShow {
 
     public void setStlPkid(String stlPkid) {
         this.stlPkid = stlPkid;
+    }
+
+    public String getTaskpkid() {
+        return taskpkid;
+    }
+
+    public void setTaskpkid(String taskpkid) {
+        this.taskpkid = taskpkid;
+    }
+
+    public String getTaskid() {
+        return taskid;
+    }
+
+    public void setTaskid(String taskid) {
+        this.taskid = taskid;
+    }
+
+    public String getTaskname() {
+        return taskname;
+    }
+
+    public void setTaskname(String taskname) {
+        this.taskname = taskname;
+    }
+
+    public String getRecer() {
+        return recer;
+    }
+
+    public void setRecer(String recer) {
+        this.recer = recer;
+    }
+
+    public String getCreateby() {
+        return createby;
+    }
+
+    public void setCreateby(String createby) {
+        this.createby = createby;
+    }
+
+    public String getCreatetime() {
+        return createtime;
+    }
+
+    public void setCreatetime(String createtime) {
+        this.createtime = createtime;
     }
 }

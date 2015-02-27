@@ -167,7 +167,7 @@
                     <td width="100%" colspan="4">
                         <div class="divlayout" id="todoTaskLayout">
                             <iframe id="todoTaskWorkFrame"
-                                    src="<%=contextPath%>/UI/task/taskDisplay/stlPower.sendAndRecTask.xhtml"
+                                    src="<%=contextPath%>/UI/task/taskDisplay/sendAndRecTaskQry.xhtml"
                                     width="100%" height="100%"
                                     frameborder="no"
                                     border="0"
