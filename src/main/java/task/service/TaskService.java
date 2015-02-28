@@ -2,7 +2,7 @@ package task.service;
 
 import task.repository.dao.WorkorderInfoMapper;
 import task.repository.dao.not_mybatis.MyTaskMapper;
-import task.repository.model.model_show.TaskShow;
+import task.repository.model.not_mybatis.TaskShow;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import skyline.util.ToolUtil;
@@ -23,10 +23,6 @@ public class TaskService {
     private WorkorderInfoMapper workorderInfoMapper;
     @Autowired
     private MyTaskMapper myTaskMapper;
-
-    public List<TaskShow> getTaskFlowGroup() {
-        return myTaskMapper.getTaskFlowGroup();
-    }
 
     public List<TaskShow> getSendTaskShowList(String strOperPkidPara) {
         return myTaskMapper.getSendTaskShowList(strOperPkidPara);

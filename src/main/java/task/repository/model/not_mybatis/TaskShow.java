@@ -1,4 +1,4 @@
-package task.repository.model.model_show;
+package task.repository.model.not_mybatis;
 
 public class TaskShow {
     private String type;
@@ -122,19 +122,19 @@ public class TaskShow {
         this.strColorType = strColorType;
     }
 
-    public String getOperResFlowStatus() {
+    public String getOperMenuFlowStatus() {
         return operResFlowStatus;
     }
 
-    public void setOperResFlowStatus(String operResFlowStatus) {
+    public void setOperMenuFlowStatus(String operResFlowStatus) {
         this.operResFlowStatus = operResFlowStatus;
     }
 
-    public String getOperResFlowStatusName() {
+    public String getOperMenuFlowStatusName() {
         return operResFlowStatusName;
     }
 
-    public void setOperResFlowStatusName(String operResFlowStatusName) {
+    public void setOperMenuFlowStatusName(String operResFlowStatusName) {
         this.operResFlowStatusName = operResFlowStatusName;
     }
 

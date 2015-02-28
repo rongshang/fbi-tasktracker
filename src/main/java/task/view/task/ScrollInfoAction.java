@@ -1,13 +1,12 @@
 package task.view.task;
 
-import task.repository.model.model_show.TaskShow;
+import task.repository.model.not_mybatis.TaskShow;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import skyline.util.ToolUtil;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import java.io.Serializable;
 import java.util.ArrayList;

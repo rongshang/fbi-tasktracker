@@ -1,4 +1,4 @@
-package task.repository.model.model_show;
+package task.repository.model.not_mybatis;
 
 public class MenuAppointShow {
     private String pkid;
@@ -7,7 +7,7 @@ public class MenuAppointShow {
     private String operPkid;
     private String operName;
     private String menuPkid;
-    private String resName;
+    private String menuName;
     private String archivedFlag;
     private String createdBy;
     private String createdByName;
@@ -51,12 +51,12 @@ public class MenuAppointShow {
         this.menuPkid = menuPkid;
     }
 
-    public String getResName() {
-        return resName;
+    public String getMenuName() {
+        return menuName;
     }
 
-    public void setResName(String resName) {
-        this.resName = resName;
+    public void setMenuName(String menuName) {
+        this.menuName = menuName;
     }
 
     public String getArchivedFlag() {

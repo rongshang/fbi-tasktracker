@@ -3,8 +3,8 @@ package task.view.appoint;
 import task.common.enums.EnumArchivedFlag;
 import task.repository.model.MenuAppoint;
 import task.repository.model.Ptmenu;
-import task.repository.model.model_show.DeptOperShow;
-import task.repository.model.model_show.MenuAppointShow;
+import task.repository.model.not_mybatis.DeptOperShow;
+import task.repository.model.not_mybatis.MenuAppointShow;
 import task.service.*;
 import org.primefaces.model.DefaultTreeNode;
 import org.primefaces.model.TreeNode;
@@ -59,8 +59,8 @@ public class MenuAppointOperAction implements Serializable{
         menuAppointShowList.clear();
         Ptmenu ptmenuTemp=new Ptmenu();
         List<Ptmenu> ptmenuListTemp=menuService.selectListByModel(ptmenuTemp);
-        MenuAppoint menuAppointTemp =new MenuAppoint();
-        List<MenuAppointShow> menuAppointShowListTemp = operMenuService.selectOperaResRecordsByModel(menuAppointTemp);
+        List<MenuAppointShow> menuAppointShowListTemp =
+                operMenuService.getMenuAppointShowList(new MenuAppointShow());
         for(Ptmenu ptmenuUnit:ptmenuListTemp){
             String strInputOperName="";
             for(MenuAppointShow menuAppointShowUnit : menuAppointShowListTemp){
@@ -76,7 +76,7 @@ public class MenuAppointOperAction implements Serializable{
             }
             MenuAppointShow menuAppointShowTemp =new MenuAppointShow();
             menuAppointShowTemp.setMenuPkid(ptmenuUnit.getPkid());
-            menuAppointShowTemp.setResName(ptmenuUnit.getMenulabel());
+            menuAppointShowTemp.setMenuName(ptmenuUnit.getMenulabel());
             menuAppointShowTemp.setOperName(strInputOperName);
             menuAppointShowList.add(menuAppointShowTemp);
         }
@@ -95,9 +95,9 @@ public class MenuAppointOperAction implements Serializable{
     }
     private void recursiveOperTreeNode(String strParentPkidPara, TreeNode parentNode) {
         List<DeptOperShow> operResShowListTemp = deptOperService.selectDeptAndOperRecords(strParentPkidPara);
-        for (DeptOperShow anOperResShowListTemp : operResShowListTemp) {
-            TreeNode childNodeTemp = new DefaultTreeNode(anOperResShowListTemp, parentNode);
-            recursiveOperTreeNode(anOperResShowListTemp.getPkid(), childNodeTemp);
+        for (DeptOperShow anOperMenuShowListTemp : operResShowListTemp) {
+            TreeNode childNodeTemp = new DefaultTreeNode(anOperMenuShowListTemp, parentNode);
+            recursiveOperTreeNode(anOperMenuShowListTemp.getPkid(), childNodeTemp);
         }
     }
     private void recursiveOperTreeNodeForExpand(
@@ -134,9 +134,10 @@ public class MenuAppointOperAction implements Serializable{
         try {
             menuAppointShowSeled = menuAppointShowPara;
             initDeptOperAppoint();
-            MenuAppoint menuAppointTemp =new MenuAppoint();
-            menuAppointTemp.setMenuPkid(menuAppointShowSeled.getMenuPkid());
-            List<MenuAppointShow> menuAppointShowListTemp = operMenuService.selectOperaResRecordsByModel(menuAppointTemp);
+            MenuAppointShow menuAppointShowTemp =new MenuAppointShow();
+            menuAppointShowTemp.setMenuPkid(menuAppointShowSeled.getMenuPkid());
+            List<MenuAppointShow> menuAppointShowListTemp =
+                    operMenuService.getMenuAppointShowList(menuAppointShowTemp);
             recursiveOperTreeNodeForExpand(deptOperRoot, menuAppointShowListTemp);
         } catch (Exception e) {
             MessageUtil.addError(e.getMessage());

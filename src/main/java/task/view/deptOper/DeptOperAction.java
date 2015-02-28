@@ -2,7 +2,7 @@ package task.view.deptOper;
 
 import task.repository.model.Dept;
 import task.repository.model.Oper;
-import task.repository.model.model_show.DeptOperShow;
+import task.repository.model.not_mybatis.DeptOperShow;
 import task.service.DeptOperService;
 import jxl.write.WriteException;
 import org.apache.commons.beanutils.BeanUtils;
@@ -10,13 +10,12 @@ import org.apache.commons.lang.StringUtils;
 import org.primefaces.event.NodeCollapseEvent;
 import org.primefaces.model.DefaultTreeNode;
 import org.primefaces.model.TreeNode;
-import org.primefaces.model.UploadedFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import skyline.security.MD5Helper;
 import skyline.util.JxlsManager;
 import skyline.util.MessageUtil;
-import skyline.util.ToolUtil;
+
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;

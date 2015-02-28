@@ -6,7 +6,7 @@ import task.repository.dao.MenuAppointMapper;
 import task.repository.dao.not_mybatis.MyMenuAppointMapper;
 import task.repository.model.MenuAppoint;
 import task.repository.model.MenuAppointExample;
-import task.repository.model.model_show.MenuAppointShow;
+import task.repository.model.not_mybatis.MenuAppointShow;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -21,18 +21,12 @@ public class OperMenuService {
     @Resource
     private MenuAppointMapper menuAppointMapper;
 
-    public List<MenuAppointShow> selectOperResRecordsByModelShow(MenuAppointShow menuAppointShowPara){
-        return myMenuAppointMapper.selectOperResRecordsByModelShow(menuAppointShowPara);
+    public List<MenuAppointShow> getMenuAppointShowList(MenuAppointShow menuAppointShowPara){
+        return myMenuAppointMapper.getMenuAppointShowList(
+                ToolUtil.getStrIgnoreNull(menuAppointShowPara.getOperPkid()),
+                ToolUtil.getStrIgnoreNull(menuAppointShowPara.getMenuPkid()));
     }
-    public List<MenuAppointShow> selectOperaResRecordsByModel(MenuAppoint menuAppointPara){
-        return myMenuAppointMapper.selectOperResRecordsByModelShow(fromModelToModelShow(menuAppointPara));
-    }
-    public List<MenuAppointShow> getOperResPtmenuList(){
-        return myMenuAppointMapper.getOperResPtmenuList();
-    }
-    public MenuAppoint getOperResByPkid(String strOperMenuPkidPara){
-        return  menuAppointMapper.selectByPrimaryKey(strOperMenuPkidPara);
-    }
+
     public void insertRecord(MenuAppointShow menuAppointShowPara){
         String strOperatorIdTemp=ToolUtil.getOperatorManager().getOperator().getPkid();
         String strLastUpdTime=ToolUtil.getStrLastUpdTime();
@@ -43,13 +37,7 @@ public class OperMenuService {
         menuAppointMapper.insert(fromOperShowToModel(menuAppointShowPara));
     }
     public void insertRecord(MenuAppoint menuAppointPara){
-        String strOperatorIdTemp=ToolUtil.getOperatorManager().getOperator().getPkid();
-        String strLastUpdTime=ToolUtil.getStrLastUpdTime();
-        menuAppointPara.setCreatedBy(strOperatorIdTemp);
-        menuAppointPara.setCreatedTime(strLastUpdTime);
-        menuAppointPara.setLastUpdBy(strOperatorIdTemp);
-        menuAppointPara.setLastUpdTime(strLastUpdTime);
-        menuAppointMapper.insertSelective(menuAppointPara);
+        insertRecord(fromModelToModelShow(menuAppointPara));
     }
     public void deleteRecordByMenuPkid(MenuAppoint menuAppointPara){
         MenuAppointExample example =new MenuAppointExample();

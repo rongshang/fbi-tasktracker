@@ -1,18 +1,21 @@
 package task.view.workorder;
 
-import task.repository.model.model_show.WorkorderInfoShow;
+import org.primefaces.event.SelectEvent;
+import org.primefaces.model.DefaultTreeNode;
+import org.primefaces.model.TreeNode;
+import task.common.enums.EnumInputFinishFlag;
+import task.repository.model.not_mybatis.WorkorderInfoShow;
 import task.service.*;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import skyline.util.MessageUtil;
-import skyline.util.StyleModel;
-
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,7 +28,7 @@ import java.util.List;
  */
 @ManagedBean
 @ViewScoped
-public class WorkorderInfoAction {
+public class WorkorderInfoAction implements Serializable {
     private static final Logger logger = LoggerFactory.getLogger(WorkorderInfoAction.class);
     @ManagedProperty(value = "#{workorderInfoService}")
     private WorkorderInfoService workorderInfoService;
@@ -40,13 +43,15 @@ public class WorkorderInfoAction {
     private List<WorkorderInfoShow> workorderInfoShowList;
 
     private String strSubmitType;
-    /*控制维护画面层级部分的显示*/
-    private StyleModel styleModel;
-    //更新时检验用，符合立刻关闭，不符合进行提升
+    private TreeNode root;
+    /*任务跟踪显示标志*/
+    private String strTaskTrackerFlag;
+
     @PostConstruct
     public void init() {
         try {
             initData();
+            initTree();
         }catch (Exception e){
             logger.error("初始化失败", e);
         }
@@ -59,18 +64,65 @@ public class WorkorderInfoAction {
             workorderInfoShowAdd = new WorkorderInfoShow();
             workorderInfoShowUpd = new WorkorderInfoShow();
             workorderInfoShowDel = new WorkorderInfoShow();
-            styleModel = new StyleModel();
-            styleModel.setDisabled_Flag("false");
             strSubmitType = "";
+            strTaskTrackerFlag="false";
         }catch (Exception e){
             logger.error("初始化失败", e);
             MessageUtil.addError("初始化失败");
         }
     }
 
-    public String onQueryAction(String strQryMsgOutPara) {
+    public void onNodeSelect(SelectEvent event) {
+        TreeNode node = (TreeNode) event.getObject();
+
+        //populate if not already loaded
+        if(node.getChildren().isEmpty()) {
+            //Object label = node.getLabel();
+
+
+        }
+    }
+
+    public void onNodeDblselect(SelectEvent event) {
+        //this.selectedNode = (TreeNode) event.getObject();
+    }
+    public void initTree() {
+        workorderInfoShowAdd = new WorkorderInfoShow();
+        root = new DefaultTreeNode("Root", null);
+        TreeNode node0 = new DefaultTreeNode("Node 0", root);
+
+        TreeNode node00 = new DefaultTreeNode("Node 0.0", node0);
+        TreeNode node01 = new DefaultTreeNode("Node 0.1", node0);
+
+        node00.getChildren().add(new DefaultTreeNode("Node 0.0.0"));
+        node00.getChildren().add(new DefaultTreeNode("Node 0.0.1"));
+        node01.getChildren().add(new DefaultTreeNode("Node 0.1.0"));
+    }
+
+    public TreeNode getRoot() {
+        return root;
+    }
+
+    public String onQueryAllAction(String strQryMsgOutPara) {
         try {
             this.workorderInfoShowList.clear();
+            workorderInfoShowList =
+                    workorderInfoService.getWorkorderShowInfoListByModelShow(workorderInfoShowQry);
+            if(strQryMsgOutPara.equals("true"))  {
+                if (workorderInfoShowList.isEmpty()) {
+                    MessageUtil.addWarn("没有查询到数据。");
+                }
+            }
+        } catch (Exception e) {
+            logger.error("工单信息查询失败", e);
+            MessageUtil.addError("工单信息查询失败");
+        }
+        return null;
+    }
+    public String onQueryFinishAction(String strQryMsgOutPara) {
+        try {
+            this.workorderInfoShowList.clear();
+            workorderInfoShowQry.setFinishFlag(EnumInputFinishFlag.INPUT_FINISH_FLAG1.getCode());
             workorderInfoShowList =
                     workorderInfoService.getWorkorderShowInfoListByModelShow(workorderInfoShowQry);
             if(strQryMsgOutPara.equals("true"))  {
@@ -100,6 +152,8 @@ public class WorkorderInfoAction {
                 workorderInfoShowUpd = (WorkorderInfoShow) BeanUtils.cloneBean(workorderInfoShowPara);
             }else if (strSubmitTypePara.equals("Del")){
                 workorderInfoShowDel = (WorkorderInfoShow) BeanUtils.cloneBean(workorderInfoShowPara);
+            }else if(strSubmitTypePara.equals("Tra")){
+                strTaskTrackerFlag="true";
             }
         } catch (Exception e) {
             MessageUtil.addError(e.getMessage());
@@ -154,7 +208,11 @@ public class WorkorderInfoAction {
                 MessageUtil.addInfo("更新数据完成。");
             }
         }
-        onQueryAction("false");
+        onQueryAllAction("false");
+    }
+
+    public void setRoot(TreeNode root) {
+        this.root = root;
     }
 
     private void addRecordAction(WorkorderInfoShow workorderInfoShowPara) {
@@ -239,10 +297,6 @@ public class WorkorderInfoAction {
         return strSubmitType;
     }
 
-    public StyleModel getStyleModel() {
-        return styleModel;
-    }
-
     public WorkorderInfoShow getWorkorderInfoShowUpd() {
         return workorderInfoShowUpd;
     }
@@ -258,5 +312,13 @@ public class WorkorderInfoAction {
     public void setWorkorderInfoShowSel(WorkorderInfoShow workorderInfoShowSel) {
         this.workorderInfoShowSel = workorderInfoShowSel;
     }
-    /*智能字段 End*/
+
+    public String getStrTaskTrackerFlag() {
+        return strTaskTrackerFlag;
+    }
+
+    public void setStrTaskTrackerFlag(String strTaskTrackerFlag) {
+        this.strTaskTrackerFlag = strTaskTrackerFlag;
+    }
+/*智能字段 End*/
 }

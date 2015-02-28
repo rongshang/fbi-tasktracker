@@ -1,19 +1,17 @@
 package task.service;
 
 import org.apache.commons.lang.StringUtils;
-import skyline.util.MessageUtil;
 import task.common.enums.EnumInputFinishFlag;
 import task.repository.dao.WorkorderInfoMapper;
 import task.repository.dao.not_mybatis.MyWorkorderInfoMapper;
 import task.repository.dao.not_mybatis.MyDeptAndOperMapper;
 import task.repository.model.*;
-import task.repository.model.model_show.WorkorderInfoShow;
+import task.repository.model.not_mybatis.WorkorderInfoShow;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import skyline.util.ToolUtil;
 
-import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,14 +43,33 @@ public class WorkorderInfoService {
         WorkorderInfoExample example= new WorkorderInfoExample();
         WorkorderInfoExample.Criteria criteria = example.createCriteria();
         //可以为NULL的项
+        // 工单编号
         if(!ToolUtil.getStrIgnoreNull(workorderInfoShowPara.getId()).equals("")){
             criteria.andIdLike("%"+ workorderInfoShowPara.getId()+"%");
         }
+        // 工单主题
         if(!ToolUtil.getStrIgnoreNull(workorderInfoShowPara.getName()).equals("")){
             criteria.andNameLike("%"+ workorderInfoShowPara.getName()+"%");
         }
+        // 制定日期
         if(!ToolUtil.getStrIgnoreNull(workorderInfoShowPara.getSignDate()).equals("")){
             criteria.andSignDateLike("%"+ workorderInfoShowPara.getSignDate()+"%");
+        }
+        // 开始时间
+        if(!ToolUtil.getStrIgnoreNull(workorderInfoShowPara.getStartTime()).equals("")){
+            criteria.andStartTimeLike("%"+ workorderInfoShowPara.getStartTime()+"%");
+        }
+        // 截止时间
+        if(!ToolUtil.getStrIgnoreNull(workorderInfoShowPara.getEndTime()).equals("")){
+            criteria.andEndTimeLike("%"+ workorderInfoShowPara.getEndTime()+"%");
+        }
+        // 录入结束标志
+        if(!ToolUtil.getStrIgnoreNull(workorderInfoShowPara.getFinishFlag()).equals("")){
+            criteria.andFinishFlagEqualTo(workorderInfoShowPara.getFinishFlag());
+        }
+        // 备注内容
+        if(!ToolUtil.getStrIgnoreNull(workorderInfoShowPara.getRemark()).equals("")){
+            criteria.andRemarkLike(workorderInfoShowPara.getRemark());
         }
         example.setOrderByClause("ID ASC") ;
         return workorderInfoMapper.selectByExample(example);

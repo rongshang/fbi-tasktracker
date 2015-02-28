@@ -1,4 +1,4 @@
-package task.repository.model.model_show;
+package task.repository.model.not_mybatis;
 
 import java.math.BigDecimal;
 

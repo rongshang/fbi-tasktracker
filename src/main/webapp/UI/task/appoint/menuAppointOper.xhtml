@@ -46,9 +46,9 @@
                         <p:column headerText="序号" style="width:20px">
                             <h:outputText value="#{row + 1}"/>
                         </p:column>
-                        <p:column filterBy="#{record.resName}" filterMatchMode="contains"
+                        <p:column filterBy="#{record.menuName}" filterMatchMode="contains"
                                   headerText="资源" style="width:200px;">
-                            <h:outputText value="#{record.resName}"/>
+                            <h:outputText value="#{record.menuName}"/>
                         </p:column>
                         <p:column headerText="操作" style="width:20px;text-align:center;" >
                             <p:commandButton icon="ui-icon-search"
@@ -66,7 +66,7 @@
                         </p:column>
                     </p:dataTable>
                     <p:dialog id="dlgViewForRes"
-                              header="#{menuAppointOperAction.menuAppointShowSeled.resName}_人员指派"
+                              header="#{menuAppointOperAction.menuAppointShowSeled.menuName}_人员指派"
                               widgetVar="wVDlgViewForRes"
                               resizable="false" modal="true"
                               showEffect="clip" hideEffect="fold">

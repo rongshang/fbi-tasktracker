@@ -8,17 +8,15 @@ package task.view.workorder;
  * To change this template use File | Settings | File Templates.
  */
 import task.common.enums.EnumInputFinishFlag;
-import task.repository.model.model_show.AttachmentModel;
+import task.repository.model.not_mybatis.AttachmentModel;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 import org.primefaces.model.UploadedFile;
 import skyline.util.JxlsManager;
-import skyline.util.StyleModel;
 import skyline.util.ToolUtil;
-import task.repository.model.*;
-import task.repository.model.model_show.WorkorderInfoShow;
-import task.repository.model.model_show.WorkorderItemShow;
+import task.repository.model.not_mybatis.WorkorderInfoShow;
+import task.repository.model.not_mybatis.WorkorderItemShow;
 import task.service.*;
 import jxl.write.WriteException;
 import org.apache.commons.beanutils.BeanUtils;
@@ -34,7 +32,6 @@ import javax.faces.bean.ViewScoped;
 import javax.faces.component.html.HtmlGraphicImage;
 import javax.faces.context.FacesContext;
 import java.io.*;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 @ManagedBean

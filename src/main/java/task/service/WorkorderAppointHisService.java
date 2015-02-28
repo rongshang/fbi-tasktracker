@@ -30,7 +30,7 @@ public class WorkorderAppointHisService {
         WorkorderAppointHisExample.Criteria criteria = example.createCriteria();
         criteria.andInfoPkidLike("%" + ToolUtil.getStrIgnoreNull(workorderAppointHisPara.getInfoPkid()) + "%");
         if (!ToolUtil.getStrIgnoreNull(workorderAppointHisPara.getFinishFlag()).equals("")){
-            criteria.andFinishFlagLike("%"+ workorderAppointHisPara.getFinishFlag()+"%");
+            criteria.andFinishFlagLike("%" + workorderAppointHisPara.getFinishFlag() + "%");
         }
         if (!ToolUtil.getStrIgnoreNull(workorderAppointHisPara.getCreatedBy()).equals("")){
             criteria.andCreatedByLike("%"+ workorderAppointHisPara.getCreatedBy()+"%");

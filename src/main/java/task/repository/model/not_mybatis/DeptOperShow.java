@@ -1,4 +1,4 @@
-package task.repository.model.model_show;
+package task.repository.model.not_mybatis;
 
 /**
  * Created by XIANGYANG on 2014/8/11.

@@ -1,6 +1,6 @@
 package task.view.task;
 
-import task.repository.model.model_show.TaskShow;
+import task.repository.model.not_mybatis.TaskShow;
 import task.service.TaskService;
 import org.primefaces.model.DefaultTreeNode;
 import org.primefaces.model.TreeNode;

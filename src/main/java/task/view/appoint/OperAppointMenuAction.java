@@ -7,7 +7,7 @@ import skyline.util.ToolUtil;
 import task.repository.model.Oper;
 import task.repository.model.MenuAppoint;
 import task.repository.model.Ptmenu;
-import task.repository.model.model_show.MenuAppointShow;
+import task.repository.model.not_mybatis.MenuAppointShow;
 import task.service.DeptOperService;
 import task.service.MenuService;
 import task.service.OperMenuService;
@@ -63,11 +63,12 @@ public class OperAppointMenuAction implements Serializable{
             List<Ptmenu> ptmenuListTemp=menuService.selectListByModel(ptmenuTemp);
             MenuAppointShow menuAppointShowTemp = new MenuAppointShow();
             menuAppointShowTemp.setOperPkid(menuAppointShowPara.getOperPkid());
-            List<MenuAppointShow> operResListTemp= operMenuService.selectOperResRecordsByModelShow(menuAppointShowTemp);
+            List<MenuAppointShow> operResListTemp=
+                    operMenuService.getMenuAppointShowList(menuAppointShowTemp);
             for (Ptmenu ptmenuUnit:ptmenuListTemp){
                 MenuAppointShow menuAppoint =new MenuAppointShow();
                 menuAppoint.setMenuPkid(ptmenuUnit.getPkid());
-                menuAppoint.setResName(ptmenuUnit.getMenulabel());
+                menuAppoint.setMenuName(ptmenuUnit.getMenulabel());
                 for (MenuAppointShow menuAppointShowUnit :operResListTemp){
                     if(ptmenuUnit.getPkid().equals(menuAppointShowUnit.getMenuPkid())){
                         menuAppointSel.add(menuAppoint);
@@ -86,24 +87,25 @@ public class OperAppointMenuAction implements Serializable{
         // 确定人员列表
         List<Oper> operListTemp=deptOperService.getOperList();
         // 人员列表对应的资源信息
-        List<MenuAppointShow> operResShowListOfMenuAppointPtmenu = operMenuService.getOperResPtmenuList();
+        List<MenuAppointShow> operMenuShowListOfMenuAppoint =
+                operMenuService.getMenuAppointShowList(new MenuAppointShow());
         for(Oper operUnit:operListTemp){
             String strResName="";
-            for(MenuAppointShow item_OperResPtmenu: operResShowListOfMenuAppointPtmenu){
-                if(operUnit.getPkid().equals(item_OperResPtmenu.getOperPkid())){
+            for(MenuAppointShow item_OperMenuPtmenu: operMenuShowListOfMenuAppoint){
+                if(operUnit.getPkid().equals(item_OperMenuPtmenu.getOperPkid())){
                     if(strResName.length()==0){
                         strResName =
-                                ToolUtil.getStrIgnoreNull(item_OperResPtmenu.getResName());
+                                ToolUtil.getStrIgnoreNull(item_OperMenuPtmenu.getMenuName());
                     }else {
                         strResName = strResName + "," +
-                                ToolUtil.getStrIgnoreNull(item_OperResPtmenu.getResName());
+                                ToolUtil.getStrIgnoreNull(item_OperMenuPtmenu.getMenuName());
                     }
                 }
             }
             MenuAppointShow menuAppointShowTemp =new MenuAppointShow();
             menuAppointShowTemp.setOperPkid(operUnit.getPkid());
             menuAppointShowTemp.setOperName(operUnit.getName());
-            menuAppointShowTemp.setResName(strResName);
+            menuAppointShowTemp.setMenuName(strResName);
             menuAppointShowList.add(menuAppointShowTemp);
         }
     }

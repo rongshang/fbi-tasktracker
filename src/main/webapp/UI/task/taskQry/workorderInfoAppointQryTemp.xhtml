@@ -32,17 +32,7 @@
             <div style="margin:5px;">
                 <p:growl id="msgs" showDetail="true"/>
                 <p:focus for="id"/>
-                <p:panel id ="idWorkorderTracker">
-                     <p:tree value="#{workorderInfoAction.root}"
-                             rendered="#{workorderInfoAction.strTaskTrackerFlag}"
-                             var="node" dynamic="true"
-                             orientation="horizontal">
-                         <p:treeNode >
-                             <h:outputText value="#{node}"/>
-                         </p:treeNode>
-                     </p:tree>
-                </p:panel>
-                <p:panel header="工单查询">
+                <p:panel>
                     <h:panelGrid id="pdQry" columns="3" style="width: 100%">
                         <h:panelGrid columns="6">
                             <p:outputLabel value="工单编号：" for="id"/>
@@ -63,7 +53,7 @@
                         </h:panelGrid>
                         <h:panelGrid columns="1">
                             <p:commandButton id="qryBtn" value="查询"
-                                             action="#{workorderInfoAction.onQueryFinishAction('true')}"
+                                             action="#{workorderInfoAction.onQueryAction('true')}"
                                              update="pdt,msgs">
                             </p:commandButton>
                             <p:commandButton id="resetBtn" value="重置"
@@ -84,8 +74,8 @@
                 <p:dataTable id="pdt"
                              value="#{workorderInfoAction.workorderInfoShowList}"
                              var="record"
-                             selectionMode="single"
                              rowKey="#{record.pkid}"
+                             selectionMode="single"
                              resizableColumns="true"
                              paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks}
                                             {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
@@ -96,23 +86,24 @@
                              rowsPerPageTemplate="200,100,50,30,20,10"
                              emptyMessage="数据记录为空..."
                              widgetVar="DtInitTkcttList"
-                             scrollable="true"
-                             scrollHeight="300">
+                             scrollable="true">
+                    <p:column headerText="工单跟踪" style="width:60px">
+                        <p:rowToggler />
+                    </p:column>
                     <p:column headerText="操作" style="width:60px;text-align: center;">
-                        <p:commandButton icon="ui-icon-refresh"
-                                          style="height:18px;width:18px"
-                                          update=":form:idWorkorderTracker,:form:msgs"
-                                          action="#{workorderInfoAction.selectRecordAction()}">
-                        </p:commandButton>
-                        <p:commandButton icon="ui-icon-search"
+                        <p:commandButton  icon="ui-icon-search"
                                           style="height:18px;width:18px"
                                           action="#{workorderInfoAction.selectRecordAction('Sel',record)}"
                                           update="pdt,:form:pgView,:form:msgs"
                                           onclick="PF('wVDlgView').show()">
                         </p:commandButton>
                         <p:commandButton icon="ui-icon-triangle-1-e"
+                                         style="height:18px;width:18px"
+                                         onclick="actSelect('#{record.pkid}')">
+                        </p:commandButton>
+                        <p:commandButton  icon="ui-icon-search"
                                           style="height:18px;width:18px"
-                                          onclick="actSelect('#{record.pkid}')">
+                                          onclick="PF('wVDlgTree').show()">
                         </p:commandButton>
                     </p:column>
                     <p:column headerText="序号" style="width:30px">
@@ -123,6 +114,9 @@
                     </p:column>
                     <p:column headerText="工单主题" style="width:300px;text-align:left">
                         <h:outputText value="#{record.name}"/>
+                    </p:column>
+                    <p:column headerText="是否录入完成" style="width:80px;text-align:left">
+                        <h:outputText value="#{record.finishFlagName}"/>
                     </p:column>
                     <p:column headerText="开始时间" style="width:120px;text-align:center">
                         <h:outputText value="#{record.startTime}"/>
@@ -136,7 +130,54 @@
                     <p:column headerText="备注内容" style="width:600px;text-align:left">
                         <h:outputText value="#{record.remark}"/>
                     </p:column>
+
+                    <p:rowExpansion >
+                        <!--<p:tree id="ptree"
+                                value="#{workorderInfoAction.root}" var="node" style="width:300px"  orientation="horizontal" dynamic="true">
+                            <p:treeNode>
+                                <h:outputText value="#{node}" />
+                            </p:treeNode>
+                        </p:tree>-->
+                        <!--<p:panelGrid id="pgtree" columns="2" cellpadding="4"
+                                     styleClass=" ui-widget-content grid"
+                                     columnClasses="label,value" style="width:300px">
+                            <p:tree
+                                    value="#{workorderInfoAction.root}" var="node" style="width:300px"  orientation="horizontal" dynamic="true">
+                                <p:treeNode>
+                                    <h:outputText value="#{node}" />
+                                </p:treeNode>
+                            </p:tree>
+                        </p:panelGrid>-->
+                        <!--<p:panel  header="Boundaries" style="width:300px;height:150px;">-->
+                            <p:tree id="pgtree"
+                                    value="#{workorderInfoAction.root}" var="node" style="width:300px"
+                                    dynamic="true">
+                                <p:treeNode>
+                                    <h:outputText value="#{node}" />
+                                </p:treeNode>
+                            </p:tree>
+                        <!--</p:panel>-->
+                        <p:resizable for="pgtree"/>
+                        <!--<p:resizable for="pgtree" minWidth="200" maxWidth="400" minHeight="100" maxHeight="200" />-->
+                        <!--<p:mindmap value="#{workorderInfoAction.root}" style="width: 100%;height: 600px;border: 1px solid black;">
+                            <p:ajax event="select"
+                                    listener="#{workorderInfoAction.onNodeSelect}" />
+                            <p:ajax event="dblselect"
+                                    listener="#{workorderInfoAction.onNodeDblselect}"
+                                    update=":form:output" oncomplete="PF('details').show();" />
+                        </p:mindmap>-->
+                    </p:rowExpansion>
                 </p:dataTable>
+                <p:dialog id="dlgTree" header="工单信息" widgetVar="wVDlgTree"
+                          resizable="true" modal="true"
+                          showEffect="clip" hideEffect="fold"
+                          style="width:500px;">
+                    <p:tree value="#{workorderInfoAction.root}" var="node" dynamic="true" orientation="horizontal">
+                        <p:treeNode >
+                            <h:outputText value="#{node}" />
+                        </p:treeNode>
+                    </p:tree>
+                </p:dialog>
                 <p:dialog id="dlgView" header="工单信息" widgetVar="wVDlgView"
                           resizable="false" modal="true"
                           showEffect="clip" hideEffect="fold">

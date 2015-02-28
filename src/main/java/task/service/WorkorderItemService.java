@@ -9,8 +9,7 @@ import task.repository.dao.not_mybatis.MyDeptAndOperMapper;
 import task.repository.dao.not_mybatis.MyWorkorderItemMapper;
 import task.repository.model.WorkorderItem;
 import task.repository.model.WorkorderItemExample;
-import task.repository.model.model_show.WorkorderInfoShow;
-import task.repository.model.model_show.WorkorderItemShow;
+import task.repository.model.not_mybatis.WorkorderItemShow;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;

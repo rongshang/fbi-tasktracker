@@ -7,7 +7,6 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import skyline.util.MessageUtil;
-import skyline.util.StyleModel;
 import skyline.util.ToolUtil;
 
 import javax.annotation.PostConstruct;
@@ -41,8 +40,6 @@ public class MenuAction {
 
     private String strSubmitType;
     private String rowSelectedFlag;
-    /*控制维护画面层级部分的显示*/
-    private StyleModel styleModel;
     private List<SelectItem> isLeafList;
     private List<SelectItem> openWindowList;
     private List<SelectItem> targetMachineList;
@@ -68,8 +65,6 @@ public class MenuAction {
         ptmenuUpd=new Ptmenu() ;
         ptmenuDel=new Ptmenu() ;
         ptmenuSel=new Ptmenu() ;
-        styleModel=new StyleModel();
-        styleModel.setDisabled_Flag("false");
         strSubmitType="Add";
         rowSelectedFlag = "false";
     }
@@ -264,14 +259,6 @@ public class MenuAction {
 
     public void setRowSelectedFlag(String rowSelectedFlag) {
         this.rowSelectedFlag = rowSelectedFlag;
-    }
-
-    public StyleModel getStyleModel() {
-        return styleModel;
-    }
-
-    public void setStyleModel(StyleModel styleModel) {
-        this.styleModel = styleModel;
     }
 
     public List<SelectItem> getIsLeafList() {

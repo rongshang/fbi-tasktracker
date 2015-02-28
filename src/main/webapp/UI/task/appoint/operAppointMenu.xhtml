@@ -60,9 +60,9 @@
                                              title="View">
                             </p:commandButton>
                         </p:column>
-                        <p:column filterBy="#{record.resName}" filterMatchMode="contains"
+                        <p:column filterBy="#{record.menuName}" filterMatchMode="contains"
                                   headerText="资源" style="width:500px;">
-                            <h:outputText value="#{record.resName}"/>
+                            <h:outputText value="#{record.menuName}"/>
                         </p:column>
                     </p:dataTable>
                     <p:dialog id="dlgViewForOper" header="资源指派" widgetVar="wVDlgViewForOper"
@@ -89,7 +89,7 @@
                                              emptyMessage="数据记录为空...">
                                     <p:column selectionMode="multiple" style="width:16px;text-align:center"/>
                                     <p:column headerText="资源" style="width:200px;text-align:left">
-                                        <h:outputText value="#{record.resName}" />
+                                        <h:outputText value="#{record.menuName}" />
                                     </p:column>
                                 </p:dataTable>
                             </p:panel>

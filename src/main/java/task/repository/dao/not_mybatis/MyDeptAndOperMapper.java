@@ -1,6 +1,6 @@
 package task.repository.dao.not_mybatis;
 
-import task.repository.model.model_show.DeptOperShow;
+import task.repository.model.not_mybatis.DeptOperShow;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Component;

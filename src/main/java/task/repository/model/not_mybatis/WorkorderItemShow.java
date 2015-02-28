@@ -1,7 +1,6 @@
-package task.repository.model.model_show;
+package task.repository.model.not_mybatis;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 
 /**
  * Created with IntelliJ IDEA.
