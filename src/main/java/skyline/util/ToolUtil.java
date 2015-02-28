@@ -1,12 +1,6 @@
 package skyline.util;
 
-import task.repository.model.model_show.AttachmentModel;
-import org.apache.commons.lang.*;
-import org.jdom.Element;
-import skyline.platform.db.ConnectionManager;
-import skyline.platform.db.DBUtil;
-import skyline.platform.db.DatabaseConnection;
-import skyline.platform.db.RecordSet;
+import task.repository.model.not_mybatis.AttachmentModel;
 import skyline.platform.form.config.SystemAttributeNames;
 import skyline.platform.security.OperatorManager;
 

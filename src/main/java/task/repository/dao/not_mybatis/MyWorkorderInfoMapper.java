@@ -1,11 +1,7 @@
 package task.repository.dao.not_mybatis;
 
-import task.repository.model.model_show.WorkorderInfoShow;
-import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -18,5 +14,4 @@ import java.util.List;
 public interface MyWorkorderInfoMapper {
     @Select("select max(id) from WORKORDER_INFO")
     String getStrMaxCttId();
-
 }
