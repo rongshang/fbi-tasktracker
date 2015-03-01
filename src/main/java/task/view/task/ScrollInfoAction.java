@@ -40,8 +40,8 @@ public class ScrollInfoAction implements Serializable {
         if (taskShowTempList != null) {
             String strViewMngTemp="待处理任务：";
             for (TaskShow taskShowItem : taskShowTempList) {
-                if (taskShowItem.getName()!=null){
-                    strViewMngTemp+=taskShowItem.getName()+";";
+                if (taskShowItem.getWorkorderInfoName()!=null){
+                    strViewMngTemp+=taskShowItem.getWorkorderInfoName()+";";
                 }
             }
             if ("待处理任务：".equals(strViewMngTemp)){

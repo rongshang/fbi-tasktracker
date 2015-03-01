@@ -3,7 +3,6 @@
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:p="http://primefaces.org/ui"
-                xmlns:fn="http://java.sun.com/jsp/jstl/functions"
                 template="/templates/ui.xhtml">
 <ui:define name="head">
     <link type="text/css" href="#{request.contextPath}/css/epss.css" rel="stylesheet"/>
@@ -37,15 +36,15 @@
     <h:panelGrid id="pdQry" columns="2" style="width: 100%">
         <h:panelGrid columns="4">
             <p:outputLabel value="工单编号：" for="orderPkId"/>
-            <p:inputText id="orderPkId" value="#{workorderAssignAction.orderId}"
+            <p:inputText id="orderPkId" value="#{workorderAppointAction.orderId}"
                          style="width: 200px"/>
             <p:outputLabel value="工单名称：" for="orderName"/>
-            <p:inputText id="orderName" value="#{workorderAssignAction.orderName}"
+            <p:inputText id="orderName" value="#{workorderAppointAction.orderName}"
                          style="width: 200px"/>
         </h:panelGrid>
         <h:panelGrid columns="3">
             <p:commandButton id="qryBtn" value="查询"
-                             action="#{workorderAssignAction.getWorkorderInfoByIdOrName}"
+                             action="#{workorderAppointAction.getWorkorderInfoByIdOrName}"
                              update="pdt,msgs">
             </p:commandButton>
             <p:commandButton id="resetBtn" value="重置"
@@ -65,7 +64,7 @@
 </p:panel>
 
 <p:dataTable id="pdt" style="width:100%;"
-             value="#{workorderAssignAction.workorderInfos}"
+             value="#{workorderAppointAction.workorderInfos}"
              var="record"
              rowKey="#{record.pkid}"
              selectionMode="single"

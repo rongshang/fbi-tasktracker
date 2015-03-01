@@ -40,12 +40,12 @@
                                              readonly="true" style="background-color:gainsboro;"/>
                                 <p:commandButton value="录入完成"
                                                  rendered="#{workorderItemAction.workorderInfoShow.finishFlag eq '0'? 'true':'false'}"
-                                                 action="#{workorderItemAction.onClickForWorkorderFinish('Pass')}"
+                                                 action="#{workorderItemAction.onClickForWorkorderFinish('Finished')}"
                                                  update="msgs,ppInfo,ppDetail">
                                 </p:commandButton>
                                 <p:commandButton value="重新录入"
                                                  rendered="#{workorderItemAction.workorderInfoShow.finishFlag eq '1'? 'true':'false'}"
-                                                 action="#{workorderItemAction.onClickForWorkorderFinish('Fail')}"
+                                                 action="#{workorderItemAction.onClickForWorkorderFinish('NotFinish')}"
                                                  update="msgs,ppInfo,ppDetail">
                                 </p:commandButton>
                                 <p:commandButton value="导出到EXCEL"

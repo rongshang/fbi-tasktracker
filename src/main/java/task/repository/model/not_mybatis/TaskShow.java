@@ -1,220 +1,157 @@
 package task.repository.model.not_mybatis;
 
 public class TaskShow {
-    private String type;
-    private String pkid;
-    private String stlPkid;
-    private String id;
-    private String name;
-    private String signPartBName;
-    private String periodNo;
-    private String flowStatus;
-    private String flowStatusName;
-    private String flowStatusReason;
-    private String flowStatusReasonName;
-    private String flowStatusRemark;
-    private String strColorType;
-    private String operResFlowStatus;
-    private String operResFlowStatusName;
-    private String isOwnTaskFlowFlag;
-    private String taskDoneFlag;
-    private String taskDoneFlagName;
-    private String taskpkid;
-    private String taskid;
-    private String taskname;
-    private String recer;
-    private String createby;
-    private String createtime;
+    private String rowHeaderText;
+    private String workorderInfoPkid;
+    private String workorderInfoId;
+    private String workorderInfoName;
+    private String sendTaskPartPkid;
+    private String sendTaskPartName;
+    private String recvTaskPartPkid;
+    private String recvTaskPartName;
+    private String recvTaskFinishFlag;
+    private String recvTaskFinishFlagName;
+    private String firstAppointFlag;
+    private String firstAppointFlagName;
+    private String createdby;
+    private String createdTime;
+    private String lastUpdBy;
+    private String lastUpdTime;
+    private String remark;
 
-    public String getType() {
-        return type;
+    public String getRowHeaderText() {
+        return rowHeaderText;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setRowHeaderText(String rowHeaderText) {
+        this.rowHeaderText = rowHeaderText;
     }
 
-    public String getPkid() {
-        return pkid;
+    public String getWorkorderInfoPkid() {
+        return workorderInfoPkid;
     }
 
-    public void setPkid(String pkid) {
-        this.pkid = pkid;
+    public void setWorkorderInfoPkid(String workorderInfoPkid) {
+        this.workorderInfoPkid = workorderInfoPkid;
     }
 
-    public String getId() {
-        return id;
+    public String getWorkorderInfoId() {
+        return workorderInfoId;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setWorkorderInfoId(String workorderInfoId) {
+        this.workorderInfoId = workorderInfoId;
     }
 
-    public String getName() {
-        return name;
+    public String getWorkorderInfoName() {
+        return workorderInfoName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setWorkorderInfoName(String workorderInfoName) {
+        this.workorderInfoName = workorderInfoName;
     }
 
-    public String getSignPartBName() {
-        return signPartBName;
+    public String getSendTaskPartPkid() {
+        return sendTaskPartPkid;
     }
 
-    public void setSignPartBName(String signPartBName) {
-        this.signPartBName = signPartBName;
+    public void setSendTaskPartPkid(String sendTaskPartPkid) {
+        this.sendTaskPartPkid = sendTaskPartPkid;
     }
 
-    public String getPeriodNo() {
-        return periodNo;
+    public String getSendTaskPartName() {
+        return sendTaskPartName;
     }
 
-    public void setPeriodNo(String periodNo) {
-        this.periodNo = periodNo;
+    public void setSendTaskPartName(String sendTaskPartName) {
+        this.sendTaskPartName = sendTaskPartName;
     }
 
-    public String getFlowStatus() {
-        return flowStatus;
+    public String getRecvTaskPartName() {
+        return recvTaskPartName;
     }
 
-    public void setFlowStatus(String flowStatus) {
-        this.flowStatus = flowStatus;
+    public void setRecvTaskPartName(String recvTaskPartName) {
+        this.recvTaskPartName = recvTaskPartName;
     }
 
-    public String getFlowStatusName() {
-        return flowStatusName;
+    public String getRecvTaskPartPkid() {
+        return recvTaskPartPkid;
     }
 
-    public void setFlowStatusName(String flowStatusName) {
-        this.flowStatusName = flowStatusName;
+    public void setRecvTaskPartPkid(String recvTaskPartPkid) {
+        this.recvTaskPartPkid = recvTaskPartPkid;
     }
 
-    public String getFlowStatusReasonName() {
-        return flowStatusReasonName;
+    public String getRecvTaskFinishFlag() {
+        return recvTaskFinishFlag;
     }
 
-    public void setFlowStatusReasonName(String flowStatusReasonName) {
-        this.flowStatusReasonName = flowStatusReasonName;
+    public void setRecvTaskFinishFlag(String recvTaskFinishFlag) {
+        this.recvTaskFinishFlag = recvTaskFinishFlag;
     }
 
-    public String getFlowStatusRemark() {
-        return flowStatusRemark;
+    public String getRecvTaskFinishFlagName() {
+        return recvTaskFinishFlagName;
     }
 
-    public void setFlowStatusRemark(String flowStatusRemark) {
-        this.flowStatusRemark = flowStatusRemark;
+    public void setRecvTaskFinishFlagName(String recvTaskFinishFlagName) {
+        this.recvTaskFinishFlagName = recvTaskFinishFlagName;
     }
 
-    public String getFlowStatusReason() {
-        return flowStatusReason;
+    public String getFirstAppointFlag() {
+        return firstAppointFlag;
     }
 
-    public void setFlowStatusReason(String flowStatusReason) {
-        this.flowStatusReason = flowStatusReason;
+    public void setFirstAppointFlag(String firstAppointFlag) {
+        this.firstAppointFlag = firstAppointFlag;
     }
 
-    public String getStrColorType() {
-        return strColorType;
+    public String getFirstAppointFlagName() {
+        return firstAppointFlagName;
     }
 
-    public void setStrColorType(String strColorType) {
-        this.strColorType = strColorType;
+    public void setFirstAppointFlagName(String firstAppointFlagName) {
+        this.firstAppointFlagName = firstAppointFlagName;
     }
 
-    public String getOperMenuFlowStatus() {
-        return operResFlowStatus;
+    public String getCreatedby() {
+        return createdby;
     }
 
-    public void setOperMenuFlowStatus(String operResFlowStatus) {
-        this.operResFlowStatus = operResFlowStatus;
+    public void setCreatedby(String createdby) {
+        this.createdby = createdby;
     }
 
-    public String getOperMenuFlowStatusName() {
-        return operResFlowStatusName;
+    public String getCreatedTime() {
+        return createdTime;
     }
 
-    public void setOperMenuFlowStatusName(String operResFlowStatusName) {
-        this.operResFlowStatusName = operResFlowStatusName;
+    public void setCreatedTime(String createdTime) {
+        this.createdTime = createdTime;
     }
 
-    public String getIsOwnTaskFlowFlag() {
-        return isOwnTaskFlowFlag;
+    public String getLastUpdBy() {
+        return lastUpdBy;
     }
 
-    public void setIsOwnTaskFlowFlag(String isOwnTaskFlowFlag) {
-        this.isOwnTaskFlowFlag = isOwnTaskFlowFlag;
+    public void setLastUpdBy(String lastUpdBy) {
+        this.lastUpdBy = lastUpdBy;
     }
 
-    public String getTaskDoneFlag() {
-        return taskDoneFlag;
+    public String getLastUpdTime() {
+        return lastUpdTime;
     }
 
-    public void setTaskDoneFlag(String taskDoneFlag) {
-        this.taskDoneFlag = taskDoneFlag;
+    public void setLastUpdTime(String lastUpdTime) {
+        this.lastUpdTime = lastUpdTime;
     }
 
-    public String getTaskDoneFlagName() {
-        return taskDoneFlagName;
+    public String getRemark() {
+        return remark;
     }
 
-    public void setTaskDoneFlagName(String taskDoneFlagName) {
-        this.taskDoneFlagName = taskDoneFlagName;
-    }
-
-    public String getStlPkid() {
-        return stlPkid;
-    }
-
-    public void setStlPkid(String stlPkid) {
-        this.stlPkid = stlPkid;
-    }
-
-    public String getTaskpkid() {
-        return taskpkid;
-    }
-
-    public void setTaskpkid(String taskpkid) {
-        this.taskpkid = taskpkid;
-    }
-
-    public String getTaskid() {
-        return taskid;
-    }
-
-    public void setTaskid(String taskid) {
-        this.taskid = taskid;
-    }
-
-    public String getTaskname() {
-        return taskname;
-    }
-
-    public void setTaskname(String taskname) {
-        this.taskname = taskname;
-    }
-
-    public String getRecer() {
-        return recer;
-    }
-
-    public void setRecer(String recer) {
-        this.recer = recer;
-    }
-
-    public String getCreateby() {
-        return createby;
-    }
-
-    public void setCreateby(String createby) {
-        this.createby = createby;
-    }
-
-    public String getCreatetime() {
-        return createtime;
-    }
-
-    public void setCreatetime(String createtime) {
-        this.createtime = createtime;
+    public void setRemark(String remark) {
+        this.remark = remark;
     }
 }

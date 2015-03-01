@@ -43,15 +43,11 @@ public class WorkorderInfoAction implements Serializable {
     private List<WorkorderInfoShow> workorderInfoShowList;
 
     private String strSubmitType;
-    private TreeNode root;
-    /*任务跟踪显示标志*/
-    private String strTaskTrackerFlag;
 
     @PostConstruct
     public void init() {
         try {
             initData();
-            initTree();
         }catch (Exception e){
             logger.error("初始化失败", e);
         }
@@ -65,42 +61,10 @@ public class WorkorderInfoAction implements Serializable {
             workorderInfoShowUpd = new WorkorderInfoShow();
             workorderInfoShowDel = new WorkorderInfoShow();
             strSubmitType = "";
-            strTaskTrackerFlag="false";
         }catch (Exception e){
             logger.error("初始化失败", e);
             MessageUtil.addError("初始化失败");
         }
-    }
-
-    public void onNodeSelect(SelectEvent event) {
-        TreeNode node = (TreeNode) event.getObject();
-
-        //populate if not already loaded
-        if(node.getChildren().isEmpty()) {
-            //Object label = node.getLabel();
-
-
-        }
-    }
-
-    public void onNodeDblselect(SelectEvent event) {
-        //this.selectedNode = (TreeNode) event.getObject();
-    }
-    public void initTree() {
-        workorderInfoShowAdd = new WorkorderInfoShow();
-        root = new DefaultTreeNode("Root", null);
-        TreeNode node0 = new DefaultTreeNode("Node 0", root);
-
-        TreeNode node00 = new DefaultTreeNode("Node 0.0", node0);
-        TreeNode node01 = new DefaultTreeNode("Node 0.1", node0);
-
-        node00.getChildren().add(new DefaultTreeNode("Node 0.0.0"));
-        node00.getChildren().add(new DefaultTreeNode("Node 0.0.1"));
-        node01.getChildren().add(new DefaultTreeNode("Node 0.1.0"));
-    }
-
-    public TreeNode getRoot() {
-        return root;
     }
 
     public String onQueryAllAction(String strQryMsgOutPara) {
@@ -152,8 +116,6 @@ public class WorkorderInfoAction implements Serializable {
                 workorderInfoShowUpd = (WorkorderInfoShow) BeanUtils.cloneBean(workorderInfoShowPara);
             }else if (strSubmitTypePara.equals("Del")){
                 workorderInfoShowDel = (WorkorderInfoShow) BeanUtils.cloneBean(workorderInfoShowPara);
-            }else if(strSubmitTypePara.equals("Tra")){
-                strTaskTrackerFlag="true";
             }
         } catch (Exception e) {
             MessageUtil.addError(e.getMessage());
@@ -209,10 +171,6 @@ public class WorkorderInfoAction implements Serializable {
             }
         }
         onQueryAllAction("false");
-    }
-
-    public void setRoot(TreeNode root) {
-        this.root = root;
     }
 
     private void addRecordAction(WorkorderInfoShow workorderInfoShowPara) {
@@ -313,12 +271,5 @@ public class WorkorderInfoAction implements Serializable {
         this.workorderInfoShowSel = workorderInfoShowSel;
     }
 
-    public String getStrTaskTrackerFlag() {
-        return strTaskTrackerFlag;
-    }
-
-    public void setStrTaskTrackerFlag(String strTaskTrackerFlag) {
-        this.strTaskTrackerFlag = strTaskTrackerFlag;
-    }
 /*智能字段 End*/
 }

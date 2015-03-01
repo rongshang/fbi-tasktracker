@@ -16,10 +16,6 @@
                     var rtn = dialog("../subPower/subctt/stlPower/subctt_QMng.xhtml?strResPkid=" + strResPkid, arg, sfeatureStl);
                 }else if (infoType == '4') {// 材料结算
                     var rtn = dialog("../subPower/subctt/stlPower/subctt_MMng.xhtml?strResPkid=" + strResPkid, arg, sfeatureStl);
-                }else if (infoType == '6') {// 统计结算
-                    var rtn = dialog("../subPower/tkctt/stlPower/tkctt_StaMng.xhtml?strResPkid=" + strResPkid, arg, sfeatureStl);
-                }else if (infoType == '7') {// 计量结算
-                    var rtn = dialog("../subPower/tkctt/stlPower/tkctt_MeaMng.xhtml?strResPkid=" + strResPkid, arg, sfeatureStl);
                 }
             }
         </script>
@@ -31,7 +27,7 @@
                 <!--列表维护-->
                 <p:panel header="工单任务">
                     <p:treeTable id="pdtRecentlyPower"
-                                 value="#{sendAndRecTaskQryAction.stlPowerRoot}"
+                                 value="#{sendAndRecTaskQryAction.selfTaskTreeRoot}"
                                  var="document"
                                  dynamic="true"
                                  cache="false"
@@ -42,19 +38,19 @@
                                  scrollable="true"
                                  scrollHeight="500">
                         <p:column   style="width:200px;text-align:left;">
-                            <h:outputText value="#{document.id}"/>
+                            <h:outputText value="#{document.rowHeaderText}"/>
                         </p:column>
-                        <p:column headerText="任务编号" style="width:200px;text-align:left;">
-                            <h:outputText value="#{document.taskid}"/>
+                        <p:column headerText="工单编号" style="width:200px;text-align:left;">
+                            <h:outputText value="#{document.workorderInfoId}"/>
                         </p:column>
-                        <p:column headerText="任务名称" style="width:250px;text-align:left;">
-                            <h:outputText value="#{document.taskname}"/>
+                        <p:column headerText="工单名称" style="width:250px;text-align:left;">
+                            <h:outputText value="#{document.workorderInfoName}"/>
                         </p:column>
-                        <p:column headerText="任务录入人" style="width:250px;text-align:left;">
-                            <h:outputText value="#{document.createby}"/>
+                        <p:column headerText="任务接受者" style="width:250px;text-align:left;">
+                            <h:outputText value="#{document.recvTaskPartName}"/>
                         </p:column>
                         <p:column headerText="任务录入时间" style="width:250px;text-align:left;">
-                            <h:outputText value="#{document.createtime}"/>
+                            <h:outputText value="#{document.createdTime}"/>
                         </p:column>
                         <p:column headerText="操作" style=" text-align: center;">
                             <p:commandButton

@@ -28,20 +28,24 @@
         </script>
     </ui:define>
     <ui:define name="content">
-        <h:form id="form" >
+        <h:form id="form">
             <div style="margin:5px;">
                 <p:growl id="msgs" showDetail="true"/>
                 <p:focus for="id"/>
-                <p:panel id ="idWorkorderTracker">
-                     <p:tree value="#{workorderInfoAction.root}"
-                             rendered="#{workorderInfoAction.strTaskTrackerFlag}"
-                             var="node" dynamic="true"
-                             orientation="horizontal">
-                         <p:treeNode >
-                             <h:outputText value="#{node}"/>
-                         </p:treeNode>
-                     </p:tree>
-                </p:panel>
+                <p:fieldset id ="idWorkorderTracker"
+                            legend="任务跟踪显示"
+                            collapsed="#{workorderAppointAction.strTaskTrackerFlag}">
+                    <p:ajax event="toggle"  update="msgs" />
+                    <p:tree value="#{workorderAppointAction.root}"
+                            var="node" dynamic="true"
+                            orientation="horizontal"
+                            highlight="true">
+                        <p:treeNode >
+                            <h:outputText value="#{node.strTreeNodeContent}"/>
+                        </p:treeNode>
+                    </p:tree>
+                </p:fieldset>
+                <!--listener="#{fieldsetView.handleToggle}"-->
                 <p:panel header="工单查询">
                     <h:panelGrid id="pdQry" columns="3" style="width: 100%">
                         <h:panelGrid columns="6">
@@ -102,7 +106,7 @@
                         <p:commandButton icon="ui-icon-refresh"
                                           style="height:18px;width:18px"
                                           update=":form:idWorkorderTracker,:form:msgs"
-                                          action="#{workorderInfoAction.selectRecordAction()}">
+                                          action="#{workorderAppointAction.selectRecordAction(record)}">
                         </p:commandButton>
                         <p:commandButton icon="ui-icon-search"
                                           style="height:18px;width:18px"

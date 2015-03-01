@@ -27,24 +27,24 @@ public class SendAndRecTaskQryAction {
     @ManagedProperty(value = "#{taskService}")
     private TaskService taskService;
 
-    private TreeNode stlPowerRoot;
+    private TreeNode selfTaskTreeRoot;
     private List<TaskShow> taskList;
 
     @PostConstruct
     public void init() {
         //整个任务列表
         try {
-            stlPowerRoot = new DefaultTreeNode("ROOT", null);
+            selfTaskTreeRoot = new DefaultTreeNode("ROOT", null);
             TaskShow taskShow = new TaskShow();
-            taskShow.setId("工单任务");
-            TreeNode stlPower = new DefaultTreeNode(taskShow, stlPowerRoot);
+            taskShow.setRowHeaderText("工单任务");
+            TreeNode stlPower = new DefaultTreeNode(taskShow, selfTaskTreeRoot);
             stlPower.setExpanded(true);
             TaskShow taskShowFront1 = new TaskShow();
-            taskShowFront1.setId("已接收任务");
+            taskShowFront1.setRowHeaderText("已接收任务");
             TreeNode rectask = new DefaultTreeNode(taskShowFront1, stlPower);
             getChildRecNode(rectask);
             TaskShow taskShowFront2 = new TaskShow();
-            taskShowFront2.setId("已发出任务");
+            taskShowFront2.setRowHeaderText("已发出任务");
             TreeNode sendtask = new DefaultTreeNode(taskShowFront2, stlPower);
             getChildSendNode(sendtask);
         } catch (Exception e) {
@@ -53,54 +53,26 @@ public class SendAndRecTaskQryAction {
     }
 
     //获取结算单最末端节点   传入参数父节点
-    private TreeNode getChildSendNode(TreeNode sendtask)
-            throws Exception {
+    private void getChildSendNode(TreeNode sendTask) throws Exception {
         List<TaskShow> taskListSend = taskService.initSendTaskShowList();
-        if (taskListSend.size() > 0) {
-            for (int i = 0; i < taskListSend.size(); i++) {
-                TaskShow taskShow = new TaskShow();
-                TaskShow taskShowTemp = taskListSend.get(i);
-                taskShow.setTaskid(taskShowTemp.getTaskid());
-                taskShow.setTaskname(taskShowTemp.getTaskname());
-                taskShow.setCreateby(taskShowTemp.getCreateby());
-                taskShow.setCreatetime(taskShowTemp.getCreatetime());
-                taskShow.setName(taskShowTemp.getName());
-                taskShow.setRecer(taskShowTemp.getRecer());
-                new DefaultTreeNode(taskShow, sendtask);
-            }
-        } else {
-            return null;
+        for (TaskShow taskShowUnit:taskListSend) {
+            new DefaultTreeNode(taskShowUnit, sendTask);
         }
-        return null;
     }
 
-    private TreeNode getChildRecNode(TreeNode rectask)
-            throws Exception {
+    private void getChildRecNode(TreeNode recTask) throws Exception {
         List<TaskShow> taskListRec = taskService.initRecTaskShowList();
-        if (taskListRec.size() > 0) {
-            for (int i = 0; i < taskListRec.size(); i++) {
-                TaskShow taskShow = new TaskShow();
-                TaskShow taskShowTemp = taskListRec.get(i);
-                taskShow.setTaskid(taskShowTemp.getTaskid());
-                taskShow.setTaskname(taskShowTemp.getTaskname());
-                taskShow.setCreateby(taskShowTemp.getCreateby());
-                taskShow.setCreatetime(taskShowTemp.getCreatetime());
-                taskShow.setName(taskShowTemp.getName());
-                taskShow.setRecer(taskShowTemp.getRecer());
-                new DefaultTreeNode(taskShow, rectask);
-            }
-        } else {
-            return null;
+        for (TaskShow taskShowUnit:taskListRec) {
+            new DefaultTreeNode(taskShowUnit, recTask);
         }
-        return null;
     }
 
-    public TreeNode getStlPowerRoot() {
-        return stlPowerRoot;
+    public TreeNode getSelfTaskTreeRoot() {
+        return selfTaskTreeRoot;
     }
 
-    public void setStlPowerRoot(TreeNode stlPowerRoot) {
-        this.stlPowerRoot = stlPowerRoot;
+    public void setSelfTaskTreeRoot(TreeNode selfTaskTreeRoot) {
+        this.selfTaskTreeRoot = selfTaskTreeRoot;
     }
 
     public TaskService getTaskService() {

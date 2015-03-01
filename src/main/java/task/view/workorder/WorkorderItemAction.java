@@ -195,7 +195,7 @@ public class WorkorderItemAction {
      */
     public void onClickForWorkorderFinish(String strPowerTypePara) {
         try {
-            if (strPowerTypePara.equals("MngPass")) {
+            if (strPowerTypePara.equals("Finished")) {
                 workorderInfoShow.setFinishFlag(EnumInputFinishFlag.INPUT_FINISH_FLAG1.getCode());
                 String strResult= workorderInfoService.updateRecord(workorderInfoShow);
                 if(("0").equals(strResult)){
@@ -203,7 +203,7 @@ public class WorkorderItemAction {
                 }else if(("1").equals(strResult)){
                     MessageUtil.addError("当前数据已被更新，请重新取得！");
                 }
-            } else if (strPowerTypePara.equals("MngFail")) {
+            } else if (strPowerTypePara.equals("NotFinish")) {
                 workorderInfoShow.setFinishFlag(EnumInputFinishFlag.INPUT_FINISH_FLAG0.getCode());
                 String strResult= workorderInfoService.updateRecord(workorderInfoShow);
                 if(("0").equals(strResult)){
