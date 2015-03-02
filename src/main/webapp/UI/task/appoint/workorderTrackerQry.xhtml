@@ -32,20 +32,31 @@
             <div style="margin:5px;">
                 <p:growl id="msgs" showDetail="true"/>
                 <p:focus for="id"/>
-                <p:fieldset id ="idWorkorderTracker"
-                            legend="任务跟踪显示"
-                            collapsed="#{workorderAppointAction.strTaskTrackerFlag}">
-                    <p:ajax event="toggle"  update="msgs" />
-                    <p:tree value="#{workorderAppointAction.root}"
+                <p:panel id ="idWorkorderTracker" header="任务跟踪显示">
+                    <p:tree value="#{workorderTrackerAction.root}"
                             var="node" dynamic="true"
                             orientation="horizontal"
+                            rendered="#{workorderTrackerAction.strTaskTrackerFlag}"
                             highlight="true">
-                        <p:treeNode >
+                        <p:treeNode>
                             <h:outputText value="#{node.strTreeNodeContent}"/>
                         </p:treeNode>
                     </p:tree>
-                </p:fieldset>
-                <!--listener="#{fieldsetView.handleToggle}"-->
+                </p:panel>
+                <!--<p:fieldset
+                            id ="idWorkorderTracker"
+                            legend="任务跟踪显示"
+                            collapsed="#{workorderTrackerAction.strTaskTrackerFlag}">
+                    <p:ajax event="toggle"  update="msgs" />
+                    <p:tree value="#{workorderTrackerAction.root}"
+                            var="node" dynamic="true"
+                            orientation="horizontal"
+                            highlight="true">
+                        <p:treeNode>
+                            <h:outputText value="#{node.strTreeNodeContent}"/>
+                        </p:treeNode>
+                    </p:tree>
+                </p:fieldset>-->
                 <p:panel header="工单查询">
                     <h:panelGrid id="pdQry" columns="3" style="width: 100%">
                         <h:panelGrid columns="6">
@@ -109,7 +120,7 @@
                         <p:commandButton icon="ui-icon-refresh"
                                           style="height:18px;width:18px"
                                           update=":form:idWorkorderTracker,:form:msgs"
-                                          action="#{workorderAppointAction.selectRecordAction(record)}">
+                                          action="#{workorderTrackerAction.selectRecordAction(record)}">
                         </p:commandButton>
                         <p:commandButton icon="ui-icon-search"
                                           style="height:18px;width:18px"
