@@ -1,7 +1,9 @@
 package task.view.deptOper;
 
+import skyline.security.DESHelper;
 import task.repository.model.Dept;
 import task.repository.model.Oper;
+import task.repository.model.RsTidKeys;
 import task.repository.model.not_mybatis.DeptOperShow;
 import task.service.DeptOperService;
 import jxl.write.WriteException;
@@ -15,6 +17,7 @@ import org.slf4j.LoggerFactory;
 import skyline.security.MD5Helper;
 import skyline.util.JxlsManager;
 import skyline.util.MessageUtil;
+import task.service.RsTidKeysService;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
@@ -38,6 +41,9 @@ public class DeptOperAction implements Serializable {
     private static final Logger logger = LoggerFactory.getLogger(DeptOperAction.class);
     @ManagedProperty(value = "#{deptOperService}")
     private DeptOperService deptOperService;
+    @ManagedProperty(value = "#{rsTidKeysService}")
+    private RsTidKeysService rsTidKeysService;
+
     private TreeNode deptOperRoot;
     private TreeNode currentSelectedNode;
     private String strSubmitType;
@@ -284,14 +290,23 @@ public class DeptOperAction implements Serializable {
                         return;
                     }
                     //String md5=MD5Helper.getMD5String(tidkeysService.getTidkeysList("126").getKey());
-                    int intUsersCounts=10000;
-                    Oper operTemp=new Oper();
-                    int intExistRecordCountsInOperDb=deptOperService.existRecordCountsInOperDb(operTemp);
-                    if (intExistRecordCountsInOperDb>=intUsersCounts) {
-                        MessageUtil.addError("系统限制用户数["+intUsersCounts+"]，实际用户数["
-                                +intExistRecordCountsInOperDb+"],您将无法继续添加用户！");
-                        return;
+                    RsTidKeys rsTidKeysPara=new RsTidKeys();
+                    rsTidKeysPara.setTid("126");
+                    List<RsTidKeys> rsTidKeysList=rsTidKeysService.getRsTidKeysList(rsTidKeysPara);
+                    if(rsTidKeysList.size()>0){
+                        RsTidKeys rsTidKeysTemp=rsTidKeysList.get(0);
+                        DESHelper dESHelper = new DESHelper(rsTidKeysTemp.getEsKey());
+                        String strOperCounts=dESHelper.decrypt(rsTidKeysTemp.getOperCounts());
+                        int intUsersCounts=Integer.parseInt(strOperCounts);
+                        Oper operTemp=new Oper();
+                        int intExistRecordCountsInOperDb=deptOperService.existRecordCountsInOperDb(operTemp);
+                        if (intExistRecordCountsInOperDb>=intUsersCounts) {
+                            MessageUtil.addError("系统限制用户数["+intUsersCounts+"]，实际用户数["
+                                    +intExistRecordCountsInOperDb+"],您将无法继续添加用户！");
+                            return;
+                        }
                     }
+
                     if (deptOperService.existRecordCountsInOperDb(operAdd)>0) {
                         MessageUtil.addError("该编号用户已存在，请重新录入！");
                         return;
@@ -489,4 +504,11 @@ public class DeptOperAction implements Serializable {
         this.beansMap = beansMap;
     }
 
+    public RsTidKeysService getRsTidKeysService() {
+        return rsTidKeysService;
+    }
+
+    public void setRsTidKeysService(RsTidKeysService rsTidKeysService) {
+        this.rsTidKeysService = rsTidKeysService;
+    }
 }
