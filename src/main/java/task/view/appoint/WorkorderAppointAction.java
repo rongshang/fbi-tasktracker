@@ -7,15 +7,19 @@ import org.primefaces.model.TreeNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import skyline.util.MessageUtil;
+import task.common.enums.EnumArchivedFlag;
 import task.common.enums.EnumFirstAppointFlag;
 import task.common.enums.EnumInputFinishFlag;
 import task.repository.model.WorkorderAppoint;
 import task.repository.model.WorkorderInfo;
+import task.repository.model.not_mybatis.DeptOperShow;
 import task.repository.model.not_mybatis.WorkorderAppointShow;
 import task.repository.model.not_mybatis.WorkorderInfoShow;
 import task.service.WorkorderAppointService;
+import task.service.WorkorderInfoService;
 
 
+import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
@@ -34,20 +38,21 @@ import java.util.List;
 public class WorkorderAppointAction {
 
     private static final Logger logger = LoggerFactory.getLogger(WorkorderAppointAction.class);
-    //工单pkid
-    private String orderId;
-    //工单名
-    private String orderName;
-    //workorderAppointMng.xhtml(工单指派页面)选中多条数据
+    private WorkorderInfoShow workorderInfoShow;
+
+    //workorderAppointOperMng.xhtml(工单指派页面)选中多条数据
     private WorkorderInfo[] selectedWorkorderInfo;
 
-    //workorderAppointMng.xhtml(工单指派页面)显示用
+    //workorderAppointOperMng.xhtml(工单指派页面)显示用
     List<WorkorderInfo> workorderInfos = null;
 
 
     @ManagedProperty(value = "#{workorderAppointService}")
     private WorkorderAppointService workorderAppointService;
 
+    @ManagedProperty(value = "#{workorderInfoService}")
+    private WorkorderInfoService workorderInfoService;
+    //页面上的树  hu 和 han  共用
     private TreeNode root;
     /*任务跟踪显示标志*/
     private String strTaskTrackerFlag;
@@ -56,19 +61,56 @@ public class WorkorderAppointAction {
         strTaskTrackerFlag="true";
     }
 
+
+    /**
+     * atuo: huzy
+     */
+    @PostConstruct
+    public void initTree() {
+        workorderInfoShow = new WorkorderInfoShow();
+        root = new DefaultTreeNode("Root",null);
+        List<DeptOperShow> deptOperShowList = workorderAppointService.getDeptOper();
+        DeptOperShow  deptOperShow = new DeptOperShow();
+        deptOperShow.setDeptId("######");
+        TreeNode node = null;
+        for (DeptOperShow deptOperShowlist :deptOperShowList ){
+            if(!deptOperShowlist.getDeptId().equals(deptOperShow.getDeptId())){
+                node = new DefaultTreeNode(deptOperShowlist.getDeptName(), root);
+                new DefaultTreeNode(deptOperShowlist.getOperName(), node);
+            }else{
+                new DefaultTreeNode(deptOperShowlist.getOperName(), node);
+            }
+            deptOperShow = new DeptOperShow();
+            deptOperShow.setDeptId(deptOperShowlist.getDeptId());
+        }
+    }
+
     /***
+     * atuo: huzy
      * 根据工单ID或者工单名获取该条件的工单信息
      * param:orderId(工单id),orderName(工单名)
      * @return List<WorkorderInfo>
      */
     public void getWorkorderInfoByIdOrName(){
         try{
-            //System.out.print("========1111111111=========");
-            //workorderInfos = workorderAssignService.getWorkorderInfoByIdOrName(orderId,orderName);
+            //1  录入完成
+            workorderInfoShow.setFinishFlag(EnumArchivedFlag.ARCHIVED_FLAG1.getCode());
+            //0 未删除
+            workorderInfoShow.setArchivedFlag(EnumArchivedFlag.ARCHIVED_FLAG0.getCode());
+            workorderInfos = workorderInfoService.getWorkorderInfoListByModelShow(workorderInfoShow);
         }catch (Exception e){
             logger.info("WorkorderAssignAction类中的getWorkorderInfoByPkIdOrName异常:"+e.toString());
         }
     }
+
+    /**
+     * atuo: huzy
+     * @return String 路劲
+     */
+    public String getURL(){
+        return "workorderAppointOperQry";
+    }
+
 
     public void initTree(WorkorderInfoShow workorderInfoShowPara) {
         WorkorderAppointShow workorderAppointShowPara=new WorkorderAppointShow();
@@ -110,7 +152,7 @@ public class WorkorderAppointAction {
             initTree(workorderInfoShowPara);
         } catch (Exception e) {
             MessageUtil.addError(e.getMessage());
-            logger.info("WorkorderAssignAction类中的selectRecordAction异常:"+e.toString());
+            logger.info("WorkorderAppointAction类中的selectRecordAction异常:"+e.toString());
         }
     }
     public void onNodeSelect(SelectEvent event) {
@@ -135,21 +177,7 @@ public class WorkorderAppointAction {
         this.root = root;
     }
 
-    public String getOrderId() {
-        return orderId;
-    }
 
-    public void setOrderId(String orderPkId) {
-        this.orderId = orderId;
-    }
-
-    public String getOrderName() {
-        return orderName;
-    }
-
-    public void setOrderName(String orderName) {
-        this.orderName = orderName;
-    }
 
     public List<WorkorderInfo> getWorkorderInfos() {
         return workorderInfos;
@@ -161,6 +189,14 @@ public class WorkorderAppointAction {
 
     public void setWorkorderAppointService(WorkorderAppointService workorderAppointService) {
         this.workorderAppointService = workorderAppointService;
+    }
+
+    public WorkorderInfoService getWorkorderInfoService() {
+        return workorderInfoService;
+    }
+
+    public void setWorkorderInfoService(WorkorderInfoService workorderInfoService) {
+        this.workorderInfoService = workorderInfoService;
     }
 
     public WorkorderInfo[] getSelectedWorkorderInfo() {
@@ -178,4 +214,13 @@ public class WorkorderAppointAction {
     public void setStrTaskTrackerFlag(String strTaskTrackerFlag) {
         this.strTaskTrackerFlag = strTaskTrackerFlag;
     }
+
+    public WorkorderInfoShow getWorkorderInfoShow() {
+        return workorderInfoShow;
+    }
+
+    public void setWorkorderInfoShow(WorkorderInfoShow workorderInfoShow) {
+        this.workorderInfoShow = workorderInfoShow;
+    }
+
 }

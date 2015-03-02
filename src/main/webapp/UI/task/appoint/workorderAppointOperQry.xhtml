@@ -1,0 +1,90 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+                template="/templates/ui.xhtml">
+<ui:define name="head">
+    <link type="text/css" href="#{request.contextPath}/css/epss.css" rel="stylesheet"/>
+    <script type="text/javascript" src="#{request.contextPath}/js/pub.js"/>
+    <script type="text/javascript" language="javascript">
+        document.onkeydown = function TabReplace() {
+            if (event.keyCode == 13) {
+                if (event.srcElement.tagName != 'BUTTON')
+                    event.keyCode = 9;
+                else
+                    event.srcElement.click();
+            }
+        }
+
+    </script>
+</ui:define>
+<ui:define name="content">
+<h:form id="form">
+<div style="margin:5px;">
+<p:growl id="msgs" showDetail="true"/>
+<p:focus for="orderPkId"/>
+<p:panel>
+    <h:panelGrid id="pdQry" columns="2" style="width: 100%">
+        <h:panelGrid columns="4">
+            <p:outputLabel value="工单编号：" for="orderPkId"/>
+            <p:inputText id="orderPkId" value="#{workorderAppointAction.workorderInfoShow.id}"
+                         style="width: 200px"/>
+            <p:outputLabel value="工单名称：" for="orderName"/>
+            <p:inputText id="orderName" value="#{workorderAppointAction.workorderInfoShow.name}"
+                         style="width: 200px"/>
+        </h:panelGrid>
+        <h:panelGrid columns="3">
+            <p:commandButton id="qryBtn" value="查询"
+                             action="#{workorderAppointAction.getWorkorderInfoByIdOrName}"
+                             update="pdt,msgs">
+            </p:commandButton>
+            <p:commandButton id="resetBtn" value="重置"
+                             type="reset"
+                             update="pdQry,msgs">
+            </p:commandButton>
+            <p:ajaxStatus style="width:16px;height:16px;">
+                <f:facet name="start">
+                    <h:graphicImage value="/images/ajaxloading.gif"/>
+                </f:facet>
+                <f:facet name="complete">
+                    <h:outputText value=""/>
+                </f:facet>
+            </p:ajaxStatus>
+        </h:panelGrid>
+    </h:panelGrid>
+</p:panel>
+
+<p:panel>
+    <h:panelGrid id="pgall" columns="4">
+        <h:panelGrid id="pg1" columns="2">
+            <h3>指派人</h3>
+            <p:tree value="#{workorderAppointAction.root}" var="node" style="height:220px;overflow: auto">
+                <p:treeNode>
+                    <h:outputText value="#{node}" />
+                </p:treeNode>
+            </p:tree>
+        </h:panelGrid>
+        <h:panelGrid id="pg2" columns="2">
+            <h3>被指派人</h3>
+
+            <p:tree value="#{workorderAppointAction.root}" style="height:220px;overflow: auto"  var="node">
+                <p:treeNode>
+                    <h:outputText value="#{node}" />
+                </p:treeNode>
+            </p:tree>
+
+        </h:panelGrid>
+    </h:panelGrid>
+</p:panel>
+
+
+<h:dataTable id="pdt">
+</h:dataTable>
+
+
+</div>
+</h:form>
+</ui:define>
+</ui:composition>
