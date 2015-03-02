@@ -13,7 +13,7 @@ import task.repository.dao.not_mybatis.MyDeptAndOperMapper;
 import task.repository.model.WorkorderAppoint;
 import task.repository.model.WorkorderAppointExample;
 import task.repository.model.not_mybatis.WorkorderAppointShow;
-
+import task.repository.model.not_mybatis.DeptOperShow;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -133,4 +133,50 @@ public class WorkorderAppointService {
         return workorderAppointShowTemp;
     }
     
+	
+    /***
+     * atuo: huzy
+     * 根据工单ID或者工单名获取该条件的工单信息
+     * param:orderPkId(工单id),orderName(工单名)
+     * @return List<WorkorderInfo>
+     * huzy注释掉
+     */
+//    public List<WorkorderInfo> getWorkorderInfoByIdOrName(WorkorderInfo workorderInfo){
+//        List<WorkorderInfo> workorderInfos = null;
+//        try{
+//            WorkorderInfoExample example = new WorkorderInfoExample();
+//            example.createCriteria().andArchivedFlagEqualTo(EnumArchivedFlag.ARCHIVED_FLAG0.getCode()); //0 没有删除
+//            example.createCriteria().andFinishFlagEqualTo(EnumArchivedFlag.ARCHIVED_FLAG1.getCode());//1 以录入完成
+//            WorkorderInfoExample.Criteria criteria = example.createCriteria();
+//            if(StringUtils.isNotBlank(workorderInfo.getId())){
+//                criteria.andIdLike("%" + workorderInfo.getId() + "%");
+//            }
+//            if(StringUtils.isNotBlank(workorderInfo.getName())){
+//                criteria.andNameLike("%" + workorderInfo.getName() + "%");
+//            }
+//            example.setOrderByClause("ID ASC") ;
+//            workorderInfos = workorderInfoMapper.selectByExample(example);
+//        }catch (Exception e){
+//            logger.info("WorkorderAssignService类中的getWorkorderInfoByPkIdOrName异常:"+e.toString());
+//        }
+//        return workorderInfos;
+//    }
+
+    /***
+     * atuo: huzy
+     * 查询每个部门下有哪些人  页面中工单指派时用
+     * @return List<DeptOperShow>
+     */
+    public List<DeptOperShow> getDeptOper(){
+        List<DeptOperShow> deptOperShows = null;
+        try{
+            deptOperShows = myDeptAndOperMapper.getDeptOper();
+        }catch (Exception e){
+            logger.info("WorkorderAssignService类中的getDeptOper异常:"+e.toString());
+        }
+        return deptOperShows;
+    }
+
+	
+	
 }

@@ -40,6 +40,8 @@ public class WorkorderAppointAction {
     private static final Logger logger = LoggerFactory.getLogger(WorkorderAppointAction.class);
     private WorkorderInfoShow workorderInfoShow;
 
+    private WorkorderInfo workorderInfo;
+
     //workorderAppointOperMng.xhtml(工单指派页面)选中多条数据
     private WorkorderInfo[] selectedWorkorderInfo;
 
@@ -76,9 +78,11 @@ public class WorkorderAppointAction {
         for (DeptOperShow deptOperShowlist :deptOperShowList ){
             if(!deptOperShowlist.getDeptId().equals(deptOperShow.getDeptId())){
                 node = new DefaultTreeNode(deptOperShowlist.getDeptName(), root);
-                new DefaultTreeNode(deptOperShowlist.getOperName(), node);
+                //用户的pkid
+                new DefaultTreeNode(deptOperShowlist.getOperName()+"||"+deptOperShowlist.getPkid(),node);
             }else{
-                new DefaultTreeNode(deptOperShowlist.getOperName(), node);
+                //用户的pkid
+                new DefaultTreeNode(deptOperShowlist.getOperName()+"||"+deptOperShowlist.getPkid(),node);
             }
             deptOperShow = new DeptOperShow();
             deptOperShow.setDeptId(deptOperShowlist.getDeptId());
@@ -105,7 +109,7 @@ public class WorkorderAppointAction {
 
     /**
      * atuo: huzy
-     * @return String 路劲
+     * @return String 路径
      */
     public String getURL(){
         return "workorderAppointOperQry";
@@ -223,4 +227,11 @@ public class WorkorderAppointAction {
         this.workorderInfoShow = workorderInfoShow;
     }
 
+    public WorkorderInfo getWorkorderInfo() {
+        return workorderInfo;
+    }
+
+    public void setWorkorderInfo(WorkorderInfo workorderInfo) {
+        this.workorderInfo = workorderInfo;
+    }
 }

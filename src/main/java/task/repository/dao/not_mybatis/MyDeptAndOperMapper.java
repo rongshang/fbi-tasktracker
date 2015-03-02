@@ -57,4 +57,11 @@ public interface MyDeptAndOperMapper {
             "       PKID=#{operPkidPara} ")
     String getUserName(@Param("operPkidPara") String operPkidPara);
 
+    /***
+     * atuo: huzy
+     * 查询每个部门下有哪些人  页面中工单指派时用
+     * @return List<DeptOperShow>
+     */
+    @Select("select  d.name deptName, d.pkid deptId,o.name operName,o.pkid from dept d left join oper o on o.dept_pkid = d.pkid where ENABLED='1' ")
+    List<DeptOperShow> getDeptOper();
 }

@@ -6,7 +6,7 @@
                 xmlns:fn="http://java.sun.com/jsp/jstl/functions"
                 template="/templates/ui.xhtml">
 <ui:define name="head">
-    <link type="text/css" href="#{request.contextPath}/css/epss.css" rel="stylesheet"/>
+    <link type="text/css" href="#{request.contextPath}/css/task.css" rel="stylesheet"/>
     <script type="text/javascript" src="#{request.contextPath}/js/pub.js"/>
     <script type="text/javascript" language="javascript">
         document.onkeydown = function TabReplace() {
@@ -18,8 +18,14 @@
             }
         }
 
+        function appointUser(userid,obj){
+            alert(userid);
+            var html = $(obj).html();
+            alert(html);
+        }
     </script>
 </ui:define>
+
 <ui:define name="content">
 <h:form id="form">
 <div style="margin:5px;">
@@ -29,10 +35,10 @@
     <h:panelGrid id="pdQry" columns="2" style="width: 100%">
         <h:panelGrid columns="4">
             <p:outputLabel value="工单编号：" for="orderPkId"/>
-            <p:inputText id="orderPkId" value="#{workorderAppointAction.workorderInfoShow.id}"
+            <p:inputText id="orderPkId" value="#{workorderAppointAction.workorderInfo.id}"
                          style="width: 200px"/>
             <p:outputLabel value="工单名称：" for="orderName"/>
-            <p:inputText id="orderName" value="#{workorderAppointAction.workorderInfoShow.name}"
+            <p:inputText id="orderName" value="#{workorderAppointAction.workorderInfo.name}"
                          style="width: 200px"/>
         </h:panelGrid>
         <h:panelGrid columns="3">
@@ -62,20 +68,19 @@
             <h3>指派人</h3>
             <p:tree value="#{workorderAppointAction.root}" var="node" style="height:220px;overflow: auto">
                 <p:treeNode>
-                    <h:outputText value="#{node}" />
+                    <h:outputLabel ondblclick="appointUser('#{fn:substring(node,fn:indexOf(node,'||')+2,fn:length(node))}',this)">#{fn:substring(node,0,fn:indexOf(node,'||'))}</h:outputLabel>
                 </p:treeNode>
             </p:tree>
         </h:panelGrid>
         <h:panelGrid id="pg2" columns="2">
             <h3>被指派人</h3>
-
             <p:tree value="#{workorderAppointAction.root}" style="height:220px;overflow: auto"  var="node">
                 <p:treeNode>
-                    <h:outputText value="#{node}" />
+                    <h:outputLabel ondblclick="appointUser('#{fn:substring(node,fn:indexOf(node,'||')+2,fn:length(node))}',this)">#{fn:substring(node,0,fn:indexOf(node,'||'))}</h:outputLabel>
                 </p:treeNode>
             </p:tree>
-
         </h:panelGrid>
+
     </h:panelGrid>
 </p:panel>
 

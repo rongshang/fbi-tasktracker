@@ -6,7 +6,7 @@
                 xmlns:fn="http://java.sun.com/jsp/jstl/functions"
                 template="/templates/ui.xhtml">
     <ui:define name="head">
-        <link type="text/css" href="#{request.contextPath}/css/epss.css" rel="stylesheet"/>
+        <link type="text/css" href="#{request.contextPath}/css/task.css" rel="stylesheet"/>
         <script type="text/javascript" src="#{request.contextPath}/js/pub.js"/>
         <script type="text/javascript" language="javascript">
             document.onkeydown = function TabReplace() {
@@ -73,7 +73,6 @@
                              widgetVar="DtInitTkcttList"
                              scrollable="true">
                     <p:column headerText="操作" style="width:60px;text-align: center;">
-                        <!--onclick="actSelect('#{record.pkid}')"-->
                         <p:commandButton icon="ui-icon-triangle-1-e"
                                          style="height:18px;width:18px" ajax="false" action="#{workorderAppointAction.getURL}">
                         </p:commandButton>
@@ -105,14 +104,8 @@
                     <p:column headerText="备注" style="width:120px;text-align:left">
                         <h:outputText value="#{record.remark}"/>
                     </p:column>
-                    <p:column headerText="创建人ID" style="width:120px;text-align:left">
-                        <h:outputText value="#{record.createdBy}"/>
-                    </p:column>
                     <p:column headerText="创建时间" style="width:120px;text-align:left">
                         <h:outputText value="#{record.createdTime}"/>
-                    </p:column>
-                    <p:column headerText="最近修改人ID" style="width:120px;text-align:left">
-                        <h:outputText value="#{record.lastUpdBy}"/>
                     </p:column>
                     <p:column headerText="最近修改时间" style="width:120px;text-align:left">
                         <h:outputText value="#{record.lastUpdTime}"/>
@@ -122,9 +115,6 @@
                     </p:column>
                     <p:column headerText="是否录入完成" style="width:120px;text-align:left">
                         <h:outputText value="#{record.finishFlag==0?'未完成':'已完成'}"/>
-                    </p:column>
-                    <p:column headerText="所属ID" style="width:120px;text-align:left">
-                        <h:outputText value="#{record.tid}"/>
                     </p:column>
                 </p:dataTable>
 
