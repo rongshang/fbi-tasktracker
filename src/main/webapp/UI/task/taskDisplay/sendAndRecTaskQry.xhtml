@@ -32,9 +32,9 @@
                                  dynamic="true"
                                  cache="false"
                                  emptyMessage="数据记录为空..."
-                                 rowStyleClass="#{document.taskname eq '工单任务' ? 'rowGreenyellowStyle'
-                                                      :document.taskname eq '已接收任务' ? 'rowGreenyellowStyle'
-                                                      :document.taskname eq '已发出任务' ? 'rowLavenderStyle' :null}"
+                                 rowStyleClass="#{document.rowHeaderText eq '工单任务' ? 'rowGreenyellowStyle'
+                                                    :document.rowHeaderText eq '已接收任务' ? 'rowGreenyellowStyle'
+                                                    :document.rowHeaderText eq '已发出任务' ? 'rowLavenderStyle' :null}"
                                  scrollable="true"
                                  scrollHeight="500">
                         <p:column   style="width:200px;text-align:left;">
@@ -56,10 +56,10 @@
                             <p:commandButton
                                     icon="ui-icon-triangle-1-e"
                                     style="height:16px;width:30px;"
-                                    rendered="#{document.id eq '工单任务' ? 'false':
-                                                  document.id eq '已接收任务' ? 'false':
-                                                  document.id eq '已发出任务' ? 'false':'true'}"
-                                    onclick="actSelectStlPower('#{document.type}','#{document.pkid}')">
+                                    rendered="#{document.rowHeaderText eq '工单任务' ? 'false':
+                                                  document.rowHeaderText eq '已接收任务' ? 'false':
+                                                  document.rowHeaderText eq '已发出任务' ? 'false':'true'}"
+                                    onclick="actSelectStlPower('#{document.workorderInfoPkid}')">
                             </p:commandButton>
                         </p:column>
                     </p:treeTable>

@@ -38,10 +38,10 @@ public class WorkorderAppointAction {
     private String orderId;
     //工单名
     private String orderName;
-    //workOrderAssignMng.xhtml(工单指派页面)选中多条数据
+    //workorderAppointMng.xhtml(工单指派页面)选中多条数据
     private WorkorderInfo[] selectedWorkorderInfo;
 
-    //workOrderAssignMng.xhtml(工单指派页面)显示用
+    //workorderAppointMng.xhtml(工单指派页面)显示用
     List<WorkorderInfo> workorderInfos = null;
 
 
