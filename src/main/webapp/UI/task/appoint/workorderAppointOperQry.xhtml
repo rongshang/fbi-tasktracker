@@ -33,23 +33,13 @@
 <p:focus for="orderPkId"/>
 <p:panel>
     <h:panelGrid id="pdQry" columns="2" style="width: 100%">
-        <h:panelGrid columns="4">
+        <h:panelGrid columns="5">
             <p:outputLabel value="工单编号：" for="orderPkId"/>
             <p:inputText id="orderPkId" value="#{workorderAppointAction.workorderInfo.id}"
                          style="width: 200px"/>
             <p:outputLabel value="工单名称：" for="orderName"/>
             <p:inputText id="orderName" value="#{workorderAppointAction.workorderInfo.name}"
                          style="width: 200px"/>
-        </h:panelGrid>
-        <h:panelGrid columns="3">
-            <p:commandButton id="qryBtn" value="查询"
-                             action="#{workorderAppointAction.getWorkorderInfoByIdOrName}"
-                             update="pdt,msgs">
-            </p:commandButton>
-            <p:commandButton id="resetBtn" value="重置"
-                             type="reset"
-                             update="pdQry,msgs">
-            </p:commandButton>
             <p:ajaxStatus style="width:16px;height:16px;">
                 <f:facet name="start">
                     <h:graphicImage value="/images/ajaxloading.gif"/>
@@ -66,7 +56,7 @@
     <h:panelGrid id="pgall" columns="4">
         <h:panelGrid id="pg1" columns="2">
             <h3>指派人</h3>
-            <p:tree value="#{workorderAppointAction.root}" var="node" style="height:220px;overflow: auto">
+            <p:tree value="#{workorderAppointAction.deptOperShowRoot}" var="node" style="height:220px;overflow: auto">
                 <p:treeNode>
                     <h:outputLabel ondblclick="appointUser('#{fn:substring(node,fn:indexOf(node,'||')+2,fn:length(node))}',this)">#{fn:substring(node,0,fn:indexOf(node,'||'))}</h:outputLabel>
                 </p:treeNode>
@@ -74,13 +64,12 @@
         </h:panelGrid>
         <h:panelGrid id="pg2" columns="2">
             <h3>被指派人</h3>
-            <p:tree value="#{workorderAppointAction.root}" style="height:220px;overflow: auto"  var="node">
+            <p:tree value="#{workorderAppointAction.deptOperShowRoot}" style="height:220px;overflow: auto"  var="node">
                 <p:treeNode>
                     <h:outputLabel ondblclick="appointUser('#{fn:substring(node,fn:indexOf(node,'||')+2,fn:length(node))}',this)">#{fn:substring(node,0,fn:indexOf(node,'||'))}</h:outputLabel>
                 </p:treeNode>
             </p:tree>
         </h:panelGrid>
-
     </h:panelGrid>
 </p:panel>
 

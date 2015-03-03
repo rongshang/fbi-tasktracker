@@ -15,6 +15,7 @@ import task.repository.model.WorkorderInfo;
 import task.repository.model.not_mybatis.DeptOperShow;
 import task.repository.model.not_mybatis.WorkorderAppointShow;
 import task.repository.model.not_mybatis.WorkorderInfoShow;
+import task.service.DeptOperService;
 import task.service.WorkorderAppointService;
 import task.service.WorkorderInfoService;
 
@@ -36,8 +37,15 @@ import java.util.List;
 @ManagedBean
 @ViewScoped
 public class WorkorderAppointAction {
-
     private static final Logger logger = LoggerFactory.getLogger(WorkorderAppointAction.class);
+    @ManagedProperty(value = "#{workorderAppointService}")
+    private WorkorderAppointService workorderAppointService;
+    @ManagedProperty(value = "#{workorderInfoService}")
+    private WorkorderInfoService workorderInfoService;
+    @ManagedProperty(value = "#{deptOperService}")
+    private DeptOperService deptOperService;
+
+    private TreeNode deptOperShowRoot;
     private WorkorderInfoShow workorderInfoShow;
 
     private WorkorderInfo workorderInfo;
@@ -48,14 +56,6 @@ public class WorkorderAppointAction {
     //workorderAppointOperMng.xhtml(工单指派页面)显示用
     List<WorkorderInfo> workorderInfos = null;
 
-
-    @ManagedProperty(value = "#{workorderAppointService}")
-    private WorkorderAppointService workorderAppointService;
-
-    @ManagedProperty(value = "#{workorderInfoService}")
-    private WorkorderInfoService workorderInfoService;
-    //页面上的树  hu 和 han  共用
-    private TreeNode root;
     /*任务跟踪显示标志*/
     private String strTaskTrackerFlag;
 
@@ -63,30 +63,16 @@ public class WorkorderAppointAction {
         strTaskTrackerFlag="true";
     }
 
-
     /**
      * atuo: huzy
      */
     @PostConstruct
     public void initTree() {
-        workorderInfoShow = new WorkorderInfoShow();
-        root = new DefaultTreeNode("Root",null);
-        List<DeptOperShow> deptOperShowList = workorderAppointService.getDeptOper();
-        DeptOperShow  deptOperShow = new DeptOperShow();
-        deptOperShow.setDeptId("######");
-        TreeNode node = null;
-        for (DeptOperShow deptOperShowlist :deptOperShowList ){
-            if(!deptOperShowlist.getDeptId().equals(deptOperShow.getDeptId())){
-                node = new DefaultTreeNode(deptOperShowlist.getDeptName(), root);
-                //用户的pkid
-                new DefaultTreeNode(deptOperShowlist.getOperName()+"||"+deptOperShowlist.getPkid(),node);
-            }else{
-                //用户的pkid
-                new DefaultTreeNode(deptOperShowlist.getOperName()+"||"+deptOperShowlist.getPkid(),node);
-            }
-            deptOperShow = new DeptOperShow();
-            deptOperShow.setDeptId(deptOperShowlist.getDeptId());
-        }
+        DeptOperShow deptOperShowTemp = new DeptOperShow();
+        deptOperShowTemp.setPkid("ROOT");
+        deptOperShowTemp.setName("机构人员信息");
+        deptOperShowTemp.setType("0");
+        deptOperShowRoot=deptOperService.getDeptOperTreeNode(deptOperShowTemp);
     }
 
     /***
@@ -115,73 +101,17 @@ public class WorkorderAppointAction {
         return "workorderAppointOperQry";
     }
 
-
-    public void initTree(WorkorderInfoShow workorderInfoShowPara) {
-        WorkorderAppointShow workorderAppointShowPara=new WorkorderAppointShow();
-        workorderAppointShowPara.setInfoPkid(workorderInfoShowPara.getPkid());
-        workorderAppointShowPara.setFirstAppointFlag(EnumFirstAppointFlag.FIRST_APPOINT_FLAG0.getCode());
-        List<WorkorderAppointShow> workorderAppointShowListTemp=
-                workorderAppointService.getWorkorderAppointShowListByModelShow(workorderAppointShowPara);
-        if(workorderAppointShowListTemp!=null&&workorderAppointShowListTemp.size()>0) {
-            WorkorderAppointShow workorderAppointShowTemp=workorderAppointShowListTemp.get(0);
-            WorkorderAppointShow workorderAppointShow_TreeNode=new WorkorderAppointShow();
-            workorderAppointShow_TreeNode.setRecvTaskPartPkid(workorderAppointShowTemp.getSendTaskPartPkid());
-            workorderAppointShow_TreeNode.setRecvTaskPartName(workorderAppointShowTemp.getSendTaskPartName());
-            workorderAppointShow_TreeNode.setStrTreeNodeContent(workorderAppointShow_TreeNode.getRecvTaskPartName());
-            root = new DefaultTreeNode(workorderAppointShow_TreeNode, null);
-            root.setExpanded(true);
-            recursiveTreeNode(workorderInfoShowPara.getPkid(),workorderAppointShow_TreeNode.getRecvTaskPartPkid(),root);
-
-            strTaskTrackerFlag="false";
-        }
-    }
-    /*根据数据库中层级关系数据列表得到总包合同*/
-    private void recursiveTreeNode(String strInfoPkidPara,String strSendTaskPartPkidPara,TreeNode parentNode){
-        WorkorderAppointShow workorderAppointShowPara = new WorkorderAppointShow();
-        workorderAppointShowPara.setInfoPkid(strInfoPkidPara);
-        workorderAppointShowPara.setSendTaskPartPkid(strSendTaskPartPkidPara);
-        List<WorkorderAppointShow> workorderAppointShowListTemp =
-                workorderAppointService.getWorkorderAppointShowListByModelShow(workorderAppointShowPara);
-        for (WorkorderAppointShow workorderAppointShowUnit : workorderAppointShowListTemp) {
-            workorderAppointShowUnit.setStrTreeNodeContent(
-                    workorderAppointShowUnit.getRecvTaskPartName()+"("+workorderAppointShowUnit.getRecvTaskFinishFlagName()+")");
-            TreeNode childNodeTemp = new DefaultTreeNode(workorderAppointShowUnit, parentNode);
-            childNodeTemp.setExpanded(true);
-            recursiveTreeNode(strInfoPkidPara,workorderAppointShowUnit.getRecvTaskPartPkid(),childNodeTemp);
-        }
-    }
-
-    public void selectRecordAction(WorkorderInfoShow workorderInfoShowPara) {
-        try {
-            initTree(workorderInfoShowPara);
-        } catch (Exception e) {
-            MessageUtil.addError(e.getMessage());
-            logger.info("WorkorderAppointAction类中的selectRecordAction异常:"+e.toString());
-        }
-    }
     public void onNodeSelect(SelectEvent event) {
         TreeNode node = (TreeNode) event.getObject();
-
         //populate if not already loaded
         if(node.getChildren().isEmpty()) {
             //Object label = node.getLabel();
-
-
         }
     }
 
     public void onNodeDblselect(SelectEvent event) {
         //this.selectedNode = (TreeNode) event.getObject();
     }
-
-    public TreeNode getRoot() {
-        return root;
-    }
-    public void setRoot(TreeNode root) {
-        this.root = root;
-    }
-
-
 
     public List<WorkorderInfo> getWorkorderInfos() {
         return workorderInfos;
@@ -201,6 +131,26 @@ public class WorkorderAppointAction {
 
     public void setWorkorderInfoService(WorkorderInfoService workorderInfoService) {
         this.workorderInfoService = workorderInfoService;
+    }
+
+    public WorkorderAppointService getWorkorderAppointService() {
+        return workorderAppointService;
+    }
+
+    public TreeNode getDeptOperShowRoot() {
+        return deptOperShowRoot;
+    }
+
+    public void setDeptOperShowRoot(TreeNode deptOperShowRoot) {
+        this.deptOperShowRoot = deptOperShowRoot;
+    }
+
+    public DeptOperService getDeptOperService() {
+        return deptOperService;
+    }
+
+    public void setDeptOperService(DeptOperService deptOperService) {
+        this.deptOperService = deptOperService;
     }
 
     public WorkorderInfo[] getSelectedWorkorderInfo() {

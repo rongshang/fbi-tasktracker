@@ -1,5 +1,7 @@
 package task.service;
 
+import org.primefaces.model.DefaultTreeNode;
+import org.primefaces.model.TreeNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +16,8 @@ import task.repository.model.WorkorderAppoint;
 import task.repository.model.WorkorderAppointExample;
 import task.repository.model.not_mybatis.WorkorderAppointShow;
 import task.repository.model.not_mybatis.DeptOperShow;
+import task.repository.model.not_mybatis.WorkorderInfoShow;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -132,37 +136,43 @@ public class WorkorderAppointService {
         workorderAppointShowTemp.setTid(workorderAppointPara.getTid());
         return workorderAppointShowTemp;
     }
-    
-	
-    /***
-     * atuo: huzy
-     * 根据工单ID或者工单名获取该条件的工单信息
-     * param:orderPkId(工单id),orderName(工单名)
-     * @return List<WorkorderInfo>
-     * huzy注释掉
-     */
-//    public List<WorkorderInfo> getWorkorderInfoByIdOrName(WorkorderInfo workorderInfo){
-//        List<WorkorderInfo> workorderInfos = null;
-//        try{
-//            WorkorderInfoExample example = new WorkorderInfoExample();
-//            example.createCriteria().andArchivedFlagEqualTo(EnumArchivedFlag.ARCHIVED_FLAG0.getCode()); //0 没有删除
-//            example.createCriteria().andFinishFlagEqualTo(EnumArchivedFlag.ARCHIVED_FLAG1.getCode());//1 以录入完成
-//            WorkorderInfoExample.Criteria criteria = example.createCriteria();
-//            if(StringUtils.isNotBlank(workorderInfo.getId())){
-//                criteria.andIdLike("%" + workorderInfo.getId() + "%");
-//            }
-//            if(StringUtils.isNotBlank(workorderInfo.getName())){
-//                criteria.andNameLike("%" + workorderInfo.getName() + "%");
-//            }
-//            example.setOrderByClause("ID ASC") ;
-//            workorderInfos = workorderInfoMapper.selectByExample(example);
-//        }catch (Exception e){
-//            logger.info("WorkorderAssignService类中的getWorkorderInfoByPkIdOrName异常:"+e.toString());
-//        }
-//        return workorderInfos;
-//    }
 
-    /***
+    public TreeNode getWorkorderAppointShowTreeNode(WorkorderInfoShow workorderInfoShowPara){
+        TreeNode workorderAppointShowRoot= new DefaultTreeNode(null, null);
+        WorkorderAppointShow workorderAppointShowPara=new WorkorderAppointShow();
+        workorderAppointShowPara.setInfoPkid(workorderInfoShowPara.getPkid());
+        workorderAppointShowPara.setFirstAppointFlag(EnumFirstAppointFlag.FIRST_APPOINT_FLAG0.getCode());
+        List<WorkorderAppointShow> workorderAppointShowListTemp=getWorkorderAppointShowListByModelShow(workorderAppointShowPara);
+        if(workorderAppointShowListTemp!=null&&workorderAppointShowListTemp.size()>0) {
+            WorkorderAppointShow workorderAppointShowTemp=workorderAppointShowListTemp.get(0);
+            WorkorderAppointShow workorderAppointShow_TreeNode=new WorkorderAppointShow();
+            workorderAppointShow_TreeNode.setRecvTaskPartPkid(workorderAppointShowTemp.getSendTaskPartPkid());
+            workorderAppointShow_TreeNode.setRecvTaskPartName(workorderAppointShowTemp.getSendTaskPartName());
+            workorderAppointShow_TreeNode.setStrTreeNodeContent(workorderAppointShow_TreeNode.getRecvTaskPartName());
+            workorderAppointShowRoot = new DefaultTreeNode(workorderAppointShow_TreeNode, null);
+            workorderAppointShowRoot.setExpanded(true);
+            recursiveTreeNode(workorderInfoShowPara.getPkid(),workorderAppointShow_TreeNode.getRecvTaskPartPkid(),workorderAppointShowRoot);
+        }
+        return workorderAppointShowRoot;
+    }
+
+    /*根据数据库中层级关系数据列表得到总包合同*/
+    private void recursiveTreeNode(String strInfoPkidPara,String strSendTaskPartPkidPara,TreeNode parentNode){
+        WorkorderAppointShow workorderAppointShowPara = new WorkorderAppointShow();
+        workorderAppointShowPara.setInfoPkid(strInfoPkidPara);
+        workorderAppointShowPara.setSendTaskPartPkid(strSendTaskPartPkidPara);
+        List<WorkorderAppointShow> workorderAppointShowListTemp =
+                getWorkorderAppointShowListByModelShow(workorderAppointShowPara);
+        for (WorkorderAppointShow workorderAppointShowUnit : workorderAppointShowListTemp) {
+            workorderAppointShowUnit.setStrTreeNodeContent(
+                    workorderAppointShowUnit.getRecvTaskPartName()+"("+workorderAppointShowUnit.getRecvTaskFinishFlagName()+")");
+            TreeNode childNodeTemp = new DefaultTreeNode(workorderAppointShowUnit, parentNode);
+            childNodeTemp.setExpanded(true);
+            recursiveTreeNode(strInfoPkidPara,workorderAppointShowUnit.getRecvTaskPartPkid(),childNodeTemp);
+        }
+    }
+	
+	    /***
      * atuo: huzy
      * 查询每个部门下有哪些人  页面中工单指派时用
      * @return List<DeptOperShow>
@@ -176,7 +186,4 @@ public class WorkorderAppointService {
         }
         return deptOperShows;
     }
-
-	
-	
 }

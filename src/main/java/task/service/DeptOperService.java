@@ -1,5 +1,8 @@
 package task.service;
 
+import org.apache.commons.beanutils.BeanUtils;
+import org.primefaces.model.DefaultTreeNode;
+import org.primefaces.model.TreeNode;
 import task.repository.dao.DeptMapper;
 import task.repository.dao.OperMapper;
 import task.repository.dao.not_mybatis.MyDeptAndOperMapper;
@@ -30,13 +33,18 @@ public class DeptOperService {
     @Resource
     private OperMapper operMapper;
 
-    public List<DeptOperShow> selectDeptAndOperRecords(String parentPkidPara) {
-        return myDeptAndOperMapper.selectDeptAndOperRecords(parentPkidPara);
+    public TreeNode getDeptOperTreeNode(DeptOperShow deptOperShowPara){
+        TreeNode deptOperShowRoot = new DefaultTreeNode(deptOperShowPara, null);
+        deptOperShowRoot.setExpanded(true);
+        recursiveOperTreeNode(deptOperShowPara.getPkid(), deptOperShowRoot);
+        return deptOperShowRoot;
     }
-
-    public List<Dept> getDeptList() {
-        DeptExample example=new DeptExample();
-        return deptMapper.selectByExample(example);
+    private void recursiveOperTreeNode(String strParentPkidPara, TreeNode parentNode) {
+        List<DeptOperShow> deptOperShowListTemp = selectDeptAndOperRecords(strParentPkidPara);
+        for (DeptOperShow deptOperShowUnit : deptOperShowListTemp) {
+            TreeNode childNodeTemp = new DefaultTreeNode(deptOperShowUnit, parentNode);
+            recursiveOperTreeNode(deptOperShowUnit.getPkid(), childNodeTemp);
+        }
     }
 
     public boolean findChildRecordsByPkid(String strDeptOperPkidPara) {
@@ -47,6 +55,52 @@ public class DeptOperService {
         operExample.createCriteria()
                 .andDeptPkidEqualTo(strDeptOperPkidPara);
         return (deptMapper.selectByExample(example).size()>0||operMapper.selectByExample(operExample).size()>0);
+    }
+
+    public TreeNode getDeptOperTreeTableNode( DeptOperShow deptOperShowPara,TreeNode currentTreeNode){
+        TreeNode deptOperRoot = new DefaultTreeNode(deptOperShowPara, null);
+        deptOperRoot.setExpanded(true);
+        recursiveOperTreeTableNode(deptOperShowPara.getPkid(), deptOperRoot,currentTreeNode);
+        return deptOperRoot;
+    }
+
+    private void recursiveOperTreeTableNode(String strParentPkidPara, TreeNode parentNode,TreeNode currentTreeNode){
+        List<DeptOperShow> deptOperShowListTemp= selectDeptAndOperRecords(strParentPkidPara);
+        for (DeptOperShow deptOperShowUnit:deptOperShowListTemp) {
+            TreeNode childNodeTemp = new DefaultTreeNode(deptOperShowUnit, parentNode);
+            if(currentTreeNode!=null) {
+                if (((DeptOperShow)currentTreeNode.getData()).getPkid().equals(deptOperShowUnit.getPkid())) {
+                    // 把当前节点一直遍历到根节点全部打开
+                    setActiveTreeNodeExpand(childNodeTemp);
+                }
+            }
+            recursiveOperTreeTableNode(deptOperShowUnit.getPkid(), childNodeTemp,currentTreeNode);
+        }
+    }
+
+    public void setActiveTreeNodeExpand(TreeNode treeNodePara){
+        if (treeNodePara!=null){
+            while (!(((DeptOperShow)treeNodePara.getData()).getPkid().equals("ROOT"))){
+                treeNodePara.setExpanded(true);
+                treeNodePara=treeNodePara.getParent();
+            }
+        }
+    }
+
+    public void recursiveDeptOperTreeNodeCollapse(TreeNode treeNodePara){
+        treeNodePara.setExpanded(false);
+        for (TreeNode treeNodeUnit:treeNodePara.getChildren()){
+            recursiveDeptOperTreeNodeCollapse(treeNodeUnit);
+        }
+    }
+
+    public List<DeptOperShow> selectDeptAndOperRecords(String parentPkidPara) {
+        return myDeptAndOperMapper.selectDeptAndOperRecords(parentPkidPara);
+    }
+
+    public List<Dept> getDeptList() {
+        DeptExample example=new DeptExample();
+        return deptMapper.selectByExample(example);
     }
 
     public Object selectRecordByPkid(DeptOperShow deptOperShowPara) {

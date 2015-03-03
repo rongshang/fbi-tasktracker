@@ -42,38 +42,8 @@ public class WorkorderTrackerAction {
     }
 
     public void initTree(WorkorderInfoShow workorderInfoShowPara) {
-        WorkorderAppointShow workorderAppointShowPara=new WorkorderAppointShow();
-        workorderAppointShowPara.setInfoPkid(workorderInfoShowPara.getPkid());
-        workorderAppointShowPara.setFirstAppointFlag(EnumFirstAppointFlag.FIRST_APPOINT_FLAG0.getCode());
-        List<WorkorderAppointShow> workorderAppointShowListTemp=
-                workorderAppointService.getWorkorderAppointShowListByModelShow(workorderAppointShowPara);
-        if(workorderAppointShowListTemp!=null&&workorderAppointShowListTemp.size()>0) {
-            WorkorderAppointShow workorderAppointShowTemp=workorderAppointShowListTemp.get(0);
-            WorkorderAppointShow workorderAppointShow_TreeNode=new WorkorderAppointShow();
-            workorderAppointShow_TreeNode.setRecvTaskPartPkid(workorderAppointShowTemp.getSendTaskPartPkid());
-            workorderAppointShow_TreeNode.setRecvTaskPartName(workorderAppointShowTemp.getSendTaskPartName());
-            workorderAppointShow_TreeNode.setStrTreeNodeContent(workorderAppointShow_TreeNode.getRecvTaskPartName());
-            root = new DefaultTreeNode(workorderAppointShow_TreeNode, null);
-            root.setExpanded(true);
-            recursiveTreeNode(workorderInfoShowPara.getPkid(),workorderAppointShow_TreeNode.getRecvTaskPartPkid(),root);
-
-            strTaskTrackerFlag="true";
-        }
-    }
-    /*根据数据库中层级关系数据列表得到总包合同*/
-    private void recursiveTreeNode(String strInfoPkidPara,String strSendTaskPartPkidPara,TreeNode parentNode){
-        WorkorderAppointShow workorderAppointShowPara = new WorkorderAppointShow();
-        workorderAppointShowPara.setInfoPkid(strInfoPkidPara);
-        workorderAppointShowPara.setSendTaskPartPkid(strSendTaskPartPkidPara);
-        List<WorkorderAppointShow> workorderAppointShowListTemp =
-                workorderAppointService.getWorkorderAppointShowListByModelShow(workorderAppointShowPara);
-        for (WorkorderAppointShow workorderAppointShowUnit : workorderAppointShowListTemp) {
-            workorderAppointShowUnit.setStrTreeNodeContent(
-                    workorderAppointShowUnit.getRecvTaskPartName()+"("+workorderAppointShowUnit.getRecvTaskFinishFlagName()+")");
-            TreeNode childNodeTemp = new DefaultTreeNode(workorderAppointShowUnit, parentNode);
-            childNodeTemp.setExpanded(true);
-            recursiveTreeNode(strInfoPkidPara,workorderAppointShowUnit.getRecvTaskPartPkid(),childNodeTemp);
-        }
+        root = workorderAppointService.getWorkorderAppointShowTreeNode(workorderInfoShowPara);
+        strTaskTrackerFlag="true";
     }
 
     public void selectRecordAction(WorkorderInfoShow workorderInfoShowPara) {

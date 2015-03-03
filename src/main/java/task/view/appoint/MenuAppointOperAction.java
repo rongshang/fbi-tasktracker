@@ -36,7 +36,7 @@ public class MenuAppointOperAction implements Serializable{
     private List<MenuAppointShow> filteredMenuAppointShowList;
 
     private List<DeptOperShow> deptOperShowSeledList;
-    private TreeNode deptOperRoot;
+    private TreeNode deptOperShowRoot;
 
     @PostConstruct
     public void init() {
@@ -84,22 +84,13 @@ public class MenuAppointOperAction implements Serializable{
 
     private void initDeptOperAppoint(){
         deptOperShowSeledList.clear();
-        deptOperRoot = new DefaultTreeNode("ROOT", null);
         DeptOperShow deptOperShowTemp =new DeptOperShow();
         deptOperShowTemp.setPkid("ROOT");
         deptOperShowTemp.setName("机构人员信息");
         deptOperShowTemp.setType("0");
-        TreeNode node0 = new DefaultTreeNode(deptOperShowTemp, deptOperRoot);
-        recursiveOperTreeNode("ROOT", node0);
-        node0.setExpanded(true);
+        deptOperShowRoot=deptOperService.getDeptOperTreeNode(deptOperShowTemp);
     }
-    private void recursiveOperTreeNode(String strParentPkidPara, TreeNode parentNode) {
-        List<DeptOperShow> operResShowListTemp = deptOperService.selectDeptAndOperRecords(strParentPkidPara);
-        for (DeptOperShow anOperMenuShowListTemp : operResShowListTemp) {
-            TreeNode childNodeTemp = new DefaultTreeNode(anOperMenuShowListTemp, parentNode);
-            recursiveOperTreeNode(anOperMenuShowListTemp.getPkid(), childNodeTemp);
-        }
-    }
+
     private void recursiveOperTreeNodeForExpand(
             TreeNode treeNodePara,List<MenuAppointShow> menuAppointShowListPara) {
         if (menuAppointShowListPara ==null|| menuAppointShowListPara.size()==0){
@@ -138,7 +129,7 @@ public class MenuAppointOperAction implements Serializable{
             menuAppointShowTemp.setMenuPkid(menuAppointShowSeled.getMenuPkid());
             List<MenuAppointShow> menuAppointShowListTemp =
                     operMenuService.getMenuAppointShowList(menuAppointShowTemp);
-            recursiveOperTreeNodeForExpand(deptOperRoot, menuAppointShowListTemp);
+            recursiveOperTreeNodeForExpand(deptOperShowRoot, menuAppointShowListTemp);
         } catch (Exception e) {
             MessageUtil.addError(e.getMessage());
         }
@@ -185,12 +176,13 @@ public class MenuAppointOperAction implements Serializable{
     }
 
     /*智能字段 Start*/
-    public TreeNode getDeptOperRoot() {
-        return deptOperRoot;
+
+    public TreeNode getDeptOperShowRoot() {
+        return deptOperShowRoot;
     }
 
-    public void setDeptOperRoot(TreeNode deptOperRoot) {
-        this.deptOperRoot = deptOperRoot;
+    public void setDeptOperShowRoot(TreeNode deptOperShowRoot) {
+        this.deptOperShowRoot = deptOperShowRoot;
     }
 
     public List<DeptOperShow> getDeptOperShowSeledList() {

@@ -44,7 +44,7 @@ public class DeptOperAction implements Serializable {
     @ManagedProperty(value = "#{rsTidKeysService}")
     private RsTidKeysService rsTidKeysService;
 
-    private TreeNode deptOperRoot;
+    private TreeNode deptOperShowRoot;
     private TreeNode currentSelectedNode;
     private String strSubmitType;
     private Dept deptAdd;
@@ -70,6 +70,7 @@ public class DeptOperAction implements Serializable {
             beansMap = new HashMap();
             initVariables();
             initData();
+            recursiveForExcel("ROOT");
             beansMap.put("deptOperShowFowExcelList", deptOperShowFowExcelList);
         }catch (Exception e){
             logger.error("初始化失败", e);
@@ -112,26 +113,32 @@ public class DeptOperAction implements Serializable {
     }
 
     private void initDeptOper() {
-        deptOperRoot = new DefaultTreeNode("ROOT", null);
         DeptOperShow deptOperShowTemp = new DeptOperShow();
         deptOperShowTemp.setPkid("ROOT");
-        deptOperShowTemp.setId("ROOT");
         deptOperShowTemp.setName("机构人员信息");
         deptOperShowTemp.setType("0");
-        TreeNode node0 = new DefaultTreeNode(deptOperShowTemp, deptOperRoot);
-        try {
-            recursiveTreeNode("ROOT", node0);
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
-        } catch (NoSuchMethodException e) {
-            e.printStackTrace();
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        }
-        node0.setExpanded(true);
+        deptOperShowRoot=
+                deptOperService.getDeptOperTreeTableNode(deptOperShowTemp,currentSelectedNode);
     }
+
+    private void recursiveForExcel(String strParentPkidPara)
+            throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+        List<DeptOperShow> deptOperShowTempList= deptOperService.selectDeptAndOperRecords(strParentPkidPara);
+        for (DeptOperShow deptOperShowUnit:deptOperShowTempList) {
+            DeptOperShow deptOperShowForExcelTemp= (DeptOperShow)BeanUtils.cloneBean(deptOperShowUnit);
+            DeptOperShow deptOperShowForExcelTemp2=new DeptOperShow();
+            if(("0").equals(deptOperShowForExcelTemp.getType())){
+                deptOperShowForExcelTemp2.setDeptId(deptOperShowForExcelTemp.getId());
+                deptOperShowForExcelTemp2.setDeptName(deptOperShowForExcelTemp.getName());
+            }else{
+                deptOperShowForExcelTemp2.setOperId(deptOperShowForExcelTemp.getId());
+                deptOperShowForExcelTemp2.setOperName(deptOperShowForExcelTemp.getName());
+            }
+            deptOperShowFowExcelList.add(deptOperShowForExcelTemp2);
+            recursiveForExcel(deptOperShowForExcelTemp.getPkid());
+        }
+    }
+
 
     public void setMaxDeptIdPlusOne(String strMngTypePara){
         try {
@@ -158,100 +165,54 @@ public class DeptOperAction implements Serializable {
         }
     }
 
-    private void recursiveTreeNode(String strParentPkidPara, TreeNode parentNode)
-            throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
-        List<DeptOperShow> deptOperShowTempList= deptOperService.selectDeptAndOperRecords(strParentPkidPara);
-        for (int i = 0; i < deptOperShowTempList.size(); i++) {
-            TreeNode childNodeTemp = new DefaultTreeNode(deptOperShowTempList.get(i), parentNode);
-            DeptOperShow deptOperShowForExcelTemp= (DeptOperShow)BeanUtils.cloneBean(deptOperShowTempList.get(i));
-            DeptOperShow deptOperShowForExcelTemp2=new DeptOperShow();
-            if(("0").equals(deptOperShowForExcelTemp.getType())){
-                deptOperShowForExcelTemp2.setDeptId(deptOperShowForExcelTemp.getId());
-                deptOperShowForExcelTemp2.setDeptName(deptOperShowForExcelTemp.getName());
-            }else{
-                deptOperShowForExcelTemp2.setOperId(deptOperShowForExcelTemp.getId());
-                deptOperShowForExcelTemp2.setOperName(deptOperShowForExcelTemp.getName());
-            }
-            deptOperShowFowExcelList.add(deptOperShowForExcelTemp2);
-            if (currentSelectedNode!=null){
-                DeptOperShow deptOperShow1= (DeptOperShow) currentSelectedNode.getData();
-                DeptOperShow deptOperShow2= (DeptOperShow) childNodeTemp.getData();
-                if ("ROOT".equals(deptOperShow1.getPkid())){
-                    currentSelectedNode.setExpanded(true);
-                }else {
-                    if (deptOperShow1.getPkid().equals(deptOperShow2.getPkid())){
-                        TreeNode treeNodeTemp=childNodeTemp;
-                        while (!(treeNodeTemp.getData().equals("ROOT"))){
-                            treeNodeTemp.setExpanded(true);
-                            treeNodeTemp=treeNodeTemp.getParent();
-                        }
-                    }
-                }
-            }
-            recursiveTreeNode(deptOperShowForExcelTemp.getPkid(), childNodeTemp);
-        }
-    }
-
-    public void recursiveDeptOperTreeNode(TreeNode treeNodePara){
-        treeNodePara.setExpanded(false);
-        if (treeNodePara.getChildCount()!=0){
-            for (int i=0;i<treeNodePara.getChildCount();i++){
-                recursiveDeptOperTreeNode(treeNodePara.getChildren().get(i));
-            }
-        }
-    }
-
     public void onNodeCollapse(NodeCollapseEvent event) {
-        recursiveDeptOperTreeNode(event.getTreeNode());
+        deptOperService.recursiveDeptOperTreeNodeCollapse(event.getTreeNode());
     }
 
     public void findSelectedNode(DeptOperShow deptOperShowPara, TreeNode treeNodePara,String strSubmitTypePara) {
-        if (treeNodePara.getChildCount() != 0) {
-            for (int i = 0; i < treeNodePara.getChildCount(); i++) {
-                TreeNode treeNodeTemp = treeNodePara.getChildren().get(i);
-                if (deptOperShowPara == treeNodeTemp.getData()) {
-                    if (strSubmitTypePara.contains("Add")){
-                        currentSelectedNode = treeNodeTemp;
-                    }else if (strSubmitTypePara.contains("Upd")||strSubmitTypePara.contains("Del")){
-                        currentSelectedNode=treeNodeTemp.getParent();
-                    }
-                    return;
+        for (TreeNode treeNodeUnit:treeNodePara.getChildren()) {
+            if (deptOperShowPara == treeNodeUnit.getData()) {
+                if (strSubmitTypePara.contains("Add")){
+                    currentSelectedNode = treeNodeUnit;
+                }else if (strSubmitTypePara.contains("Upd")||strSubmitTypePara.contains("Del")){
+                    currentSelectedNode=treeNodeUnit.getParent();
                 }
-                findSelectedNode(deptOperShowPara, treeNodeTemp,strSubmitTypePara);
+                return;
             }
+            findSelectedNode(deptOperShowPara, treeNodeUnit,strSubmitTypePara);
         }
     }
-    public void selectRecordAction(String strSubmitTypePara,
-                                     DeptOperShow deptOperShowPara) {
+
+    public void selectRecordAction(String strSubmitTypePara,DeptOperShow deptOperShowOfCurrentTreeNodePara) {
         try {
-            findSelectedNode(deptOperShowPara,deptOperRoot,strSubmitTypePara);
             strSubmitType = strSubmitTypePara;
+            findSelectedNode(deptOperShowOfCurrentTreeNodePara,deptOperShowRoot,strSubmitTypePara);
             if (strSubmitTypePara.contains("Dept")) {
                 if (strSubmitTypePara.contains("Add")) {
                     deptAdd = new Dept();
                     deptAdd.setId(deptOperService.getStrMaxDeptId());
-                    deptAdd.setParentpkid(deptOperShowPara.getPkid());
+                    deptAdd.setParentpkid(deptOperShowOfCurrentTreeNodePara.getPkid());
                 } else {
                     if (strSubmitTypePara.contains("Upd")) {
                         deptUpd = new Dept();
-                        deptUpd = (Dept) deptOperService.selectRecordByPkid(deptOperShowPara);
+                        deptUpd = (Dept) deptOperService.selectRecordByPkid(deptOperShowOfCurrentTreeNodePara);
                     } else if (strSubmitTypePara.contains("Del")) {
                         deptDel = new Dept();
-                        deptDel = (Dept) deptOperService.selectRecordByPkid(deptOperShowPara);
+                        deptDel = (Dept) deptOperService.selectRecordByPkid(deptOperShowOfCurrentTreeNodePara);
                     }
                 }
             } else if (strSubmitTypePara.contains("Oper")) {
                 if (strSubmitTypePara.contains("Add")){
                     operAdd = new Oper();
                     operAdd.setId(deptOperService.getStrMaxOperId());
-                    operAdd.setDeptPkid(deptOperShowPara.getPkid());
+                    operAdd.setDeptPkid(deptOperShowOfCurrentTreeNodePara.getPkid());
                 }else if (strSubmitTypePara.contains("Upd")) {
                     operUpd = new Oper();
-                    operUpd = (Oper) deptOperService.selectRecordByPkid(deptOperShowPara);
+                    operUpd = (Oper) deptOperService.selectRecordByPkid(deptOperShowOfCurrentTreeNodePara);
                     strPasswd=operUpd.getPasswd();
                 } else if (strSubmitTypePara.contains("Del")) {
                     operDel = new Oper();
-                    operDel = (Oper) deptOperService.selectRecordByPkid(deptOperShowPara);
+                    operDel = (Oper) deptOperService.selectRecordByPkid(deptOperShowOfCurrentTreeNodePara);
                 }
             }
         } catch (Exception e) {
@@ -329,7 +290,14 @@ public class DeptOperAction implements Serializable {
             }
             initVariables();
             initData();
-            MessageUtil.addInfo("数据处理成功！");
+            switch (strSubmitType){
+                case "DeptAdd":MessageUtil.addInfo("机构增加成功！");break;
+                case "OperAdd":MessageUtil.addInfo("用户增加成功！");break;
+                case "DeptUpd":MessageUtil.addInfo("机构更新成功！");break;
+                case "OperUpd":MessageUtil.addInfo("用户更新成功！");break;
+                case "DeptDel":MessageUtil.addInfo("机构删除成功！");break;
+                case "OperDel":MessageUtil.addInfo("用户删除成功！");break;
+            }
         }catch (Exception e){
             logger.error("数据处理失败。", e);
             MessageUtil.addError("数据处理失败。");
@@ -384,12 +352,12 @@ public class DeptOperAction implements Serializable {
     }
     /*智能字段 Start*/
 
-    public TreeNode getDeptOperRoot() {
-        return deptOperRoot;
+    public TreeNode getDeptOperShowRoot() {
+        return deptOperShowRoot;
     }
 
-    public void setDeptOperRoot(TreeNode deptOperRoot) {
-        this.deptOperRoot = deptOperRoot;
+    public void setDeptOperShowRoot(TreeNode deptOperShowRoot) {
+        this.deptOperShowRoot = deptOperShowRoot;
     }
 
     public DeptOperService getDeptOperService() {
