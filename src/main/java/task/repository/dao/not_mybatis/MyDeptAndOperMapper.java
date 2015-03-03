@@ -84,20 +84,6 @@ public interface MyDeptAndOperMapper {
      * 查询每个部门下有哪些人  页面中工单指派时用
      * @return List<DeptOperShow>
      */
-    @Select(" select  " +
-            "       d.pkid as deptPkid," +
-            "       d.id as deptId," +
-            "       d.name as deptName," +
-            "       o.pkid as operPkid," +
-            "       o.id as operId," +
-            "       o.name as operName" +
-            " from " +
-            "       dept d " +
-            " left join " +
-            "       oper o " +
-            " on" +
-            "       o.dept_pkid = d.pkid" +
-            " where " +
-            "       ENABLED='1'")
-    List<DeptOperShow> getDeptOperList();
+    @Select("select  d.name as deptName, d.pkid as deptId,o.name as operName,o.pkid as pkid from dept d left join oper o on o.dept_pkid = d.pkid where ENABLED='1'  order by d.pkid ")
+    List<DeptOperShow> getDeptOper();
 }

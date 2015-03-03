@@ -24,6 +24,8 @@ import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
+import javax.faces.model.SelectItem;
+import javax.faces.model.SelectItemGroup;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,6 +40,18 @@ import java.util.List;
 @ViewScoped
 public class WorkorderAppointAction {
     private static final Logger logger = LoggerFactory.getLogger(WorkorderAppointAction.class);
+    private WorkorderInfoShow workorderInfoShow;
+    private WorkorderInfo workorderInfo;
+    //workorderAppointOperMng.xhtml(工单指派页面)选中多条数据
+    private WorkorderInfo[] selectedWorkorderInfo;
+    //workorderAppointOperMng.xhtml(工单指派页面)显示用
+    List<WorkorderInfo> workorderInfos = null;
+    private List<SelectItem> selectItems;
+    private Map<String,String> cities = new HashMap<String, String>();
+    private WorkorderAppoint workorderAppoint;
+
+
+
     @ManagedProperty(value = "#{workorderAppointService}")
     private WorkorderAppointService workorderAppointService;
     @ManagedProperty(value = "#{workorderInfoService}")
@@ -66,11 +80,56 @@ public class WorkorderAppointAction {
      */
     @PostConstruct
     public void initTree() {
-        DeptOperShow deptOperShowTemp = new DeptOperShow();
-        deptOperShowTemp.setPkid("ROOT");
-        deptOperShowTemp.setName("机构人员信息");
-        deptOperShowTemp.setType("0");
-        deptOperShowRoot=deptOperService.getDeptOperTreeNode(deptOperShowTemp);
+        workorderInfoShow = new WorkorderInfoShow();
+        List<DeptOperShow> deptOperShowList = workorderAppointService.getDeptOper();
+        String deptId="######";
+        selectItems = new ArrayList<SelectItem>();
+        //map key是部门value是部门的人
+        Map<String,List<SelectItem>> map = new HashMap<String,List<SelectItem>>();
+        SelectItemGroup selectItemGroup=null;
+        List<SelectItem> selectItemList = null;
+        for (DeptOperShow deptOperShowlist :deptOperShowList ){
+            if(!deptOperShowlist.getDeptId().equals(deptId)){
+                selectItemList = new ArrayList<SelectItem>();
+                //selectItemList.add(new SelectItem(deptOperShowlist.getPkid(),deptOperShowlist.getOperName()));
+               // map.put(deptOperShowlist.getDeptName(),selectItemList);
+            }else{
+                selectItemList =(List<SelectItem>)map.get(deptOperShowlist.getDeptName());
+            }
+            selectItemList.add(new SelectItem(deptOperShowlist.getPkid(),deptOperShowlist.getOperName()));
+            map.put(deptOperShowlist.getDeptName(),selectItemList);
+            deptId = deptOperShowlist.getDeptId();
+        }
+
+        for(Map.Entry<String,List<SelectItem>> entry: map.entrySet()) {
+            //部门
+            selectItemGroup = new SelectItemGroup(entry.getKey());
+            //部门下的哪些人
+            selectItemGroup.setSelectItems((SelectItem[])entry.getValue().toArray(new SelectItem[0]));
+            selectItems.add(selectItemGroup);
+        }
+//        SelectItemGroup g1 = new SelectItemGroup("German Cars");
+//        g1.setSelectItems( new SelectItem[] {new SelectItem("111", "胡珍洋"), new SelectItem("Mercedes", "于向阳"), new SelectItem("Volkswagen", "张自平")});
+//        selectItems = new ArrayList<SelectItem>();
+//        selectItems.add(g1);
+    }
+
+    /***
+     * atuo: huzy
+     * 根据工单ID或者工单名获取该条件的工单信息
+     * param:orderId(工单id),orderName(工单名)
+     * @return List<WorkorderInfo>
+     */
+    public void getWorkorderInfoByIdOrName(){
+        try{
+            //1  录入完成
+            workorderInfoShow.setFinishFlag(EnumArchivedFlag.ARCHIVED_FLAG1.getCode());
+            //0 未删除
+            workorderInfoShow.setArchivedFlag(EnumArchivedFlag.ARCHIVED_FLAG0.getCode());
+            workorderInfos = workorderInfoService.getWorkorderInfoListByModelShow(workorderInfoShow);
+        }catch (Exception e){
+            logger.info("WorkorderAssignAction类中的getWorkorderInfoByPkIdOrName异常:"+e.toString());
+        }
     }
 
     /**
@@ -78,9 +137,53 @@ public class WorkorderAppointAction {
      * @return String 路径
      */
     public String getURL(){
-        return "workorderAppointOperQry";
+       return null;
     }
 
+
+    public void initTree(WorkorderInfoShow workorderInfoShowPara) {
+        WorkorderAppointShow workorderAppointShowPara=new WorkorderAppointShow();
+        workorderAppointShowPara.setInfoPkid(workorderInfoShowPara.getPkid());
+        workorderAppointShowPara.setFirstAppointFlag(EnumFirstAppointFlag.FIRST_APPOINT_FLAG0.getCode());
+        List<WorkorderAppointShow> workorderAppointShowListTemp=
+                workorderAppointService.getWorkorderAppointShowListByModelShow(workorderAppointShowPara);
+        if(workorderAppointShowListTemp!=null&&workorderAppointShowListTemp.size()>0) {
+            WorkorderAppointShow workorderAppointShowTemp=workorderAppointShowListTemp.get(0);
+            WorkorderAppointShow workorderAppointShow_TreeNode=new WorkorderAppointShow();
+            workorderAppointShow_TreeNode.setRecvTaskPartPkid(workorderAppointShowTemp.getSendTaskPartPkid());
+            workorderAppointShow_TreeNode.setRecvTaskPartName(workorderAppointShowTemp.getSendTaskPartName());
+            workorderAppointShow_TreeNode.setStrTreeNodeContent(workorderAppointShow_TreeNode.getRecvTaskPartName());
+            root = new DefaultTreeNode(workorderAppointShow_TreeNode, null);
+            root.setExpanded(true);
+            recursiveTreeNode(workorderInfoShowPara.getPkid(),workorderAppointShow_TreeNode.getRecvTaskPartPkid(),root);
+
+            strTaskTrackerFlag="false";
+        }
+    }
+    /*根据数据库中层级关系数据列表得到总包合同*/
+    private void recursiveTreeNode(String strInfoPkidPara,String strSendTaskPartPkidPara,TreeNode parentNode){
+        WorkorderAppointShow workorderAppointShowPara = new WorkorderAppointShow();
+        workorderAppointShowPara.setInfoPkid(strInfoPkidPara);
+        workorderAppointShowPara.setSendTaskPartPkid(strSendTaskPartPkidPara);
+        List<WorkorderAppointShow> workorderAppointShowListTemp =
+                workorderAppointService.getWorkorderAppointShowListByModelShow(workorderAppointShowPara);
+        for (WorkorderAppointShow workorderAppointShowUnit : workorderAppointShowListTemp) {
+            workorderAppointShowUnit.setStrTreeNodeContent(
+                    workorderAppointShowUnit.getRecvTaskPartName()+"("+workorderAppointShowUnit.getRecvTaskFinishFlagName()+")");
+            TreeNode childNodeTemp = new DefaultTreeNode(workorderAppointShowUnit, parentNode);
+            childNodeTemp.setExpanded(true);
+            recursiveTreeNode(strInfoPkidPara,workorderAppointShowUnit.getRecvTaskPartPkid(),childNodeTemp);
+        }
+    }
+
+    public void selectRecordAction(WorkorderInfoShow workorderInfoShowPara) {
+        try {
+            initTree(workorderInfoShowPara);
+        } catch (Exception e) {
+            MessageUtil.addError(e.getMessage());
+            logger.info("WorkorderAppointAction类中的selectRecordAction异常:"+e.toString());
+        }
+    }
     public void onNodeSelect(SelectEvent event) {
         TreeNode node = (TreeNode) event.getObject();
         //populate if not already loaded
@@ -113,26 +216,6 @@ public class WorkorderAppointAction {
         this.workorderInfoService = workorderInfoService;
     }
 
-    public WorkorderAppointService getWorkorderAppointService() {
-        return workorderAppointService;
-    }
-
-    public TreeNode getDeptOperShowRoot() {
-        return deptOperShowRoot;
-    }
-
-    public void setDeptOperShowRoot(TreeNode deptOperShowRoot) {
-        this.deptOperShowRoot = deptOperShowRoot;
-    }
-
-    public DeptOperService getDeptOperService() {
-        return deptOperService;
-    }
-
-    public void setDeptOperService(DeptOperService deptOperService) {
-        this.deptOperService = deptOperService;
-    }
-
     public WorkorderInfo[] getSelectedWorkorderInfo() {
         return selectedWorkorderInfo;
     }
@@ -155,5 +238,29 @@ public class WorkorderAppointAction {
 
     public void setWorkorderInfoShow(WorkorderInfoShow workorderInfoShow) {
         this.workorderInfoShow = workorderInfoShow;
+    }
+
+    public List<SelectItem> getSelectItems() {
+        return selectItems;
+    }
+
+    public void setSelectItems(List<SelectItem> selectItems) {
+        this.selectItems = selectItems;
+    }
+
+    public Map<String, String> getCities() {
+        return cities;
+    }
+
+    public void setCities(Map<String, String> cities) {
+        this.cities = cities;
+    }
+
+    public WorkorderAppoint getWorkorderAppoint() {
+        return workorderAppoint;
+    }
+
+    public void setWorkorderAppoint(WorkorderAppoint workorderAppoint) {
+        this.workorderAppoint = workorderAppoint;
     }
 }

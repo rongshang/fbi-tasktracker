@@ -11,12 +11,15 @@ import task.common.enums.EnumArchivedFlag;
 import task.common.enums.EnumFirstAppointFlag;
 import task.common.enums.EnumTaskFinishFlag;
 import task.repository.dao.WorkorderAppointMapper;
+import task.repository.dao.WorkorderInfoMapper;
 import task.repository.dao.not_mybatis.MyDeptAndOperMapper;
+import task.repository.dao.not_mybatis.MyWorkorderInfoMapper;
 import task.repository.model.WorkorderAppoint;
 import task.repository.model.WorkorderAppointExample;
-import task.repository.model.not_mybatis.WorkorderAppointShow;
+import task.repository.model.WorkorderInfo;
+import task.repository.model.WorkorderInfoExample;
 import task.repository.model.not_mybatis.DeptOperShow;
-import task.repository.model.not_mybatis.WorkorderInfoShow;
+import task.repository.model.not_mybatis.WorkorderAppointShow;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +35,12 @@ public class WorkorderAppointService {
     @Autowired
     private WorkorderAppointMapper workorderAppointMapper;
     @Autowired
+    private MyWorkorderInfoMapper myWorkorderInfoMapper;
+    @Autowired
     private MyDeptAndOperMapper myDeptAndOperMapper;
+    @Autowired
+    private WorkorderInfoMapper workorderInfoMapper;
+
 
     public String getUserName(String operPkidPara){
         if(ToolUtil.getStrIgnoreNull(operPkidPara).equals("")){
@@ -45,24 +53,24 @@ public class WorkorderAppointService {
     public List<WorkorderAppoint> getWorkorderAppointListByModelShow(WorkorderAppointShow workorderAppointShowPara) {
         WorkorderAppointExample example= new WorkorderAppointExample();
         WorkorderAppointExample.Criteria criteria = example.createCriteria();
-        //ø…“‘Œ™NULLµƒœÓ
-        // π§µ•÷˜Ã‚
+        //ÂèØ‰ª•‰∏∫NULLÁöÑÈ°π
+        // Â∑•Âçï‰∏ªÈ¢ò
         if(!ToolUtil.getStrIgnoreNull(workorderAppointShowPara.getInfoPkid()).equals("")){
             criteria.andInfoPkidEqualTo(workorderAppointShowPara.getInfoPkid());
         }
-        // Õ¨π§µ•µ⁄“ª¥Œ÷∏≈…
+        // ÂêåÂ∑•ÂçïÁ¨¨‰∏ÄÊ¨°ÊåáÊ¥æ
         if(!ToolUtil.getStrIgnoreNull(workorderAppointShowPara.getFirstAppointFlag()).equals("")){
             criteria.andFirstAppointFlagEqualTo(workorderAppointShowPara.getFirstAppointFlag());
         }
-        // Ω” ’’ﬂPkid
+        // Êé•Êî∂ËÄÖPkid
         if(!ToolUtil.getStrIgnoreNull(workorderAppointShowPara.getRecvTaskPartPkid()).equals("")){
             criteria.andRecvTaskPartPkidEqualTo(workorderAppointShowPara.getRecvTaskPartPkid());
         }
-        // ∑¢ÀÕ∏¯Pkid
+        // ÂèëÈÄÅÁªôPkid
         if(!ToolUtil.getStrIgnoreNull(workorderAppointShowPara.getSendTaskPartPkid()).equals("")){
             criteria.andSendTaskPartPkidEqualTo(workorderAppointShowPara.getSendTaskPartPkid());
         }
-        // ±∏◊¢ƒ⁄»›
+        // Â§áÊ≥®ÂÜÖÂÆπ
         if(!ToolUtil.getStrIgnoreNull(workorderAppointShowPara.getRemark()).equals("")){
             criteria.andRemarkLike("%"+ workorderAppointShowPara.getRemark()+"%");
         }
@@ -137,53 +145,48 @@ public class WorkorderAppointService {
         return workorderAppointShowTemp;
     }
 
-    public TreeNode getWorkorderAppointShowTreeNode(WorkorderInfoShow workorderInfoShowPara){
-        TreeNode workorderAppointShowRoot= new DefaultTreeNode(null, null);
-        WorkorderAppointShow workorderAppointShowPara=new WorkorderAppointShow();
-        workorderAppointShowPara.setInfoPkid(workorderInfoShowPara.getPkid());
-        workorderAppointShowPara.setFirstAppointFlag(EnumFirstAppointFlag.FIRST_APPOINT_FLAG0.getCode());
-        List<WorkorderAppointShow> workorderAppointShowListTemp=getWorkorderAppointShowListByModelShow(workorderAppointShowPara);
-        if(workorderAppointShowListTemp!=null&&workorderAppointShowListTemp.size()>0) {
-            WorkorderAppointShow workorderAppointShowTemp=workorderAppointShowListTemp.get(0);
-            WorkorderAppointShow workorderAppointShow_TreeNode=new WorkorderAppointShow();
-            workorderAppointShow_TreeNode.setRecvTaskPartPkid(workorderAppointShowTemp.getSendTaskPartPkid());
-            workorderAppointShow_TreeNode.setRecvTaskPartName(workorderAppointShowTemp.getSendTaskPartName());
-            workorderAppointShow_TreeNode.setStrTreeNodeContent(workorderAppointShow_TreeNode.getRecvTaskPartName());
-            workorderAppointShowRoot = new DefaultTreeNode(workorderAppointShow_TreeNode, null);
-            workorderAppointShowRoot.setExpanded(true);
-            recursiveTreeNode(workorderInfoShowPara.getPkid(),workorderAppointShow_TreeNode.getRecvTaskPartPkid(),workorderAppointShowRoot);
-        }
-        return workorderAppointShowRoot;
-    }
-
-    /*∏˘æ› ˝æ›ø‚÷–≤„º∂πÿœµ ˝æ›¡–±Ìµ√µΩ◊‹∞¸∫œÕ¨*/
-    private void recursiveTreeNode(String strInfoPkidPara,String strSendTaskPartPkidPara,TreeNode parentNode){
-        WorkorderAppointShow workorderAppointShowPara = new WorkorderAppointShow();
-        workorderAppointShowPara.setInfoPkid(strInfoPkidPara);
-        workorderAppointShowPara.setSendTaskPartPkid(strSendTaskPartPkidPara);
-        List<WorkorderAppointShow> workorderAppointShowListTemp =
-                getWorkorderAppointShowListByModelShow(workorderAppointShowPara);
-        for (WorkorderAppointShow workorderAppointShowUnit : workorderAppointShowListTemp) {
-            workorderAppointShowUnit.setStrTreeNodeContent(
-                    workorderAppointShowUnit.getRecvTaskPartName()+"("+workorderAppointShowUnit.getRecvTaskFinishFlagName()+")");
-            TreeNode childNodeTemp = new DefaultTreeNode(workorderAppointShowUnit, parentNode);
-            childNodeTemp.setExpanded(true);
-            recursiveTreeNode(strInfoPkidPara,workorderAppointShowUnit.getRecvTaskPartPkid(),childNodeTemp);
-        }
-    }
-	
-	    /***
+    /***
      * atuo: huzy
-     * ≤È—Ø√ø∏ˆ≤ø√≈œ¬”–ƒƒ–©»À  “≥√Ê÷–π§µ•÷∏≈… ±”√
+     * Ê†πÊçÆÂ∑•ÂçïIDÊàñËÄÖÂ∑•ÂçïÂêçËé∑ÂèñËØ•Êù°‰ª∂ÁöÑÂ∑•Âçï‰ø°ÊÅØ
+     * param:orderPkId(Â∑•Âçïid),orderName(Â∑•ÂçïÂêç)
+     * @return List<WorkorderInfo>
+     * huzyÊ≥®ÈáäÊéâ
+     */
+//    public List<WorkorderInfo> getWorkorderInfoByIdOrName(WorkorderInfo workorderInfo){
+//        List<WorkorderInfo> workorderInfos = null;
+//        try{
+//            WorkorderInfoExample example = new WorkorderInfoExample();
+//            example.createCriteria().andArchivedFlagEqualTo(EnumArchivedFlag.ARCHIVED_FLAG0.getCode()); //0 Ê≤°ÊúâÂà†Èô§
+//            example.createCriteria().andFinishFlagEqualTo(EnumArchivedFlag.ARCHIVED_FLAG1.getCode());//1 ‰ª•ÂΩïÂÖ•ÂÆåÊàê
+//            WorkorderInfoExample.Criteria criteria = example.createCriteria();
+//            if(StringUtils.isNotBlank(workorderInfo.getId())){
+//                criteria.andIdLike("%" + workorderInfo.getId() + "%");
+//            }
+//            if(StringUtils.isNotBlank(workorderInfo.getName())){
+//                criteria.andNameLike("%" + workorderInfo.getName() + "%");
+//            }
+//            example.setOrderByClause("ID ASC") ;
+//            workorderInfos = workorderInfoMapper.selectByExample(example);
+//        }catch (Exception e){
+//            logger.info("WorkorderAssignServiceÁ±ª‰∏≠ÁöÑgetWorkorderInfoByPkIdOrNameÂºÇÂ∏∏:"+e.toString());
+//        }
+//        return workorderInfos;
+//    }
+
+    /***
+     * atuo: huzy
+     * Êü•ËØ¢ÊØè‰∏™ÈÉ®Èó®‰∏ãÊúâÂì™‰∫õ‰∫∫  È°µÈù¢‰∏≠Â∑•ÂçïÊåáÊ¥æÊó∂Áî®
      * @return List<DeptOperShow>
      */
-    public List<DeptOperShow> getDeptOperList(){
+    public List<DeptOperShow> getDeptOper(){
         List<DeptOperShow> deptOperShows = null;
         try{
-            deptOperShows = myDeptAndOperMapper.getDeptOperList();
+            deptOperShows = myDeptAndOperMapper.getDeptOper();
         }catch (Exception e){
-            logger.info("WorkorderAssignService¿‡÷–µƒgetDeptOper“Ï≥£:"+e.toString());
+            logger.info("WorkorderAssignServiceÁ±ª‰∏≠ÁöÑgetDeptOperÂºÇÂ∏∏:"+e.toString());
         }
         return deptOperShows;
     }
+
+
 }
