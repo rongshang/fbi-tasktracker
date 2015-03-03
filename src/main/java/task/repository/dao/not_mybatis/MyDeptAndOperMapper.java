@@ -57,6 +57,28 @@ public interface MyDeptAndOperMapper {
             "       PKID=#{operPkidPara} ")
     String getUserName(@Param("operPkidPara") String operPkidPara);
 
+    @Select("   (select " +
+            "        pkid, " +
+            "        id, " +
+            "        name, " +
+            "        1 as type," +
+            "        type as operType " +
+            "     from " +
+            "        oper " +
+            "    ) " +
+            " union " +
+            "    (select " +
+            "        pkid, " +
+            "        id, " +
+            "        name, " +
+            "        0 as type," +
+            "        '' as operType" +
+            "     from " +
+            "        dept ta" +
+            " ) " +
+            " order by name asc")
+    List<DeptOperShow> getDeptAndOperShowList();
+
     /***
      * atuo: huzy
      * 查询每个部门下有哪些人  页面中工单指派时用

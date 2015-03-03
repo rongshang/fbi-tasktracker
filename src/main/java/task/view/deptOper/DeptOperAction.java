@@ -63,6 +63,8 @@ public class DeptOperAction implements Serializable {
     private Map beansMap;
     private String strPasswd;
 
+    private List<DeptOperShow> deptOperShowList;
+
     @PostConstruct
     public void init() {
         try {
@@ -72,9 +74,14 @@ public class DeptOperAction implements Serializable {
             initData();
             recursiveForExcel("ROOT");
             beansMap.put("deptOperShowFowExcelList", deptOperShowFowExcelList);
+            initDeptOperList();
         }catch (Exception e){
             logger.error("≥ı ºªØ ß∞‹", e);
         }
+    }
+
+    private void initDeptOperList(){
+        deptOperShowList=deptOperService.getDeptOperShowList();
     }
 
     private void initVariables() {
@@ -138,7 +145,6 @@ public class DeptOperAction implements Serializable {
             recursiveForExcel(deptOperShowForExcelTemp.getPkid());
         }
     }
-
 
     public void setMaxDeptIdPlusOne(String strMngTypePara){
         try {
@@ -478,5 +484,13 @@ public class DeptOperAction implements Serializable {
 
     public void setRsTidKeysService(RsTidKeysService rsTidKeysService) {
         this.rsTidKeysService = rsTidKeysService;
+    }
+
+    public List<DeptOperShow> getDeptOperShowList() {
+        return deptOperShowList;
+    }
+
+    public void setDeptOperShowList(List<DeptOperShow> deptOperShowList) {
+        this.deptOperShowList = deptOperShowList;
     }
 }

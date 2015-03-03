@@ -74,7 +74,7 @@ public class WorkorderInfoService {
         example.setOrderByClause("ID ASC") ;
         return workorderInfoMapper.selectByExample(example);
     }
-    public List<WorkorderInfoShow> getWorkorderShowInfoListByModelShow(WorkorderInfoShow workorderInfoShowPara) {
+    public List<WorkorderInfoShow> getWorkorderInfoShowListByModelShow(WorkorderInfoShow workorderInfoShowPara) {
         List<WorkorderInfo> workorderInfoListTemp=getWorkorderInfoListByModelShow(workorderInfoShowPara);
         List<WorkorderInfoShow> workorderInfoShowListTemp=new ArrayList<>();
         for(WorkorderInfo workorderInfoUnit:workorderInfoListTemp){

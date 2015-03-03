@@ -47,23 +47,12 @@ public class DeptOperService {
         }
     }
 
-    public boolean findChildRecordsByPkid(String strDeptOperPkidPara) {
-        DeptExample example = new DeptExample();
-        example.createCriteria()
-                .andParentpkidEqualTo(strDeptOperPkidPara);
-        OperExample operExample=new OperExample();
-        operExample.createCriteria()
-                .andDeptPkidEqualTo(strDeptOperPkidPara);
-        return (deptMapper.selectByExample(example).size()>0||operMapper.selectByExample(operExample).size()>0);
-    }
-
     public TreeNode getDeptOperTreeTableNode( DeptOperShow deptOperShowPara,TreeNode currentTreeNode){
         TreeNode deptOperRoot = new DefaultTreeNode(deptOperShowPara, null);
         deptOperRoot.setExpanded(true);
         recursiveOperTreeTableNode(deptOperShowPara.getPkid(), deptOperRoot,currentTreeNode);
         return deptOperRoot;
     }
-
     private void recursiveOperTreeTableNode(String strParentPkidPara, TreeNode parentNode,TreeNode currentTreeNode){
         List<DeptOperShow> deptOperShowListTemp= selectDeptAndOperRecords(strParentPkidPara);
         for (DeptOperShow deptOperShowUnit:deptOperShowListTemp) {
@@ -86,7 +75,6 @@ public class DeptOperService {
             }
         }
     }
-
     public void recursiveDeptOperTreeNodeCollapse(TreeNode treeNodePara){
         treeNodePara.setExpanded(false);
         for (TreeNode treeNodeUnit:treeNodePara.getChildren()){
@@ -94,6 +82,15 @@ public class DeptOperService {
         }
     }
 
+    public boolean findChildRecordsByPkid(String strDeptOperPkidPara) {
+        DeptExample example = new DeptExample();
+        example.createCriteria()
+                .andParentpkidEqualTo(strDeptOperPkidPara);
+        OperExample operExample=new OperExample();
+        operExample.createCriteria()
+                .andDeptPkidEqualTo(strDeptOperPkidPara);
+        return (deptMapper.selectByExample(example).size()>0||operMapper.selectByExample(operExample).size()>0);
+    }
     public List<DeptOperShow> selectDeptAndOperRecords(String parentPkidPara) {
         return myDeptAndOperMapper.selectDeptAndOperRecords(parentPkidPara);
     }
@@ -102,6 +99,15 @@ public class DeptOperService {
         DeptExample example=new DeptExample();
         return deptMapper.selectByExample(example);
     }
+    public List<Oper> getOperList(){
+        OperExample example=new OperExample();
+        example.setOrderByClause("NAME ASC") ;
+        return operMapper.selectByExample(example);
+    }
+    public List<DeptOperShow> getDeptOperShowList(){
+        return myDeptAndOperMapper.getDeptAndOperShowList();
+    }
+
 
     public Object selectRecordByPkid(DeptOperShow deptOperShowPara) {
         if ("0".equals(deptOperShowPara.getType())){
@@ -132,6 +138,7 @@ public class DeptOperService {
         }
         return operMapper.selectByExample(operExample).size();
     }
+
     public void insertDeptRecord(Dept deptPara){
         deptPara.setCreatedBy(ToolUtil.getOperatorManager().getOperator().getPkid());
         deptPara.setCreatedTime(ToolUtil.getStrLastUpdTime());
@@ -257,15 +264,5 @@ public class DeptOperService {
         }
         operMapper.deleteByPrimaryKey(operPara.getPkid());
     }
-    public List<Oper> getOperList(){
-        OperExample example=new OperExample();
-        example.setOrderByClause("NAME ASC") ;
-         return operMapper.selectByExample(example);
-    }
-    public Oper getOperByPkid(String strPkidPara){
-        return operMapper.selectByPrimaryKey(strPkidPara);
-    }
-    public void updateRecord(Oper operPara){
-        operMapper.updateByPrimaryKey(operPara);
-    }
+
 }

@@ -48,13 +48,11 @@ public class WorkorderAppointAction {
     private TreeNode deptOperShowRoot;
     private WorkorderInfoShow workorderInfoShow;
 
-    private WorkorderInfo workorderInfo;
-
     //workorderAppointOperMng.xhtml(工单指派页面)选中多条数据
     private WorkorderInfo[] selectedWorkorderInfo;
 
     //workorderAppointOperMng.xhtml(工单指派页面)显示用
-    List<WorkorderInfo> workorderInfos = null;
+    List<WorkorderInfoShow> workorderInfoShowList = null;
 
     /*任务跟踪显示标志*/
     private String strTaskTrackerFlag;
@@ -73,24 +71,6 @@ public class WorkorderAppointAction {
         deptOperShowTemp.setName("机构人员信息");
         deptOperShowTemp.setType("0");
         deptOperShowRoot=deptOperService.getDeptOperTreeNode(deptOperShowTemp);
-    }
-
-    /***
-     * atuo: huzy
-     * 根据工单ID或者工单名获取该条件的工单信息
-     * param:orderId(工单id),orderName(工单名)
-     * @return List<WorkorderInfo>
-     */
-    public void getWorkorderInfoByIdOrName(){
-        try{
-            //1  录入完成
-            workorderInfoShow.setFinishFlag(EnumArchivedFlag.ARCHIVED_FLAG1.getCode());
-            //0 未删除
-            workorderInfoShow.setArchivedFlag(EnumArchivedFlag.ARCHIVED_FLAG0.getCode());
-            workorderInfos = workorderInfoService.getWorkorderInfoListByModelShow(workorderInfoShow);
-        }catch (Exception e){
-            logger.info("WorkorderAssignAction类中的getWorkorderInfoByPkIdOrName异常:"+e.toString());
-        }
     }
 
     /**
@@ -113,12 +93,12 @@ public class WorkorderAppointAction {
         //this.selectedNode = (TreeNode) event.getObject();
     }
 
-    public List<WorkorderInfo> getWorkorderInfos() {
-        return workorderInfos;
+    public List<WorkorderInfoShow> getWorkorderInfoShowList() {
+        return workorderInfoShowList;
     }
 
-    public void setWorkorderInfos(List<WorkorderInfo> workorderInfos) {
-        this.workorderInfos = workorderInfos;
+    public void setWorkorderInfoShowList(List<WorkorderInfoShow> workorderInfoShowList) {
+        this.workorderInfoShowList = workorderInfoShowList;
     }
 
     public void setWorkorderAppointService(WorkorderAppointService workorderAppointService) {
@@ -175,13 +155,5 @@ public class WorkorderAppointAction {
 
     public void setWorkorderInfoShow(WorkorderInfoShow workorderInfoShow) {
         this.workorderInfoShow = workorderInfoShow;
-    }
-
-    public WorkorderInfo getWorkorderInfo() {
-        return workorderInfo;
-    }
-
-    public void setWorkorderInfo(WorkorderInfo workorderInfo) {
-        this.workorderInfo = workorderInfo;
     }
 }

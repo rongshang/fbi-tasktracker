@@ -71,7 +71,7 @@ public class WorkorderInfoAction implements Serializable {
         try {
             this.workorderInfoShowList.clear();
             workorderInfoShowList =
-                    workorderInfoService.getWorkorderShowInfoListByModelShow(workorderInfoShowQry);
+                    workorderInfoService.getWorkorderInfoShowListByModelShow(workorderInfoShowQry);
             if(strQryMsgOutPara.equals("true"))  {
                 if (workorderInfoShowList.isEmpty()) {
                     MessageUtil.addWarn("没有查询到数据。");
@@ -88,7 +88,7 @@ public class WorkorderInfoAction implements Serializable {
             this.workorderInfoShowList.clear();
             workorderInfoShowQry.setFinishFlag(EnumInputFinishFlag.INPUT_FINISH_FLAG1.getCode());
             workorderInfoShowList =
-                    workorderInfoService.getWorkorderShowInfoListByModelShow(workorderInfoShowQry);
+                    workorderInfoService.getWorkorderInfoShowListByModelShow(workorderInfoShowQry);
             if(strQryMsgOutPara.equals("true"))  {
                 if (workorderInfoShowList.isEmpty()) {
                     MessageUtil.addWarn("没有查询到数据。");
