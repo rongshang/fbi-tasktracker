@@ -7,16 +7,14 @@
         <link type="text/css" href="#{request.contextPath}/css/task.css" rel="stylesheet"/>
         <script type="text/javascript" src="#{request.contextPath}/js/pub.js"/>
         <script type="text/javascript" language="javascript">
-            function actSelectStlPower(infoType,strResPkid) {
+            function actSelect(obj) {
+                // 寻找当前行的PKID思路：参数传递
+                var pkid=obj;
+                var sfeature = "dialogwidth:1200px;dialogheight:610px;center:yes;location:no;help:no;" +
+                        "resizable:yes;scroll:yes;status:no;minimize:yes;maximize:yes;";
                 var arg = new Object();
                 arg.doType = "select";
-                var sfeatureStl = "dialogwidth:1200px;dialogheight:610px;center:yes;location:no;help:no;" +
-                        "resizable:yes;scroll:yes;status:no;minimize:yes;maximize:yes;";
-                if (infoType == '3') {// 数量结算
-                    var rtn = dialog("../subPower/subctt/stlPower/subctt_QMng.xhtml?strResPkid=" + strResPkid, arg, sfeatureStl);
-                }else if (infoType == '4') {// 材料结算
-                    var rtn = dialog("../subPower/subctt/stlPower/subctt_MMng.xhtml?strResPkid=" + strResPkid, arg, sfeatureStl);
-                }
+                var rtn = dialog("../taskUnit/workorderItemQry.xhtml?strWorkorderInfoPkid=" + pkid + "", arg, sfeature);
             }
         </script>
     </ui:define>
@@ -27,39 +25,32 @@
                 <!--列表维护-->
                 <p:panel header="工单任务">
                     <p:treeTable id="pdtRecentlyPower"
-                                 value="#{sendAndRecTaskQryAction.selfTaskTreeRoot}"
+                                 value="#{workorderExecuteQryAction.selfTaskTreeRoot}"
                                  var="document"
                                  dynamic="true"
                                  cache="false"
                                  emptyMessage="数据记录为空..."
-                                 rowStyleClass="#{document.rowHeaderText eq '工单任务' ? 'rowGreenyellowStyle'
-                                                    :document.rowHeaderText eq '已接收任务' ? 'rowGreenyellowStyle'
-                                                    :document.rowHeaderText eq '已发出任务' ? 'rowLavenderStyle' :null}"
+                                 rowStyleClass="#{document.workorderInfoId eq null ? null :'rowGreenyellowStyle'}"
                                  scrollable="true"
                                  scrollHeight="500">
                         <p:column   style="width:200px;text-align:left;">
                             <h:outputText value="#{document.rowHeaderText}"/>
                         </p:column>
-                        <p:column headerText="工单编号" style="width:200px;text-align:left;">
+                        <p:column headerText="工单编号" style="text-align:left;" width="10%">
                             <h:outputText value="#{document.workorderInfoId}"/>
                         </p:column>
-                        <p:column headerText="工单名称" style="width:250px;text-align:left;">
+                        <p:column headerText="工单名称" style=" text-align:left;" width="30%">
                             <h:outputText value="#{document.workorderInfoName}"/>
                         </p:column>
-                        <p:column headerText="任务接受者" style="width:250px;text-align:left;">
-                            <h:outputText value="#{document.recvTaskPartName}"/>
-                        </p:column>
-                        <p:column headerText="任务录入时间" style="width:250px;text-align:left;">
+                        <p:column headerText="任务录入时间" style="text-align:left;" width="20%">
                             <h:outputText value="#{document.createdTime}"/>
                         </p:column>
-                        <p:column headerText="操作" style=" text-align: center;">
+                        <p:column headerText="操作" style="  text-align: center;" width="10%">
                             <p:commandButton
                                     icon="ui-icon-triangle-1-e"
                                     style="height:16px;width:30px;"
-                                    rendered="#{document.rowHeaderText eq '工单任务' ? 'false':
-                                                  document.rowHeaderText eq '已接收任务' ? 'false':
-                                                  document.rowHeaderText eq '已发出任务' ? 'false':'true'}"
-                                    onclick="actSelectStlPower('#{document.workorderInfoPkid}')">
+                                    rendered="#{document.workorderInfoPkid eq null ? 'false':'true'}"
+                                    onclick="actSelect('#{document.workorderInfoPkid}')">
                             </p:commandButton>
                         </p:column>
                     </p:treeTable>

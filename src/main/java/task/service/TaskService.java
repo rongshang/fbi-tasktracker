@@ -24,30 +24,30 @@ public class TaskService {
     @Autowired
     private MyTaskMapper myTaskMapper;
 
-    public List<TaskShow> getSendTaskShowList(String strOperPkidPara) {
-        return myTaskMapper.getSendTaskShowList(strOperPkidPara);
+    public List<TaskShow> getTodoTaskShowList(String strOperPkidPara) {
+        return myTaskMapper.getTodoTaskShowList(strOperPkidPara);
     }
 
-    public List<TaskShow> getRecTaskShowList(String strOperPkidPara) {
-        return myTaskMapper.getRecTaskShowList(strOperPkidPara);
+    public List<TaskShow> getDoneTaskShowList(String strOperPkidPara) {
+        return myTaskMapper.getDoneTaskShowList(strOperPkidPara);
     }
 
-    public List<TaskShow> initSendTaskShowList() {
+    public List<TaskShow> initDoneTaskShowList() {
         List<TaskShow> taskShowList = new ArrayList<TaskShow>();
         //通过OperatorManager
         String strOperPkidTemp = ToolUtil.getOperatorManager().getOperator().getPkid();
 
-        List<TaskShow> detailTaskShowListTemp = getSendTaskShowList(strOperPkidTemp);
+        List<TaskShow> detailTaskShowListTemp = getDoneTaskShowList(strOperPkidTemp);
 
         return detailTaskShowListTemp;
     }
 
-    public List<TaskShow> initRecTaskShowList() {
+    public List<TaskShow> initTodoTaskShowList() {
         List<TaskShow> taskShowList = new ArrayList<TaskShow>();
         //通过OperatorManager
         String strOperPkidTemp = ToolUtil.getOperatorManager().getOperator().getPkid();
 
-        List<TaskShow> detailTaskShowListTemp = getRecTaskShowList(strOperPkidTemp);
+        List<TaskShow> detailTaskShowListTemp = getTodoTaskShowList(strOperPkidTemp);
 
         return detailTaskShowListTemp;
     }
