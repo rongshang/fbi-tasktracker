@@ -177,10 +177,10 @@ public class WorkorderAppointService {
      * 查询每个部门下有哪些人  页面中工单指派时用
      * @return List<DeptOperShow>
      */
-    public List<DeptOperShow> getDeptOper(){
+    public List<DeptOperShow> getDeptOperList(){
         List<DeptOperShow> deptOperShows = null;
         try{
-            deptOperShows = myDeptAndOperMapper.getDeptOper();
+            deptOperShows = myDeptAndOperMapper.getDeptOperList();
         }catch (Exception e){
             logger.info("WorkorderAssignService类中的getDeptOper异常:"+e.toString());
         }

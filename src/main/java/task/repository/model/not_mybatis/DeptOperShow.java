@@ -10,8 +10,10 @@ public class DeptOperShow {
     private String type;
     private String isDisabled;
     private Boolean isSeled;
+    private String deptPkid;
     private String deptId;
     private String deptName;
+    private String operPkid;
     private String operId;
     private String operType;
     private String operName;
@@ -101,5 +103,21 @@ public class DeptOperShow {
 
     public void setOperType(String operType) {
         this.operType = operType;
+    }
+
+    public String getDeptPkid() {
+        return deptPkid;
+    }
+
+    public void setDeptPkid(String deptPkid) {
+        this.deptPkid = deptPkid;
+    }
+
+    public String getOperPkid() {
+        return operPkid;
+    }
+
+    public void setOperPkid(String operPkid) {
+        this.operPkid = operPkid;
     }
 }

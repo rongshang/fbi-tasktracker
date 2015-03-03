@@ -85,10 +85,12 @@ public interface MyDeptAndOperMapper {
      * @return List<DeptOperShow>
      */
     @Select(" select  " +
+            "       d.pkid as deptPkid," +
+            "       d.id as deptId," +
             "       d.name as deptName," +
-            "       d.pkid as deptId," +
-            "       o.name as operName," +
-            "       o.pkid as pkid" +
+            "       o.pkid as operPkid," +
+            "       o.id as operId," +
+            "       o.name as operName" +
             " from " +
             "       dept d " +
             " left join " +
@@ -97,5 +99,5 @@ public interface MyDeptAndOperMapper {
             "       o.dept_pkid = d.pkid" +
             " where " +
             "       ENABLED='1'")
-    List<DeptOperShow> getDeptOper();
+    List<DeptOperShow> getDeptOperList();
 }
