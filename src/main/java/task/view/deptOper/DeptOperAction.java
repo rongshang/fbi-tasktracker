@@ -58,6 +58,7 @@ public class DeptOperAction implements Serializable {
     private List<SelectItem> operIsSuperSIList;
     private List<SelectItem> enableSIList;
     private List<SelectItem> operTypeSIList;
+    private List<SelectItem> selectItemList;
     private String strConfirmPasswd;
     private List<DeptOperShow> deptOperShowFowExcelList;
     private Map beansMap;
@@ -75,6 +76,7 @@ public class DeptOperAction implements Serializable {
             recursiveForExcel("ROOT");
             beansMap.put("deptOperShowFowExcelList", deptOperShowFowExcelList);
             initDeptOperList();
+            selectItemList=deptOperService.getDeptOperSelectItemList();
         }catch (Exception e){
             logger.error("初始化失败", e);
         }
@@ -108,7 +110,8 @@ public class DeptOperAction implements Serializable {
             operTypeSIList.add(new SelectItem("2", "业务人员"));
             operTypeSIList.add(new SelectItem("1", "系统管理员"));
             deptSIList=new ArrayList<>();
-            List<Dept> deptListTemp=deptOperService.getDeptList();
+            DeptOperShow deptOperShowPara=new DeptOperShow();
+            List<Dept> deptListTemp=deptOperService.getDeptListByModelShow(deptOperShowPara);
             for(Dept dept:deptListTemp){
                 deptSIList.add(new SelectItem(dept.getPkid(),dept.getName()));
             }
@@ -492,5 +495,13 @@ public class DeptOperAction implements Serializable {
 
     public void setDeptOperShowList(List<DeptOperShow> deptOperShowList) {
         this.deptOperShowList = deptOperShowList;
+    }
+
+    public List<SelectItem> getSelectItemList() {
+        return selectItemList;
+    }
+
+    public void setSelectItemList(List<SelectItem> selectItemList) {
+        this.selectItemList = selectItemList;
     }
 }

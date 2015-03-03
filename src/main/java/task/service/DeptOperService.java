@@ -6,10 +6,7 @@ import org.primefaces.model.TreeNode;
 import task.repository.dao.DeptMapper;
 import task.repository.dao.OperMapper;
 import task.repository.dao.not_mybatis.MyDeptAndOperMapper;
-import task.repository.model.Dept;
-import task.repository.model.DeptExample;
-import task.repository.model.Oper;
-import task.repository.model.OperExample;
+import task.repository.model.*;
 import task.repository.model.not_mybatis.DeptOperShow;
 import org.primefaces.model.UploadedFile;
 import org.springframework.stereotype.Service;
@@ -18,7 +15,10 @@ import skyline.util.ToolUtil;
 
 import javax.annotation.Resource;
 import javax.faces.context.FacesContext;
+import javax.faces.model.SelectItem;
+import javax.faces.model.SelectItemGroup;
 import java.io.*;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -32,6 +32,8 @@ public class DeptOperService {
     private DeptMapper deptMapper;
     @Resource
     private OperMapper operMapper;
+
+    List<SelectItem> selectItemList;
 
     public TreeNode getDeptOperTreeNode(DeptOperShow deptOperShowPara){
         TreeNode deptOperShowRoot = new DefaultTreeNode(deptOperShowPara, null);
@@ -95,19 +97,86 @@ public class DeptOperService {
         return myDeptAndOperMapper.selectDeptAndOperRecords(parentPkidPara);
     }
 
-    public List<Dept> getDeptList() {
+    public List<Dept> getDeptListByModelShow(DeptOperShow deptOperShowPara) {
         DeptExample example=new DeptExample();
+        DeptExample.Criteria criteria = example.createCriteria();
+        //可以为NULL的项
+        // 部门ID
+        if(!ToolUtil.getStrIgnoreNull(deptOperShowPara.getDeptId()).equals("")){
+            criteria.andIdLike("%"+deptOperShowPara.getDeptId()+"%");
+        }
+        // 部门名称
+        if(!ToolUtil.getStrIgnoreNull(deptOperShowPara.getDeptName()).equals("")){
+            criteria.andNameLike("%"+deptOperShowPara.getDeptName()+"%");
+        }
+        // 接收者Pkid
+        if(!ToolUtil.getStrIgnoreNull(deptOperShowPara.getDeptParentPkid()).equals("")){
+            criteria.andParentpkidEqualTo(deptOperShowPara.getDeptParentPkid());
+        }
+        // 备注内容
+        if(!ToolUtil.getStrIgnoreNull(deptOperShowPara.getDeptRemark()).equals("")){
+            criteria.andRemarkLike("%"+ deptOperShowPara.getDeptRemark()+"%");
+        }
+        example.setOrderByClause("NAME ASC") ;
         return deptMapper.selectByExample(example);
     }
-    public List<Oper> getOperList(){
+    public List<Oper> getOperListByModelShow(DeptOperShow deptOperShowPara){
         OperExample example=new OperExample();
+        OperExample.Criteria criteria = example.createCriteria();
+        //可以为NULL的项
+        // 部门ID
+        if(!ToolUtil.getStrIgnoreNull(deptOperShowPara.getOperId()).equals("")){
+            criteria.andIdLike("%"+deptOperShowPara.getOperId()+"%");
+        }
+        // 部门名称
+        if(!ToolUtil.getStrIgnoreNull(deptOperShowPara.getOperName()).equals("")){
+            criteria.andNameLike("%"+deptOperShowPara.getOperName()+"%");
+        }
+        // 接收者Pkid
+        if(!ToolUtil.getStrIgnoreNull(deptOperShowPara.getDeptPkid()).equals("")){
+            criteria.andDeptPkidEqualTo(deptOperShowPara.getDeptPkid());
+        }
+        // 备注内容
+        if(!ToolUtil.getStrIgnoreNull(deptOperShowPara.getOperRemark()).equals("")){
+            criteria.andRemarkLike("%"+ deptOperShowPara.getOperRemark()+"%");
+        }
         example.setOrderByClause("NAME ASC") ;
         return operMapper.selectByExample(example);
     }
     public List<DeptOperShow> getDeptOperShowList(){
         return myDeptAndOperMapper.getDeptAndOperShowList();
     }
+    private void recursiveOperTreeNode(String strParentPkidPara) {
+        SelectItemGroup selectItemGroup=null;
+        //map key是部门value是部门的人
+        Map<String,List<SelectItem>> map = new HashMap<String,List<SelectItem>>();
 
+        DeptOperShow deptOperShow_DeptPara =new DeptOperShow();
+        DeptOperShow deptOperShow_OperPara =new DeptOperShow();
+
+        List<Dept> depListTemp;
+        List<Oper> operListTemp;
+        SelectItem [] selectItemList_Oper;
+
+        deptOperShow_DeptPara.setDeptParentPkid(strParentPkidPara);
+        depListTemp = getDeptListByModelShow(deptOperShow_DeptPara);
+        for (Dept deptUnit : depListTemp) {
+            deptOperShow_OperPara.setDeptPkid(deptUnit.getPkid());
+            operListTemp = getOperListByModelShow(deptOperShow_OperPara);
+            selectItemList_Oper =new SelectItem[operListTemp.size()];
+            for(int i=0;i<operListTemp.size();i++){
+                selectItemList_Oper[i]=new SelectItem(operListTemp.get(i).getPkid(),operListTemp.get(i).getName());
+            }
+            selectItemGroup.setSelectItems(selectItemList_Oper);
+            selectItemList.add(selectItemGroup);
+            recursiveOperTreeNode(deptUnit.getPkid());
+        }
+    }
+
+    public List<SelectItem> getDeptOperSelectItemList() {
+        recursiveOperTreeNode("ROOT");
+        return selectItemList;
+    }
 
     public Object selectRecordByPkid(DeptOperShow deptOperShowPara) {
         if ("0".equals(deptOperShowPara.getType())){

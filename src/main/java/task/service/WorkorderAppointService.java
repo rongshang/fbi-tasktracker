@@ -12,6 +12,7 @@ import task.common.enums.EnumFirstAppointFlag;
 import task.common.enums.EnumTaskFinishFlag;
 import task.repository.dao.OperMapper;
 import task.repository.dao.WorkorderAppointMapper;
+import task.repository.dao.WorkorderInfoMapper;
 import task.repository.dao.not_mybatis.MyDeptAndOperMapper;
 import task.repository.dao.not_mybatis.MyWorkorderInfoMapper;
 import task.repository.model.WorkorderAppoint;

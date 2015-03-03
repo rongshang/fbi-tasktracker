@@ -7,6 +7,7 @@ import skyline.util.ToolUtil;
 import task.repository.model.Oper;
 import task.repository.model.MenuAppoint;
 import task.repository.model.Ptmenu;
+import task.repository.model.not_mybatis.DeptOperShow;
 import task.repository.model.not_mybatis.MenuAppointShow;
 import task.service.DeptOperService;
 import task.service.MenuService;
@@ -85,7 +86,8 @@ public class OperAppointMenuAction implements Serializable{
     private void initOper(){
         menuAppointShowList.clear();
         // 确定人员列表
-        List<Oper> operListTemp=deptOperService.getOperList();
+        DeptOperShow deptOperShowPara=new DeptOperShow();
+        List<Oper> operListTemp=deptOperService.getOperListByModelShow(deptOperShowPara);
         // 人员列表对应的资源信息
         List<MenuAppointShow> operMenuShowListOfMenuAppoint =
                 operMenuService.getMenuAppointShowList(new MenuAppointShow());
