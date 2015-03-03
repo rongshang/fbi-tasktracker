@@ -53,24 +53,24 @@ public class WorkorderAppointService {
     public List<WorkorderAppoint> getWorkorderAppointListByModelShow(WorkorderAppointShow workorderAppointShowPara) {
         WorkorderAppointExample example= new WorkorderAppointExample();
         WorkorderAppointExample.Criteria criteria = example.createCriteria();
-        //å¯ä»¥ä¸ºNULLçš„é¡¹
-        // å·¥å•ä¸»é¢˜
+        //¿ÉÒÔÎªNULLµÄÏî
+        // ¹¤µ¥Ö÷Ìâ
         if(!ToolUtil.getStrIgnoreNull(workorderAppointShowPara.getInfoPkid()).equals("")){
             criteria.andInfoPkidEqualTo(workorderAppointShowPara.getInfoPkid());
         }
-        // åŒå·¥å•ç¬¬ä¸€æ¬¡æŒ‡æ´¾
+        // Í¬¹¤µ¥µÚÒ»´ÎÖ¸ÅÉ
         if(!ToolUtil.getStrIgnoreNull(workorderAppointShowPara.getFirstAppointFlag()).equals("")){
             criteria.andFirstAppointFlagEqualTo(workorderAppointShowPara.getFirstAppointFlag());
         }
-        // æ¥æ”¶è€…Pkid
+        // ½ÓÊÕÕßPkid
         if(!ToolUtil.getStrIgnoreNull(workorderAppointShowPara.getRecvTaskPartPkid()).equals("")){
             criteria.andRecvTaskPartPkidEqualTo(workorderAppointShowPara.getRecvTaskPartPkid());
         }
-        // å‘é€ç»™Pkid
+        // ·¢ËÍ¸øPkid
         if(!ToolUtil.getStrIgnoreNull(workorderAppointShowPara.getSendTaskPartPkid()).equals("")){
             criteria.andSendTaskPartPkidEqualTo(workorderAppointShowPara.getSendTaskPartPkid());
         }
-        // å¤‡æ³¨å†…å®¹
+        // ±¸×¢ÄÚÈİ
         if(!ToolUtil.getStrIgnoreNull(workorderAppointShowPara.getRemark()).equals("")){
             criteria.andRemarkLike("%"+ workorderAppointShowPara.getRemark()+"%");
         }
@@ -147,17 +147,17 @@ public class WorkorderAppointService {
 
     /***
      * atuo: huzy
-     * æ ¹æ®å·¥å•IDæˆ–è€…å·¥å•åè·å–è¯¥æ¡ä»¶çš„å·¥å•ä¿¡æ¯
-     * param:orderPkId(å·¥å•id),orderName(å·¥å•å)
+     * ¸ù¾İ¹¤µ¥ID»òÕß¹¤µ¥Ãû»ñÈ¡¸ÃÌõ¼şµÄ¹¤µ¥ĞÅÏ¢
+     * param:orderPkId(¹¤µ¥id),orderName(¹¤µ¥Ãû)
      * @return List<WorkorderInfo>
-     * huzyæ³¨é‡Šæ‰
+     * huzy×¢ÊÍµô
      */
 //    public List<WorkorderInfo> getWorkorderInfoByIdOrName(WorkorderInfo workorderInfo){
 //        List<WorkorderInfo> workorderInfos = null;
 //        try{
 //            WorkorderInfoExample example = new WorkorderInfoExample();
-//            example.createCriteria().andArchivedFlagEqualTo(EnumArchivedFlag.ARCHIVED_FLAG0.getCode()); //0 æ²¡æœ‰åˆ é™¤
-//            example.createCriteria().andFinishFlagEqualTo(EnumArchivedFlag.ARCHIVED_FLAG1.getCode());//1 ä»¥å½•å…¥å®Œæˆ
+//            example.createCriteria().andArchivedFlagEqualTo(EnumArchivedFlag.ARCHIVED_FLAG0.getCode()); //0 Ã»ÓĞÉ¾³ı
+//            example.createCriteria().andFinishFlagEqualTo(EnumArchivedFlag.ARCHIVED_FLAG1.getCode());//1 ÒÔÂ¼ÈëÍê³É
 //            WorkorderInfoExample.Criteria criteria = example.createCriteria();
 //            if(StringUtils.isNotBlank(workorderInfo.getId())){
 //                criteria.andIdLike("%" + workorderInfo.getId() + "%");
@@ -168,14 +168,14 @@ public class WorkorderAppointService {
 //            example.setOrderByClause("ID ASC") ;
 //            workorderInfos = workorderInfoMapper.selectByExample(example);
 //        }catch (Exception e){
-//            logger.info("WorkorderAssignServiceç±»ä¸­çš„getWorkorderInfoByPkIdOrNameå¼‚å¸¸:"+e.toString());
+//            logger.info("WorkorderAssignServiceÀàÖĞµÄgetWorkorderInfoByPkIdOrNameÒì³£:"+e.toString());
 //        }
 //        return workorderInfos;
 //    }
 
     /***
      * atuo: huzy
-     * æŸ¥è¯¢æ¯ä¸ªéƒ¨é—¨ä¸‹æœ‰å“ªäº›äºº  é¡µé¢ä¸­å·¥å•æŒ‡æ´¾æ—¶ç”¨
+     * ²éÑ¯Ã¿¸ö²¿ÃÅÏÂÓĞÄÄĞ©ÈË  Ò³ÃæÖĞ¹¤µ¥Ö¸ÅÉÊ±ÓÃ
      * @return List<DeptOperShow>
      */
     public List<DeptOperShow> getDeptOper(){
@@ -183,10 +183,17 @@ public class WorkorderAppointService {
         try{
             deptOperShows = myDeptAndOperMapper.getDeptOper();
         }catch (Exception e){
-            logger.info("WorkorderAssignServiceç±»ä¸­çš„getDeptOperå¼‚å¸¸:"+e.toString());
+            logger.info("WorkorderAssignServiceÀàÖĞµÄgetDeptOperÒì³£:"+e.toString());
         }
         return deptOperShows;
     }
 
+    public  WorkorderAppoint   selectBypkid(String  pkid ){
+        WorkorderAppoint workorderAppoint = workorderAppointMapper.selectByPrimaryKey(pkid);
+        return  workorderAppoint;
+    }
+    public void  updateBypkid(WorkorderAppoint workorderAppoint ){
+        workorderAppointMapper.updateByPrimaryKey(workorderAppoint);
+    }
 
 }

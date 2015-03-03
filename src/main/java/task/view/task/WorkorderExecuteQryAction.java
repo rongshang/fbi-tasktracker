@@ -1,7 +1,10 @@
 package task.view.task;
 
+import skyline.util.MessageUtil;
+import task.repository.model.WorkorderAppoint;
 import task.repository.model.not_mybatis.TaskShow;
 import task.service.TaskService;
+import task.service.WorkorderAppointService;
 import org.primefaces.model.DefaultTreeNode;
 import org.primefaces.model.TreeNode;
 import org.slf4j.Logger;
@@ -27,9 +30,12 @@ public class WorkorderExecuteQryAction {
     private static final Logger logger = LoggerFactory.getLogger(WorkorderExecuteQryAction.class);
     @ManagedProperty(value = "#{taskService}")
     private TaskService taskService;
+    @ManagedProperty(value = "#{workorderAppointService}")
+    private WorkorderAppointService workorderAppointService;
 
     private TreeNode selfTaskTreeRoot;
     private List<TaskShow> taskList;
+
 
     @PostConstruct
     public void init() {
@@ -48,11 +54,18 @@ public class WorkorderExecuteQryAction {
                 taskShowFront1.setRowHeaderText("待执行任务("+todoSize+")");
             }
             TaskShow taskShowFront2 = new TaskShow();
-            taskShowFront2.setRowHeaderText("已执行任务");
-            TreeNode donetask = new DefaultTreeNode(taskShowFront2, srTask);
+            taskShowFront2.setRowHeaderText("执行中任务");
+            TreeNode doingtask = new DefaultTreeNode(taskShowFront2, srTask);
+            String doingSize =  getChildDoingNode(doingtask);
+            if(!doingSize.equals("0")){
+                taskShowFront2.setRowHeaderText("执行中任务("+doingSize+")");
+            }
+            TaskShow taskShowFront3 = new TaskShow();
+            taskShowFront3.setRowHeaderText("已执行任务");
+            TreeNode donetask = new DefaultTreeNode(taskShowFront3, srTask);
             String doneSize =  getChildDoneNode(donetask);
             if(!doneSize.equals("0")){
-                taskShowFront2.setRowHeaderText("已执行任务("+doneSize+")");
+                taskShowFront3.setRowHeaderText("已执行任务("+doneSize+")");
             }
         } catch (Exception e) {
             logger.error("初始化失败", e);
@@ -71,7 +84,8 @@ public class WorkorderExecuteQryAction {
                 taskShow.setWorkorderInfoPkid(taskShowTemp.getWorkorderInfoPkid());
                 taskShow.setWorkorderInfoId(taskShowTemp.getWorkorderInfoId());
                 taskShow.setWorkorderInfoName(taskShowTemp.getWorkorderInfoName());
-//                taskShow.setRecvTaskFinishFlag(EnumTaskFinishFlag.getValueByKey(taskShowTemp.getRecvTaskFinishFlag()).getTitle());
+                taskShow.setWorkorderAppointPkid(taskShowTemp.getWorkorderAppointPkid());
+                taskShow.setRecvTaskFinishFlag(EnumTaskFinishFlag.TASK_FINISH_FLAG2.getCode());
                 taskShow.setCreatedTime(taskShowTemp.getCreatedTime());
                 taskShow.setRecvTaskPartName(taskShowTemp.getRecvTaskPartName());
                 new DefaultTreeNode(taskShow, doneTask);
@@ -93,7 +107,8 @@ public class WorkorderExecuteQryAction {
                 taskShow.setWorkorderInfoPkid(taskShowTemp.getWorkorderInfoPkid());
                 taskShow.setWorkorderInfoId(taskShowTemp.getWorkorderInfoId());
                 taskShow.setWorkorderInfoName(taskShowTemp.getWorkorderInfoName());
-//                taskShow.setRecvTaskFinishFlag(EnumTaskFinishFlag.getValueByKey(taskShowTemp.getRecvTaskFinishFlag()).getTitle());
+                taskShow.setWorkorderAppointPkid(taskShowTemp.getWorkorderAppointPkid());
+                taskShow.setRecvTaskFinishFlag(EnumTaskFinishFlag.TASK_FINISH_FLAG0.getCode());
                 taskShow.setCreatedTime(taskShowTemp.getCreatedTime());
                 taskShow.setRecvTaskPartName(taskShowTemp.getRecvTaskPartName());
                 new DefaultTreeNode(taskShow, todoTask);
@@ -101,7 +116,78 @@ public class WorkorderExecuteQryAction {
         }
         return resnum;
     }
-
+    private String getChildDoingNode(TreeNode doingTask)
+            throws Exception {
+        List<TaskShow> taskListTodo = taskService.initDoingTaskShowList();
+        String resnum = "0";
+        if (taskListTodo.size() > 0) {
+            resnum=String.valueOf(taskListTodo.size());
+            for (int i = 0; i < taskListTodo.size(); i++) {
+                TaskShow taskShow = new TaskShow();
+                TaskShow taskShowTemp = taskListTodo.get(i);
+                taskShow.setWorkorderInfoPkid(taskShowTemp.getWorkorderInfoPkid());
+                taskShow.setWorkorderInfoId(taskShowTemp.getWorkorderInfoId());
+                taskShow.setWorkorderInfoName(taskShowTemp.getWorkorderInfoName());
+                taskShow.setWorkorderAppointPkid(taskShowTemp.getWorkorderAppointPkid());
+                taskShow.setRecvTaskFinishFlag(EnumTaskFinishFlag.TASK_FINISH_FLAG1.getCode());
+                taskShow.setCreatedTime(taskShowTemp.getCreatedTime());
+                taskShow.setRecvTaskPartName(taskShowTemp.getRecvTaskPartName());
+                new DefaultTreeNode(taskShow, doingTask);
+            }
+        }
+        return resnum;
+    }
+    public void onClickDoingAction(String pkid){
+       try{
+            if ((pkid != "") ||( pkid !=null )) {
+                // 状态标志：
+                WorkorderAppoint workorderAppoint = workorderAppointService.selectBypkid(pkid);
+                workorderAppoint.setRecvTaskFinishFlag(EnumTaskFinishFlag.TASK_FINISH_FLAG1.getCode());
+                workorderAppointService.updateBypkid(workorderAppoint);
+                MessageUtil.addInfo("操作成功！");
+                init();
+            }
+        }catch(Exception e){
+            logger.error("操作失败", e);
+         MessageUtil.addError("操作失败");
+        }
+    return  ;
+    }
+    public void onClickDoneAction(String pkid){
+        try{
+            if ((pkid != "") ||( pkid !=null )) {
+                // 状态标志：
+                WorkorderAppoint workorderAppoint = workorderAppointService.selectBypkid(pkid);
+                workorderAppoint.setRecvTaskFinishFlag(EnumTaskFinishFlag.TASK_FINISH_FLAG2.getCode());
+                workorderAppointService.updateBypkid(workorderAppoint);
+                MessageUtil.addInfo("操作成功！");
+                init();
+            }
+        }catch(Exception e){
+            logger.error("操作失败", e);
+            MessageUtil.addError("操作失败");
+        }
+        return  ;
+    }
+    public void onClickUndoAction(String pkid){
+        try{
+            if ((pkid != "") ||( pkid !=null )) {
+                // 状态标志：
+                WorkorderAppoint workorderAppoint = workorderAppointService.selectBypkid(pkid);
+                workorderAppoint.setRecvTaskFinishFlag(EnumTaskFinishFlag.TASK_FINISH_FLAG0.getCode());
+                workorderAppointService.updateBypkid(workorderAppoint);
+                MessageUtil.addInfo("操作成功！");
+                init();
+            }
+        }catch(Exception e){
+            logger.error("操作失败", e);
+            MessageUtil.addError("操作失败");
+        }
+        return  ;
+    }
+    public  String  onclickUrl(String pkid){
+        return "/UI/task/appoint/workorderAppointOperMng.xhtml?faces-redirect=true&pkid="+pkid;
+    }
     public TreeNode getSelfTaskTreeRoot() {
         return selfTaskTreeRoot;
     }
@@ -124,5 +210,13 @@ public class WorkorderExecuteQryAction {
 
     public void setStlPowerList(List<TaskShow> stlPowerList) {
         this.taskList = stlPowerList;
+    }
+
+    public WorkorderAppointService getWorkorderAppointService() {
+        return workorderAppointService;
+    }
+
+    public void setWorkorderAppointService(WorkorderAppointService workorderAppointService) {
+        this.workorderAppointService = workorderAppointService;
     }
 }

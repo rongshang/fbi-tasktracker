@@ -31,6 +31,9 @@ public class TaskService {
     public List<TaskShow> getDoneTaskShowList(String strOperPkidPara) {
         return myTaskMapper.getDoneTaskShowList(strOperPkidPara);
     }
+    public List<TaskShow> getDoingTaskShowList(String strOperPkidPara) {
+        return myTaskMapper.getDoingTaskShowList(strOperPkidPara);
+    }
 
     public List<TaskShow> initDoneTaskShowList() {
         List<TaskShow> taskShowList = new ArrayList<TaskShow>();
@@ -51,6 +54,14 @@ public class TaskService {
 
         return detailTaskShowListTemp;
     }
+    public List<TaskShow> initDoingTaskShowList() {
+        List<TaskShow> taskShowList = new ArrayList<TaskShow>();
+        //Í¨¹ýOperatorManager
+        String strOperPkidTemp = ToolUtil.getOperatorManager().getOperator().getPkid();
 
+        List<TaskShow> detailTaskShowListTemp = getDoingTaskShowList(strOperPkidTemp);
+
+        return detailTaskShowListTemp;
+    }
 
 }

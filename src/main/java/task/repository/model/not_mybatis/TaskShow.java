@@ -18,6 +18,7 @@ public class TaskShow {
     private String lastUpdBy;
     private String lastUpdTime;
     private String remark;
+    private String workorderAppointPkid;
 
     public String getRowHeaderText() {
         return rowHeaderText;
@@ -153,5 +154,13 @@ public class TaskShow {
 
     public void setRemark(String remark) {
         this.remark = remark;
+    }
+
+    public String getWorkorderAppointPkid() {
+        return workorderAppointPkid;
+    }
+
+    public void setWorkorderAppointPkid(String workorderAppointPkid) {
+        this.workorderAppointPkid = workorderAppointPkid;
     }
 }
