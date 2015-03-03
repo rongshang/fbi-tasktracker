@@ -3,7 +3,6 @@
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:p="http://primefaces.org/ui"
-                xmlns:fn="http://java.sun.com/jsp/jstl/functions"
                 template="/templates/ui.xhtml">
     <ui:define name="head">
         <link type="text/css" href="#{request.contextPath}/css/task.css" rel="stylesheet"/>
@@ -17,7 +16,6 @@
                         event.srcElement.click();
                 }
             }
-
         </script>
     </ui:define>
     <ui:define name="content">
@@ -107,20 +105,25 @@
                         <h:outputText value="#{record.lastUpdTime}"/>
                     </p:column>
                     <p:column headerText="指派人" style="width:120px;text-align:left" >
-                        <p:selectOneMenu id="appointUser" effect="fold" editable="true" filter="true" filterMatchMode="startsWith" value="#{workorderAppointAction.workorderAppoint.sendTaskPartPkid}">
+                        <p:selectOneMenu id="appointUser" effect="fold" editable="true"
+                                         filter="true" filterMatchMode="startsWith"
+                                         value="#{workorderAppointAction.workorderAppoint.sendTaskPartPkid}">
                             <f:selectItem itemLabel="请选择指派人" itemValue="" />
                             <f:selectItems value="#{workorderAppointAction.selectItems}" />
                         </p:selectOneMenu>
                     </p:column>
                     <p:column headerText="接收人" style="width:120px;text-align:left" >
-                        <p:selectOneMenu id="acceptUser" effect="fold" editable="true" filter="true" filterMatchMode="startsWith" value="#{workorderAppointAction.workorderAppoint.sendTaskPartPkid}">
+                        <p:selectOneMenu id="acceptUser" effect="fold" editable="true"
+                                         filter="true" filterMatchMode="startsWith"
+                                         value="#{workorderAppointAction.workorderAppoint.sendTaskPartPkid}">
                             <f:selectItem itemLabel="请选择接收人" itemValue="" />
                             <f:selectItems value="#{workorderAppointAction.selectItems}" />
                         </p:selectOneMenu>
                     </p:column>
                     <p:column headerText="操作" style="width:60px;text-align: center;">
                         <p:commandButton icon="ui-icon-triangle-1-e"
-                                         style="height:18px;width:18px" ajax="false" action="#{workorderAppointAction.getURL(record)}">
+                                         style="height:18px;width:18px" ajax="false"
+                                         action="#{workorderAppointAction.getURL(record)}">
                         </p:commandButton>
                     </p:column>
                 </p:dataTable>

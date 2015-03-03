@@ -2,6 +2,7 @@ package task.service;
 
 import org.apache.commons.lang.StringUtils;
 import task.common.enums.EnumInputFinishFlag;
+import task.repository.dao.OperMapper;
 import task.repository.dao.WorkorderInfoMapper;
 import task.repository.dao.not_mybatis.MyWorkorderInfoMapper;
 import task.repository.dao.not_mybatis.MyDeptAndOperMapper;
@@ -29,13 +30,13 @@ public class WorkorderInfoService {
     @Autowired
     private MyWorkorderInfoMapper myWorkorderInfoMapper;
     @Autowired
-    private MyDeptAndOperMapper myDeptAndOperMapper;
+    private OperMapper operMapper;
 
     public String getUserName(String operPkidPara){
         if(ToolUtil.getStrIgnoreNull(operPkidPara).equals("")){
             return "";
         }else {
-            return myDeptAndOperMapper.getUserName(ToolUtil.getStrIgnoreNull(operPkidPara));
+            return operMapper.selectByPrimaryKey(operPkidPara).getName();
         }
     }
 

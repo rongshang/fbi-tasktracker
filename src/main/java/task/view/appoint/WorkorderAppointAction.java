@@ -18,8 +18,6 @@ import task.repository.model.not_mybatis.WorkorderInfoShow;
 import task.service.DeptOperService;
 import task.service.WorkorderAppointService;
 import task.service.WorkorderInfoService;
-
-
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
@@ -28,7 +26,9 @@ import javax.faces.model.SelectItem;
 import javax.faces.model.SelectItemGroup;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Administrator on 2015/2/13.
@@ -40,6 +40,13 @@ import java.util.List;
 @ViewScoped
 public class WorkorderAppointAction {
     private static final Logger logger = LoggerFactory.getLogger(WorkorderAppointAction.class);
+    @ManagedProperty(value = "#{workorderAppointService}")
+    private WorkorderAppointService workorderAppointService;
+    @ManagedProperty(value = "#{workorderInfoService}")
+    private WorkorderInfoService workorderInfoService;
+    @ManagedProperty(value = "#{deptOperService}")
+    private DeptOperService deptOperService;
+
     private WorkorderInfoShow workorderInfoShow;
     private WorkorderInfo workorderInfo;
     //workorderAppointOperMng.xhtml(工单指派页面)选中多条数据
@@ -49,15 +56,6 @@ public class WorkorderAppointAction {
     private List<SelectItem> selectItems;
     private Map<String,String> cities = new HashMap<String, String>();
     private WorkorderAppoint workorderAppoint;
-
-
-
-    @ManagedProperty(value = "#{workorderAppointService}")
-    private WorkorderAppointService workorderAppointService;
-    @ManagedProperty(value = "#{workorderInfoService}")
-    private WorkorderInfoService workorderInfoService;
-    @ManagedProperty(value = "#{deptOperService}")
-    private DeptOperService deptOperService;
 
     private TreeNode deptOperShowRoot;
     private WorkorderInfoShow workorderInfoShow;

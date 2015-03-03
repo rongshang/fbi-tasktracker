@@ -49,13 +49,6 @@ public interface MyDeptAndOperMapper {
             "     ) " +
             " order by name asc")
     List<DeptOperShow> selectDeptAndOperRecords(@Param("parentPkid") String parentPkidPara);
-    @Select("   select " +
-            "       NAME as username" +
-            "   from" +
-            "       oper" +
-            "   where " +
-            "       PKID=#{operPkidPara} ")
-    String getUserName(@Param("operPkidPara") String operPkidPara);
 
     @Select("   (select " +
             "        pkid, " +
@@ -78,12 +71,4 @@ public interface MyDeptAndOperMapper {
             " ) " +
             " order by name asc")
     List<DeptOperShow> getDeptAndOperShowList();
-
-    /***
-     * atuo: huzy
-     * 查询每个部门下有哪些人  页面中工单指派时用
-     * @return List<DeptOperShow>
-     */
-    @Select("select  d.name as deptName, d.pkid as deptId,o.name as operName,o.pkid as pkid from dept d left join oper o on o.dept_pkid = d.pkid where ENABLED='1'  order by d.pkid ")
-    List<DeptOperShow> getDeptOper();
 }

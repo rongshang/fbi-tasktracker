@@ -36,7 +36,6 @@ public class WorkorderExecuteQryAction {
     private TreeNode selfTaskTreeRoot;
     private List<TaskShow> taskList;
 
-
     @PostConstruct
     public void init() {
         //整个任务列表

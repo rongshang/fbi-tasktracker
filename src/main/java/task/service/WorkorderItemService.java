@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import skyline.util.ToolUtil;
 import task.common.enums.EnumArchivedFlag;
 import task.common.enums.EnumOriginFlag;
+import task.repository.dao.OperMapper;
 import task.repository.dao.WorkorderItemMapper;
 import task.repository.dao.not_mybatis.MyDeptAndOperMapper;
 import task.repository.dao.not_mybatis.MyWorkorderItemMapper;
@@ -30,13 +31,13 @@ public class WorkorderItemService {
     @Resource
     private MyWorkorderItemMapper myWorkorderItemMapper;
     @Autowired
-    private MyDeptAndOperMapper myDeptAndOperMapper;
+    private OperMapper operMapper;
 
     public String getUserName(String operPkidPara){
         if(ToolUtil.getStrIgnoreNull(operPkidPara).equals("")){
             return "";
         }else {
-            return myDeptAndOperMapper.getUserName(ToolUtil.getStrIgnoreNull(operPkidPara));
+            return operMapper.selectByPrimaryKey(operPkidPara).getName();
         }
     }
 
