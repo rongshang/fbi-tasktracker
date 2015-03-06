@@ -18,6 +18,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 import javax.faces.model.SelectItemGroup;
 import java.io.*;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,7 +34,7 @@ public class DeptOperService {
     @Resource
     private OperMapper operMapper;
 
-    List<SelectItem> selectItemList;
+    List<SelectItem> selectItemList=new ArrayList<>();
 
     public TreeNode getDeptOperTreeNode(DeptOperShow deptOperShowPara){
         TreeNode deptOperShowRoot = new DefaultTreeNode(deptOperShowPara, null);
@@ -147,10 +148,7 @@ public class DeptOperService {
         return myDeptAndOperMapper.getDeptAndOperShowList();
     }
     private void recursiveOperTreeNode(String strParentPkidPara) {
-        SelectItemGroup selectItemGroup=null;
-        //map key是部门value是部门的人
-        Map<String,List<SelectItem>> map = new HashMap<String,List<SelectItem>>();
-
+        SelectItemGroup selectItemGroup=new SelectItemGroup();
         DeptOperShow deptOperShow_DeptPara =new DeptOperShow();
         DeptOperShow deptOperShow_OperPara =new DeptOperShow();
 
@@ -163,17 +161,38 @@ public class DeptOperService {
         for (Dept deptUnit : depListTemp) {
             deptOperShow_OperPara.setDeptPkid(deptUnit.getPkid());
             operListTemp = getOperListByModelShow(deptOperShow_OperPara);
-            selectItemList_Oper =new SelectItem[operListTemp.size()];
-            for(int i=0;i<operListTemp.size();i++){
-                selectItemList_Oper[i]=new SelectItem(operListTemp.get(i).getPkid(),operListTemp.get(i).getName());
+            selectItemGroup.setValue(deptUnit.getPkid());
+            selectItemGroup.setLabel(deptUnit.getName());
+            int intOperCounts=operListTemp.size();
+            if(intOperCounts>0) {
+                selectItemList_Oper = new SelectItem[operListTemp.size()];
+                for (int i = 0; i < operListTemp.size(); i++) {
+                    selectItemList_Oper[i] = new SelectItem(operListTemp.get(i).getPkid(), operListTemp.get(i).getName());
+                }
+                selectItemGroup.setSelectItems(selectItemList_Oper);
+            }else{
+                selectItemList_Oper = new SelectItem[1];
+                selectItemList_Oper[0]=new SelectItem(null,null);
+                selectItemGroup.setSelectItems(selectItemList_Oper);
             }
-            selectItemGroup.setSelectItems(selectItemList_Oper);
-            selectItemList.add(selectItemGroup);
+            try {
+                SelectItemGroup selectItemGroupTemp=(SelectItemGroup)BeanUtils.cloneBean(selectItemGroup);
+                selectItemList.add(selectItemGroupTemp);
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            } catch (InstantiationException e) {
+                e.printStackTrace();
+            } catch (InvocationTargetException e) {
+                e.printStackTrace();
+            } catch (NoSuchMethodException e) {
+                e.printStackTrace();
+            }
             recursiveOperTreeNode(deptUnit.getPkid());
         }
     }
 
     public List<SelectItem> getDeptOperSelectItemList() {
+        selectItemList.clear();
         recursiveOperTreeNode("ROOT");
         return selectItemList;
     }

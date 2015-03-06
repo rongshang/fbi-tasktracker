@@ -9,8 +9,8 @@ public class TaskShow {
     private String sendTaskPartName;
     private String recvTaskPartPkid;
     private String recvTaskPartName;
-    private String recvTaskFinishFlag;
-    private String recvTaskFinishFlagName;
+    private String recvTaskExecFlag;
+    private String recvTaskExecFlagName;
     private String firstAppointFlag;
     private String firstAppointFlagName;
     private String createdby;
@@ -84,20 +84,20 @@ public class TaskShow {
         this.recvTaskPartPkid = recvTaskPartPkid;
     }
 
-    public String getRecvTaskFinishFlag() {
-        return recvTaskFinishFlag;
+    public String getRecvTaskExecFlag() {
+        return recvTaskExecFlag;
     }
 
-    public void setRecvTaskFinishFlag(String recvTaskFinishFlag) {
-        this.recvTaskFinishFlag = recvTaskFinishFlag;
+    public void setRecvTaskExecFlag(String recvTaskExecFlag) {
+        this.recvTaskExecFlag = recvTaskExecFlag;
     }
 
-    public String getRecvTaskFinishFlagName() {
-        return recvTaskFinishFlagName;
+    public String getRecvTaskExecFlagName() {
+        return recvTaskExecFlagName;
     }
 
-    public void setRecvTaskFinishFlagName(String recvTaskFinishFlagName) {
-        this.recvTaskFinishFlagName = recvTaskFinishFlagName;
+    public void setRecvTaskExecFlagName(String recvTaskExecFlagName) {
+        this.recvTaskExecFlagName = recvTaskExecFlagName;
     }
 
     public String getFirstAppointFlag() {

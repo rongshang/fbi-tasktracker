@@ -152,7 +152,6 @@ public class WorkorderInfoService {
     }
     @Transactional
     public int deleteRecord(String strCttInfoPkidPara){
-        WorkorderInfo workorderInfoTemp = getWorkorderInfoByPkId(strCttInfoPkidPara);
         return workorderInfoMapper.deleteByPrimaryKey(strCttInfoPkidPara);
     }
 

@@ -1,6 +1,7 @@
 package task.view.task;
 
 import skyline.util.MessageUtil;
+import task.common.enums.EnumRecvTaskExecFlag;
 import task.repository.model.WorkorderAppoint;
 import task.repository.model.not_mybatis.TaskShow;
 import task.service.TaskService;
@@ -9,7 +10,6 @@ import org.primefaces.model.DefaultTreeNode;
 import org.primefaces.model.TreeNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import task.common.enums.EnumTaskFinishFlag;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
@@ -84,7 +84,7 @@ public class WorkorderExecuteQryAction {
                 taskShow.setWorkorderInfoId(taskShowTemp.getWorkorderInfoId());
                 taskShow.setWorkorderInfoName(taskShowTemp.getWorkorderInfoName());
                 taskShow.setWorkorderAppointPkid(taskShowTemp.getWorkorderAppointPkid());
-                taskShow.setRecvTaskFinishFlag(EnumTaskFinishFlag.TASK_FINISH_FLAG2.getCode());
+                taskShow.setRecvTaskExecFlag(EnumRecvTaskExecFlag.RECV_TASK_EXEC_FLAG2.getCode());
                 taskShow.setCreatedTime(taskShowTemp.getCreatedTime());
                 taskShow.setRecvTaskPartName(taskShowTemp.getRecvTaskPartName());
                 new DefaultTreeNode(taskShow, doneTask);
@@ -107,7 +107,7 @@ public class WorkorderExecuteQryAction {
                 taskShow.setWorkorderInfoId(taskShowTemp.getWorkorderInfoId());
                 taskShow.setWorkorderInfoName(taskShowTemp.getWorkorderInfoName());
                 taskShow.setWorkorderAppointPkid(taskShowTemp.getWorkorderAppointPkid());
-                taskShow.setRecvTaskFinishFlag(EnumTaskFinishFlag.TASK_FINISH_FLAG0.getCode());
+                taskShow.setRecvTaskExecFlag(EnumRecvTaskExecFlag.RECV_TASK_EXEC_FLAG0.getCode());
                 taskShow.setCreatedTime(taskShowTemp.getCreatedTime());
                 taskShow.setRecvTaskPartName(taskShowTemp.getRecvTaskPartName());
                 new DefaultTreeNode(taskShow, todoTask);
@@ -128,7 +128,7 @@ public class WorkorderExecuteQryAction {
                 taskShow.setWorkorderInfoId(taskShowTemp.getWorkorderInfoId());
                 taskShow.setWorkorderInfoName(taskShowTemp.getWorkorderInfoName());
                 taskShow.setWorkorderAppointPkid(taskShowTemp.getWorkorderAppointPkid());
-                taskShow.setRecvTaskFinishFlag(EnumTaskFinishFlag.TASK_FINISH_FLAG1.getCode());
+                taskShow.setRecvTaskExecFlag(EnumRecvTaskExecFlag.RECV_TASK_EXEC_FLAG1.getCode());
                 taskShow.setCreatedTime(taskShowTemp.getCreatedTime());
                 taskShow.setRecvTaskPartName(taskShowTemp.getRecvTaskPartName());
                 new DefaultTreeNode(taskShow, doingTask);
@@ -138,10 +138,10 @@ public class WorkorderExecuteQryAction {
     }
     public void onClickDoingAction(String pkid){
        try{
-            if ((pkid != "") ||( pkid !=null )) {
+            if (!(pkid.equals("")) ||( pkid !=null )) {
                 // 状态标志：
-                WorkorderAppoint workorderAppoint = workorderAppointService.selectBypkid(pkid);
-                workorderAppoint.setRecvTaskFinishFlag(EnumTaskFinishFlag.TASK_FINISH_FLAG1.getCode());
+                WorkorderAppoint workorderAppoint = workorderAppointService.getWorkorderAppointByPkid(pkid);
+                workorderAppoint.setRecvTaskExecFlag(EnumRecvTaskExecFlag.RECV_TASK_EXEC_FLAG1.getCode());
                 workorderAppointService.updateBypkid(workorderAppoint);
                 MessageUtil.addInfo("操作成功！");
                 init();
@@ -154,10 +154,10 @@ public class WorkorderExecuteQryAction {
     }
     public void onClickDoneAction(String pkid){
         try{
-            if ((pkid != "") ||( pkid !=null )) {
+            if ((!pkid.equals("")) ||( pkid !=null )) {
                 // 状态标志：
-                WorkorderAppoint workorderAppoint = workorderAppointService.selectBypkid(pkid);
-                workorderAppoint.setRecvTaskFinishFlag(EnumTaskFinishFlag.TASK_FINISH_FLAG2.getCode());
+                WorkorderAppoint workorderAppoint = workorderAppointService.getWorkorderAppointByPkid(pkid);
+                workorderAppoint.setRecvTaskExecFlag(EnumRecvTaskExecFlag.RECV_TASK_EXEC_FLAG2.getCode());
                 workorderAppointService.updateBypkid(workorderAppoint);
                 MessageUtil.addInfo("操作成功！");
                 init();
@@ -172,8 +172,8 @@ public class WorkorderExecuteQryAction {
         try{
             if ((pkid != "") ||( pkid !=null )) {
                 // 状态标志：
-                WorkorderAppoint workorderAppoint = workorderAppointService.selectBypkid(pkid);
-                workorderAppoint.setRecvTaskFinishFlag(EnumTaskFinishFlag.TASK_FINISH_FLAG0.getCode());
+                WorkorderAppoint workorderAppoint = workorderAppointService.getWorkorderAppointByPkid(pkid);
+                workorderAppoint.setRecvTaskExecFlag(EnumRecvTaskExecFlag.RECV_TASK_EXEC_FLAG0.getCode());
                 workorderAppointService.updateBypkid(workorderAppoint);
                 MessageUtil.addInfo("操作成功！");
                 init();

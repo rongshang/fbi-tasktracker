@@ -1,17 +1,20 @@
 package task.repository.model.not_mybatis;
 
 public class WorkorderAppointShow {
-    private String pkid;
     private String infoPkid;
+    private String infoId;
     private String infoName;
+    private String infoStartTime;
+    private String infoEndTime;
+    private String workorderAppointPkid;
     private String firstAppointFlag;
     private String firstAppointFlagName;
     private String sendTaskPartPkid;
     private String sendTaskPartName;
     private String recvTaskPartPkid;
     private String recvTaskPartName;
-    private String recvTaskFinishFlag;
-    private String recvTaskFinishFlagName;
+    private String recvTaskExecFlag;
+    private String recvTaskExecFlagName;
     private String archivedFlag;
     private String archivedFlagName;
     private String createdBy;
@@ -24,14 +27,10 @@ public class WorkorderAppointShow {
     private Integer recVersion;
     private String tid;
     private String strTreeNodeContent;
-
-    public String getPkid() {
-        return pkid;
-    }
-
-    public void setPkid(String pkid) {
-        this.pkid = pkid;
-    }
+    private String recvTaskContinueFlag;
+    private String recvTaskContinueName;
+    private String strVisableCtrl;
+    private String strVisableCtrlNot;
 
     public String getInfoPkid() {
         return infoPkid;
@@ -39,6 +38,14 @@ public class WorkorderAppointShow {
 
     public void setInfoPkid(String infoPkid) {
         this.infoPkid = infoPkid;
+    }
+
+    public String getInfoId() {
+        return infoId;
+    }
+
+    public void setInfoId(String infoId) {
+        this.infoId = infoId;
     }
 
     public String getInfoName() {
@@ -53,6 +60,14 @@ public class WorkorderAppointShow {
         return firstAppointFlag;
     }
 
+    public String getWorkorderAppointPkid() {
+        return workorderAppointPkid;
+    }
+
+    public void setWorkorderAppointPkid(String workorderAppointPkid) {
+        this.workorderAppointPkid = workorderAppointPkid;
+    }
+
     public void setFirstAppointFlag(String firstAppointFlag) {
         this.firstAppointFlag = firstAppointFlag;
     }
@@ -63,6 +78,22 @@ public class WorkorderAppointShow {
 
     public void setFirstAppointFlagName(String firstAppointFlagName) {
         this.firstAppointFlagName = firstAppointFlagName;
+    }
+
+    public String getInfoStartTime() {
+        return infoStartTime;
+    }
+
+    public void setInfoStartTime(String infoStartTime) {
+        this.infoStartTime = infoStartTime;
+    }
+
+    public String getInfoEndTime() {
+        return infoEndTime;
+    }
+
+    public void setInfoEndTime(String infoEndTime) {
+        this.infoEndTime = infoEndTime;
     }
 
     public String getSendTaskPartPkid() {
@@ -97,20 +128,20 @@ public class WorkorderAppointShow {
         this.recvTaskPartName = recvTaskPartName;
     }
 
-    public String getRecvTaskFinishFlag() {
-        return recvTaskFinishFlag;
+    public String getRecvTaskExecFlag() {
+        return recvTaskExecFlag;
     }
 
-    public void setRecvTaskFinishFlag(String recvTaskFinishFlag) {
-        this.recvTaskFinishFlag = recvTaskFinishFlag;
+    public void setRecvTaskExecFlag(String recvTaskExecFlag) {
+        this.recvTaskExecFlag = recvTaskExecFlag;
     }
 
-    public String getRecvTaskFinishFlagName() {
-        return recvTaskFinishFlagName;
+    public String getRecvTaskExecFlagName() {
+        return recvTaskExecFlagName;
     }
 
-    public void setRecvTaskFinishFlagName(String recvTaskFinishFlagName) {
-        this.recvTaskFinishFlagName = recvTaskFinishFlagName;
+    public void setRecvTaskExecFlagName(String recvTaskExecFlagName) {
+        this.recvTaskExecFlagName = recvTaskExecFlagName;
     }
 
     public String getArchivedFlag() {
@@ -207,5 +238,37 @@ public class WorkorderAppointShow {
 
     public void setStrTreeNodeContent(String strTreeNodeContent) {
         this.strTreeNodeContent = strTreeNodeContent;
+    }
+
+    public String getRecvTaskContinueFlag() {
+        return recvTaskContinueFlag;
+    }
+
+    public void setRecvTaskContinueFlag(String recvTaskContinueFlag) {
+        this.recvTaskContinueFlag = recvTaskContinueFlag;
+    }
+
+    public String getRecvTaskContinueName() {
+        return recvTaskContinueName;
+    }
+
+    public void setRecvTaskContinueName(String recvTaskContinueName) {
+        this.recvTaskContinueName = recvTaskContinueName;
+    }
+
+    public String getStrVisableCtrl() {
+        return strVisableCtrl;
+    }
+
+    public void setStrVisableCtrl(String strVisableCtrl) {
+        this.strVisableCtrl = strVisableCtrl;
+    }
+
+    public String getStrVisableCtrlNot() {
+        return strVisableCtrlNot;
+    }
+
+    public void setStrVisableCtrlNot(String strVisableCtrlNot) {
+        this.strVisableCtrlNot = strVisableCtrlNot;
     }
 }

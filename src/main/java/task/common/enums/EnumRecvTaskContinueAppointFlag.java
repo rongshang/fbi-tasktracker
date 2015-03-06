@@ -9,15 +9,14 @@ import java.util.Hashtable;
  * Time: 9:58:32
  * To change this template use File | Settings | File Templates.
  */
-public enum EnumTaskFinishFlag {
-    TASK_FINISH_FLAG0("0","任务已传达"),
-    TASK_FINISH_FLAG1("1","任务正执行"),
-    TASK_FINISH_FLAG2("2","任务已完成");
+public enum EnumRecvTaskContinueAppointFlag {
+    RECV_TASK_CONTINUE_APPOINT_FLAG0("0","接收到任务未继续指派"),
+    RECV_TASK_CONTINUE_APPOINT_FLAG1("1","接收到任务__继续指派");
     private String code = null;
     private String title = null;
-    private static Hashtable<String, EnumTaskFinishFlag> aliasEnums;
+    private static Hashtable<String, EnumRecvTaskContinueAppointFlag> aliasEnums;
 
-    EnumTaskFinishFlag(String code, String title){
+    EnumRecvTaskContinueAppointFlag(String code, String title){
         this.init(code, title);
     }
 
@@ -34,7 +33,7 @@ public enum EnumTaskFinishFlag {
         aliasEnums.put(title, this);
     }
 
-    public static EnumTaskFinishFlag getValueByKey(String alias) {
+    public static EnumRecvTaskContinueAppointFlag getValueByKey(String alias) {
         return aliasEnums.get(alias);
     }
 

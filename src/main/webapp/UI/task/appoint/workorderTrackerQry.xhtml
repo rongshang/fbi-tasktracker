@@ -39,7 +39,10 @@
                             rendered="#{workorderTrackerAction.strTaskTrackerFlag}"
                             highlight="true">
                         <p:treeNode>
-                            <h:outputText value="#{node.strTreeNodeContent}"/>
+                            <h:outputText value="#{node.strTreeNodeContent}"
+                                          style="#{node.recvTaskExecFlag eq '0' ? 'background-color:red':
+                                                    node.recvTaskExecFlag eq '1' ? 'background-color:darkorange':
+                                                    'background-color:green'}"/>
                         </p:treeNode>
                     </p:tree>
                 </p:panel>

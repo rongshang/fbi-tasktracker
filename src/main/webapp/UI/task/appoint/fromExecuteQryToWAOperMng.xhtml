@@ -23,39 +23,23 @@
             <div style="margin:5px;">
                 <p:growl id="msgs" showDetail="true"/>
                 <p:focus for="id"/>
-                <p:panel>
-                    <h:panelGrid id="pdQry" columns="2" style="width: 100%">
-                        <h:panelGrid columns="4">
-                            <p:outputLabel value="工单编号：" for="id"/>
-                            <p:inputText id="id" value="#{workorderAppointAction.workorderAppointShowQry.infoId}"
-                                         style="width: 200px"/>
-                            <p:outputLabel value="工单名称：" for="name"/>
-                            <p:inputText id="name" value="#{workorderAppointAction.workorderAppointShowQry.infoName}"
-                                         style="width: 200px"/>
-                        </h:panelGrid>
-                        <h:panelGrid columns="3">
-                            <p:commandButton id="qryBtn" value="查询"
-                                             action="#{workorderAppointAction.onQueryAction('true')}"
-                                             update="pdt,msgs">
-                            </p:commandButton>
-                            <p:commandButton id="resetBtn" value="重置"
-                                             type="reset"
-                                             update="pdQry,msgs">
-                            </p:commandButton>
-                            <p:ajaxStatus style="width:16px;height:16px;">
-                                <f:facet name="start">
-                                    <h:graphicImage value="/images/ajaxloading.gif"/>
-                                </f:facet>
-                                <f:facet name="complete">
-                                    <h:outputText value=""/>
-                                </f:facet>
-                            </p:ajaxStatus>
-                        </h:panelGrid>
-                    </h:panelGrid>
-                </p:panel>
+                <p:ajaxStatus style="width:16px;height:16px;">
+                    <f:facet name="start">
+                        <h:graphicImage value="/images/ajaxloading.gif"/>
+                    </f:facet>
+                    <f:facet name="complete">
+                        <h:outputText value=""/>
+                    </f:facet>
+                </p:ajaxStatus>
+                <p:commandButton icon="ui-icon-disk"
+                                 value="返回"
+                                 action="#{fromWEQryToWAAction.onclickUrl()}"
+                                 update="pdt,msgs"
+                                 style="height:18px;width:30px" ajax="false">
+               </p:commandButton>
 
                 <p:dataTable id="pdt" style="width:100%;"
-                             value="#{workorderAppointAction.workorderAppointShowList}"
+                             value="#{fromWEQryToWAAction.workorderAppointShowList}"
                              var="record"
                              rowKey="#{record.infoPkid}"
                              selectionMode="single"
@@ -116,18 +100,16 @@
                                       rendered="#{record.strVisableCtrlNot}"/>
                         <p:cellEditor rendered="#{record.strVisableCtrl}">
                             <f:facet name="output">
-                                <h:outputText value="#{record.remark}" />
-                            </f:facet>
+                                <h:outputText value="#{record.remark}" /></f:facet>
                             <f:facet name="input">
-                                <p:inputText id="modelInput" value="#{record.remark}" style="width:100%"/>
-                            </f:facet>
+                                <p:inputText id="modelInput" value="#{record.remark}" style="width:100%"/></f:facet>
                         </p:cellEditor>
                         <!--style="width:96%"-->
                     </p:column>
                     <p:column headerText="保存" style="width:40px;text-align: center;">
                         <p:commandButton icon="ui-icon-disk"
                                          rendered="#{record.strVisableCtrl}"
-                                         action="#{workorderAppointAction.onClickForMngAction(record)}"
+                                         action="#{fromWEQryToWAAction.onClickForMngAction(record)}"
                                          update="pdt,msgs"
                                          style="height:18px;width:30px" ajax="false">
                         </p:commandButton>

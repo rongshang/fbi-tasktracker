@@ -47,33 +47,30 @@
                             <h:outputText value="#{document.createdTime}"/>
                         </p:column>
                         <p:column headerText="操作" style=" text-align: left;" width="10%">
-                            <p:commandButton    style="height:30px;width:65px"
-                                    value="工单详情"
-                                    rendered="#{document.workorderInfoPkid eq null ? 'false':'true'}"
-                                    onclick="actSelect('#{document.workorderInfoPkid}')">
+                            <p:commandButton style="height:18px;width:18px"
+                                              icon="ui-icon-search"
+                                              rendered="#{document.workorderInfoPkid eq null ? 'false':'true'}"
+                                              onclick="actSelect('#{document.workorderInfoPkid}')">
                             </p:commandButton>
-                            <p:commandButton  style=" text-align: left; height:30px;width:65px"
-                                    value="工单指派"
-                                    rendered="#{document.workorderInfoPkid eq null ? 'false':'true'}"
-                                    action="#{workorderExecuteQryAction.onclickUrl(document.workorderInfoPkid)}">
+                            <p:commandButton  style=" text-align: left; height:18px;width:65px"
+                                              value="工单指派"
+                                              rendered="#{document.workorderInfoPkid eq null ? 'false':'true'}"
+                                              action="#{workorderExecuteQryAction.onclickUrl(document.workorderInfoPkid)}">
                             </p:commandButton>
-                            <p:commandButton value="未执行" style="text-align: left; height:30px;width:65px"
-                                             rendered="#{document.recvTaskFinishFlag eq '1' ? 'true' :document.recvTaskFinishFlag eq '2' ? 'true':'false'}"
+                            <p:commandButton value="未" style="text-align: left; height:18px;width:30px"
+                                             rendered="#{document.recvTaskExecFlag eq '1' ? 'true' :document.recvTaskExecFlag eq '2' ? 'true':'false'}"
                                                  action="#{workorderExecuteQryAction.onClickUndoAction(document.workorderAppointPkid)}"
-                                             update=":form:msgs,:form:pgCondition"
-                                    >
+                                             update=":form:msgs,:form:pgCondition">
                             </p:commandButton>
-                            <p:commandButton value="正执行" style="text-align: left; height:30px;width:65px"
-                                             rendered="#{document.recvTaskFinishFlag eq '0'?'true' :document.recvTaskFinishFlag eq '2'?'true' :'false'}"
+                            <p:commandButton value="正" style="text-align: left; height:18px;width:30px"
+                                             rendered="#{document.recvTaskExecFlag eq '0'?'true' :document.recvTaskExecFlag eq '2'?'true' :'false'}"
                                              action="#{workorderExecuteQryAction.onClickDoingAction(document.workorderAppointPkid)}"
-                                             update=":form:msgs, :form:pgCondition"
-                                             >
+                                             update=":form:msgs, :form:pgCondition">
                             </p:commandButton>
-                            <p:commandButton value="已完成" style="text-align: left; height:30px;width:65px"
-                                             rendered="#{document.recvTaskFinishFlag eq '0' ? 'true':document.recvTaskFinishFlag eq '1'? 'true' :'false'}"
+                            <p:commandButton value="完" style="text-align: left; height:18px;width:30px"
+                                             rendered="#{document.recvTaskExecFlag eq '0' ? 'true':document.recvTaskExecFlag eq '1'? 'true' :'false'}"
                                              action="#{workorderExecuteQryAction.onClickDoneAction(document.workorderAppointPkid)}"
-                                             update=":form:msgs, :form:pgCondition"
-                                            >
+                                             update=":form:msgs, :form:pgCondition">
                             </p:commandButton>
 
                         </p:column>

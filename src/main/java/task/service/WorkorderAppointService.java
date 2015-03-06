@@ -6,19 +6,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import skyline.util.ToolUtil;
 import task.common.enums.EnumArchivedFlag;
 import task.common.enums.EnumFirstAppointFlag;
-import task.common.enums.EnumTaskFinishFlag;
+import task.common.enums.EnumRecvTaskExecFlag;
 import task.repository.dao.OperMapper;
 import task.repository.dao.WorkorderAppointMapper;
-import task.repository.dao.WorkorderInfoMapper;
-import task.repository.dao.not_mybatis.MyDeptAndOperMapper;
-import task.repository.dao.not_mybatis.MyWorkorderInfoMapper;
+import task.repository.dao.not_mybatis.MyWorkorderAppointMapper;
 import task.repository.model.WorkorderAppoint;
 import task.repository.model.WorkorderAppointExample;
-import task.repository.model.WorkorderInfoExample;
-import task.repository.model.not_mybatis.DeptOperShow;
 import task.repository.model.not_mybatis.WorkorderAppointShow;
 import task.repository.model.not_mybatis.WorkorderInfoShow;
 
@@ -35,13 +32,9 @@ public class WorkorderAppointService {
     @Autowired
     private WorkorderAppointMapper workorderAppointMapper;
     @Autowired
+    private MyWorkorderAppointMapper myWorkorderAppointMapper;
+    @Autowired
     private OperMapper operMapper;
-    @Autowired
-    private MyDeptAndOperMapper myDeptAndOperMapper;
-    @Autowired
-    private WorkorderInfoMapper workorderInfoMapper;
-	@Autowired
-    private MyWorkorderInfoMapper myWorkorderInfoMapper;
 
     public String getUserName(String operPkidPara){
         if(ToolUtil.getStrIgnoreNull(operPkidPara).equals("")){
@@ -90,7 +83,8 @@ public class WorkorderAppointService {
         }
         return workorderAppointShowListTemp;
     }
-    public List<WorkorderAppointShow> getWorkorderAppointShowListByModelShow(WorkorderAppointShow workorderAppointShowPara) {
+    public List<WorkorderAppointShow> getWorkorderAppointShowListByModelShow(
+            WorkorderAppointShow workorderAppointShowPara) {
         List<WorkorderAppoint> workorderAppointListTemp=getWorkorderAppointListByModelShow(workorderAppointShowPara);
         List<WorkorderAppointShow> workorderAppointShowListTemp=new ArrayList<>();
         for(WorkorderAppoint workorderAppointUnit:workorderAppointListTemp){
@@ -99,13 +93,20 @@ public class WorkorderAppointService {
         return workorderAppointShowListTemp;
     }
 
+    public List<WorkorderAppointShow> getMyWorkorderAppointShowListByModelShow(
+            WorkorderAppointShow workorderAppointShowPara) {
+       return myWorkorderAppointMapper.getWorkorderAppointShowList(
+               workorderAppointShowPara.getInfoId(),workorderAppointShowPara.getInfoName());
+    }
+
     public WorkorderAppoint fromModelShowToModel(WorkorderAppointShow workorderAppointShowPara) {
         WorkorderAppoint workorderAppointTemp = new WorkorderAppoint();
-        workorderAppointTemp.setPkid(workorderAppointShowPara.getPkid());
+        workorderAppointTemp.setPkid(workorderAppointShowPara.getWorkorderAppointPkid());
         workorderAppointTemp.setInfoPkid(workorderAppointShowPara.getInfoPkid());
         workorderAppointTemp.setSendTaskPartPkid(workorderAppointShowPara.getSendTaskPartPkid());
         workorderAppointTemp.setRecvTaskPartPkid(workorderAppointShowPara.getRecvTaskPartPkid());
-        workorderAppointTemp.setRecvTaskFinishFlag(workorderAppointShowPara.getRecvTaskFinishFlag());
+        workorderAppointTemp.setRecvTaskExecFlag(workorderAppointShowPara.getRecvTaskExecFlag());
+        workorderAppointTemp.setFirstAppointFlag(workorderAppointShowPara.getFirstAppointFlag());
         workorderAppointTemp.setArchivedFlag(workorderAppointShowPara.getArchivedFlag());
         workorderAppointTemp.setCreatedBy(workorderAppointShowPara.getCreatedBy());
         workorderAppointTemp.setCreatedTime(workorderAppointShowPara.getCreatedTime());
@@ -118,16 +119,16 @@ public class WorkorderAppointService {
     }
     public WorkorderAppointShow fromModelToModelShow(WorkorderAppoint workorderAppointPara) {
         WorkorderAppointShow workorderAppointShowTemp = new WorkorderAppointShow();
-        workorderAppointShowTemp.setPkid(workorderAppointPara.getPkid());
+        workorderAppointShowTemp.setWorkorderAppointPkid(workorderAppointPara.getPkid());
         workorderAppointShowTemp.setInfoPkid(workorderAppointPara.getInfoPkid());
-        workorderAppointShowTemp.setInfoName(workorderAppointPara.getInfoPkid());
+        //workorderAppointShowTemp.setInfoName(workorderAppointPara.get());
         workorderAppointShowTemp.setSendTaskPartPkid(workorderAppointPara.getSendTaskPartPkid());
         workorderAppointShowTemp.setSendTaskPartName(getUserName(workorderAppointPara.getSendTaskPartPkid()));
         workorderAppointShowTemp.setRecvTaskPartPkid(workorderAppointPara.getRecvTaskPartPkid());
         workorderAppointShowTemp.setRecvTaskPartName(getUserName(workorderAppointPara.getRecvTaskPartPkid()));
-        workorderAppointShowTemp.setRecvTaskFinishFlag(workorderAppointPara.getRecvTaskFinishFlag());
-        workorderAppointShowTemp.setRecvTaskFinishFlagName(
-                EnumTaskFinishFlag.getValueByKey(workorderAppointPara.getRecvTaskFinishFlag()).getTitle());
+        workorderAppointShowTemp.setRecvTaskExecFlag(workorderAppointPara.getRecvTaskExecFlag());
+        workorderAppointShowTemp.setRecvTaskExecFlagName(
+                EnumRecvTaskExecFlag.getValueByKey(workorderAppointPara.getRecvTaskExecFlag()).getTitle());
         workorderAppointShowTemp.setFirstAppointFlag(workorderAppointPara.getFirstAppointFlag());
         workorderAppointShowTemp.setFirstAppointFlagName(
                 EnumFirstAppointFlag.getValueByKey(workorderAppointPara.getFirstAppointFlag()).getTitle());
@@ -158,6 +159,7 @@ public class WorkorderAppointService {
             workorderAppointShow_TreeNode.setRecvTaskPartPkid(workorderAppointShowTemp.getSendTaskPartPkid());
             workorderAppointShow_TreeNode.setRecvTaskPartName(workorderAppointShowTemp.getSendTaskPartName());
             workorderAppointShow_TreeNode.setStrTreeNodeContent(workorderAppointShow_TreeNode.getRecvTaskPartName());
+            workorderAppointShow_TreeNode.setRecvTaskExecFlag(workorderAppointShowTemp.getRecvTaskExecFlag());
             workorderAppointShowRoot = new DefaultTreeNode(workorderAppointShow_TreeNode, null);
             workorderAppointShowRoot.setExpanded(true);
             recursiveTreeNode(workorderInfoShowPara.getPkid(),workorderAppointShow_TreeNode.getRecvTaskPartPkid(),workorderAppointShowRoot);
@@ -165,7 +167,6 @@ public class WorkorderAppointService {
         return workorderAppointShowRoot;
     }
 
-    /*根据数据库中层级关系数据列表得到总包合同*/
     private void recursiveTreeNode(String strInfoPkidPara,String strSendTaskPartPkidPara,TreeNode parentNode){
         WorkorderAppointShow workorderAppointShowPara = new WorkorderAppointShow();
         workorderAppointShowPara.setInfoPkid(strInfoPkidPara);
@@ -174,17 +175,63 @@ public class WorkorderAppointService {
                 getWorkorderAppointShowListByModelShow(workorderAppointShowPara);
         for (WorkorderAppointShow workorderAppointShowUnit : workorderAppointShowListTemp) {
             workorderAppointShowUnit.setStrTreeNodeContent(
-                    workorderAppointShowUnit.getRecvTaskPartName()+"("+workorderAppointShowUnit.getRecvTaskFinishFlagName()+")");
+                    workorderAppointShowUnit.getRecvTaskPartName()+"("+workorderAppointShowUnit.getRecvTaskExecFlagName()+")");
             TreeNode childNodeTemp = new DefaultTreeNode(workorderAppointShowUnit, parentNode);
             childNodeTemp.setExpanded(true);
             recursiveTreeNode(strInfoPkidPara,workorderAppointShowUnit.getRecvTaskPartPkid(),childNodeTemp);
         }
     }
-    public  WorkorderAppoint   selectBypkid(String  pkid ){
-        WorkorderAppoint workorderAppoint = workorderAppointMapper.selectByPrimaryKey(pkid);
-        return  workorderAppoint;
+
+    public WorkorderAppoint getWorkorderAppointByPkid(String pkid ){
+        return  workorderAppointMapper.selectByPrimaryKey(pkid);
     }
+
     public void  updateBypkid(WorkorderAppoint workorderAppoint ){
         workorderAppointMapper.updateByPrimaryKey(workorderAppoint);
+    }
+
+    @Transactional
+    public void insertRecord(WorkorderAppointShow workorderAppointShowPara) {
+        insertRecord(fromModelShowToModel(workorderAppointShowPara));
+    }
+    @Transactional
+    public void insertRecord(WorkorderAppoint workorderAppointPara) {
+        String strOperatorIdTemp=ToolUtil.getOperatorManager().getOperator().getPkid();
+        String strLastUpdTimeTemp=ToolUtil.getStrLastUpdTime();
+        workorderAppointPara.setArchivedFlag(EnumArchivedFlag.ARCHIVED_FLAG0.getCode());
+        workorderAppointPara.setCreatedBy(strOperatorIdTemp);
+        workorderAppointPara.setCreatedTime(strLastUpdTimeTemp);
+        workorderAppointPara.setLastUpdBy(strOperatorIdTemp);
+        workorderAppointPara.setLastUpdTime(strLastUpdTimeTemp);
+        workorderAppointMapper.insertSelective(workorderAppointPara);
+    }
+    @Transactional
+    public String updateRecord(WorkorderAppointShow workorderAppointShowPara){
+        // 为了防止异步操作数据
+        return updateRecord(fromModelShowToModel(workorderAppointShowPara));
+    }
+    @Transactional
+    public String updateRecord(WorkorderAppoint workorderAppointPara){
+        WorkorderAppoint workorderAppointTemp =
+                workorderAppointMapper.selectByPrimaryKey(workorderAppointPara.getPkid());
+        if(workorderAppointTemp !=null){
+            //此条记录目前在数据库中的版本
+            int intRecVersionInDB=ToolUtil.getIntIgnoreNull(workorderAppointTemp.getRecVersion());
+            int intRecVersion=ToolUtil.getIntIgnoreNull(workorderAppointPara.getRecVersion());
+            if(intRecVersionInDB!=intRecVersion) {
+                return "1";
+            }
+        }
+        workorderAppointPara.setRecVersion(
+                ToolUtil.getIntIgnoreNull(workorderAppointPara.getRecVersion())+1);
+        workorderAppointPara.setArchivedFlag(EnumArchivedFlag.ARCHIVED_FLAG0.getCode());
+        workorderAppointPara.setLastUpdBy(ToolUtil.getOperatorManager().getOperator().getPkid());
+        workorderAppointPara.setLastUpdTime(ToolUtil.getStrLastUpdTime());
+        workorderAppointMapper.updateByPrimaryKey(workorderAppointPara);
+        return "0";
+    }
+    @Transactional
+    public int deleteRecord(String strPkidPara){
+        return workorderAppointMapper.deleteByPrimaryKey(strPkidPara);
     }
 }

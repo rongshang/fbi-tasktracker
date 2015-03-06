@@ -16,8 +16,10 @@ import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Administrator on 2015/2/13.
@@ -27,28 +29,41 @@ import java.util.List;
 
 @ManagedBean
 @ViewScoped
-public class WorkorderAppointAction {
-    private static final Logger logger = LoggerFactory.getLogger(WorkorderAppointAction.class);
+public class FromWEQryToWAAction {
+    private static final Logger logger = LoggerFactory.getLogger(FromWEQryToWAAction.class);
     @ManagedProperty(value = "#{workorderAppointService}")
     private WorkorderAppointService workorderAppointService;
     @ManagedProperty(value = "#{deptOperService}")
     private DeptOperService deptOperService;
 
-    private WorkorderAppointShow workorderAppointShowQry;
+    private String strWorkorderInfoPkid;
+    private String strWorkorderAppointPkid;
     private List<WorkorderAppointShow> workorderAppointShowList;
 
     @PostConstruct
     public void init(){
-        workorderAppointShowQry = new WorkorderAppointShow();
+        Map parammap = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
+        if  (parammap.containsKey("strWorkorderInfoPkid")){
+            strWorkorderInfoPkid=parammap.get("strWorkorderInfoPkid").toString();
+        }
+        if  (parammap.containsKey("strWorkorderAppointPkid")){
+            strWorkorderAppointPkid=parammap.get("strWorkorderAppointPkid").toString();
+        }
+
         workorderAppointShowList=new ArrayList<>();
+        onQueryAction(strWorkorderInfoPkid,strWorkorderAppointPkid);
     }
 
-    public String onQueryAction(String strQryMsgOutPara) {
+    public String onQueryAction(String strWorkorderInfoPkidPara,String strWorkorderAppointPkidPara) {
         try {
             WorkorderAppointShow wAShow_CurrentAppointRecvContinueAppoint=new WorkorderAppointShow();
             List<WorkorderAppoint> wAList_CurrentAppointRecvContinueAppoint=new ArrayList<>();
+
+            WorkorderAppointShow workorderAppointShowPara=new WorkorderAppointShow();
+            workorderAppointShowPara.setInfoPkid(strWorkorderInfoPkidPara);
+            workorderAppointShowPara.setWorkorderAppointPkid(strWorkorderAppointPkidPara);
             workorderAppointShowList =
-                    workorderAppointService.getMyWorkorderAppointShowListByModelShow(workorderAppointShowQry);
+                    workorderAppointService.getMyWorkorderAppointShowListByModelShow(workorderAppointShowPara);
             for(WorkorderAppointShow workorderAppointShowUnit:workorderAppointShowList){
                 if(workorderAppointShowUnit.getRecvTaskExecFlag()!=null) {
                     workorderAppointShowUnit.setRecvTaskExecFlagName(
@@ -89,16 +104,16 @@ public class WorkorderAppointAction {
                     workorderAppointShowUnit.setStrVisableCtrlNot("false");
                 }
             }
-            if(strQryMsgOutPara.equals("true"))  {
-                if (workorderAppointShowList.isEmpty()) {
-                    MessageUtil.addWarn("没有查询到数据。");
-                }
-            }
         } catch (Exception e) {
             logger.error("工单信息查询失败", e);
             MessageUtil.addError("工单信息查询失败");
         }
         return null;
+    }
+
+    public  String  onclickUrl(){
+        return "/UI/task/taskDisplay/workorderExecuteQry.xhtml?faces-redirect=true&strWorkorderInfoPkid="+
+                strWorkorderInfoPkid+"&amp;strWorkorderAppointPkid"+strWorkorderAppointPkid;
     }
 
     public void onClickForMngAction(WorkorderAppointShow workorderAppointShowNewPara) {
@@ -171,7 +186,7 @@ public class WorkorderAppointAction {
             workorderAppointService.insertRecord(workorderAppointShowNewPara);
             MessageUtil.addInfo("新增数据完成。");
         }
-        onQueryAction("false");
+        onQueryAction(strWorkorderInfoPkid,strWorkorderAppointPkid);
     }
 
     public WorkorderAppointService getWorkorderAppointService() {
@@ -188,14 +203,6 @@ public class WorkorderAppointAction {
 
     public void setDeptOperService(DeptOperService deptOperService) {
         this.deptOperService = deptOperService;
-    }
-
-    public WorkorderAppointShow getWorkorderAppointShowQry() {
-        return workorderAppointShowQry;
-    }
-
-    public void setWorkorderAppointShowQry(WorkorderAppointShow workorderAppointShowQry) {
-        this.workorderAppointShowQry = workorderAppointShowQry;
     }
 
     public List<WorkorderAppointShow> getWorkorderAppointShowList() {
