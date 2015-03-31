@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import skyline.util.MessageUtil;
 import skyline.util.ToolUtil;
+import task.common.UrlCtrl;
 import task.common.enums.EnumFirstAppointFlag;
 import task.common.enums.EnumRecvTaskContinueAppointFlag;
 import task.common.enums.EnumRecvTaskExecFlag;
@@ -29,8 +30,8 @@ import java.util.Map;
 
 @ManagedBean
 @ViewScoped
-public class FromWEQryToWAAction {
-    private static final Logger logger = LoggerFactory.getLogger(FromWEQryToWAAction.class);
+public class WorkorderExecQryToWAAction {
+    private static final Logger logger = LoggerFactory.getLogger(WorkorderExecQryToWAAction.class);
     @ManagedProperty(value = "#{workorderAppointService}")
     private WorkorderAppointService workorderAppointService;
     @ManagedProperty(value = "#{deptOperService}")
@@ -109,11 +110,6 @@ public class FromWEQryToWAAction {
             MessageUtil.addError("工单信息查询失败");
         }
         return null;
-    }
-
-    public  String  onclickUrl(){
-        return "/UI/task/taskDisplay/workorderExecuteQry.xhtml?faces-redirect=true&strWorkorderInfoPkid="+
-                strWorkorderInfoPkid+"&amp;strWorkorderAppointPkid"+strWorkorderAppointPkid;
     }
 
     public void onClickForMngAction(WorkorderAppointShow workorderAppointShowNewPara) {
@@ -211,5 +207,21 @@ public class FromWEQryToWAAction {
 
     public void setWorkorderAppointShowList(List<WorkorderAppointShow> workorderAppointShowList) {
         this.workorderAppointShowList = workorderAppointShowList;
+    }
+
+    public String getStrWorkorderInfoPkid() {
+        return strWorkorderInfoPkid;
+    }
+
+    public void setStrWorkorderInfoPkid(String strWorkorderInfoPkid) {
+        this.strWorkorderInfoPkid = strWorkorderInfoPkid;
+    }
+
+    public String getStrWorkorderAppointPkid() {
+        return strWorkorderAppointPkid;
+    }
+
+    public void setStrWorkorderAppointPkid(String strWorkorderAppointPkid) {
+        this.strWorkorderAppointPkid = strWorkorderAppointPkid;
     }
 }

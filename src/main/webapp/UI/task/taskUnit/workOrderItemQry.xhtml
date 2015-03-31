@@ -43,6 +43,18 @@
                                 </p:commandButton>
                             </h:panelGrid>
                         </p:panel>
+                        <p:commandButton value="返回"
+                                         action="#{urlCtrl.getStrJumpUrl('ToExecQry',
+                                             workorderItemAction.strWorkorderInfoPkid,'')}"
+                                         update="pdt,msgs"
+                                         ajax="false">
+                        </p:commandButton>
+                        <p:commandButton value="返回"
+                                         action="#{urlCtrl.getStrJumpUrl('ToWAInfo',
+                                             workorderItemAction.strWorkorderInfoPkid,'')}"
+                                         update="pdt,msgs"
+                                         ajax="false">
+                        </p:commandButton>
                     </h:panelGrid>
                     <p:panel header="工单内容">
                         <p:dataTable id="pdt" style="width:100%;"

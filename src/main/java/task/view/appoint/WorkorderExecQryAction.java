@@ -1,6 +1,7 @@
-package task.view.task;
+package task.view.appoint;
 
 import skyline.util.MessageUtil;
+import task.common.UrlCtrl;
 import task.common.enums.EnumRecvTaskExecFlag;
 import task.repository.model.WorkorderAppoint;
 import task.repository.model.not_mybatis.TaskShow;
@@ -26,8 +27,8 @@ import java.util.List;
  */
 @ManagedBean
 @ViewScoped
-public class WorkorderExecuteQryAction {
-    private static final Logger logger = LoggerFactory.getLogger(WorkorderExecuteQryAction.class);
+public class WorkorderExecQryAction {
+    private static final Logger logger = LoggerFactory.getLogger(WorkorderExecQryAction.class);
     @ManagedProperty(value = "#{taskService}")
     private TaskService taskService;
     @ManagedProperty(value = "#{workorderAppointService}")
@@ -184,9 +185,7 @@ public class WorkorderExecuteQryAction {
         }
         return  ;
     }
-    public  String  onclickUrl(String pkid){
-        return "/UI/task/appoint/workorderAppointOperMng.xhtml?faces-redirect=true&pkid="+pkid;
-    }
+
     public TreeNode getSelfTaskTreeRoot() {
         return selfTaskTreeRoot;
     }

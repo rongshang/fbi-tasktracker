@@ -170,7 +170,7 @@ public class DESHelper {
     	System.out.println("laozhou解密--------"+d); 
     	//使用新密钥 
     	DESHelper dESHelper2 = new DESHelper("qingdao_rongshangxinxijishu_youxiangongsi");
-    	String e2 = dESHelper2.encrypt("1000");
+    	String e2 = dESHelper2.encrypt("25");
     	System.out.println("加密--------"+e2);
     	String d2 = dESHelper2.decrypt(e2);
     	System.out.println("解密--------"+d2);

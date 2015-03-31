@@ -3,21 +3,20 @@ package task.view.deptOper;
 import skyline.security.DESHelper;
 import task.repository.model.Dept;
 import task.repository.model.Oper;
-import task.repository.model.RsTidKeys;
+import task.repository.model.TidKeys;
 import task.repository.model.not_mybatis.DeptOperShow;
 import task.service.DeptOperService;
 import jxl.write.WriteException;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.primefaces.event.NodeCollapseEvent;
-import org.primefaces.model.DefaultTreeNode;
 import org.primefaces.model.TreeNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import skyline.security.MD5Helper;
 import skyline.util.JxlsManager;
 import skyline.util.MessageUtil;
-import task.service.RsTidKeysService;
+import task.service.TidKeysService;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
@@ -41,8 +40,8 @@ public class DeptOperAction implements Serializable {
     private static final Logger logger = LoggerFactory.getLogger(DeptOperAction.class);
     @ManagedProperty(value = "#{deptOperService}")
     private DeptOperService deptOperService;
-    @ManagedProperty(value = "#{rsTidKeysService}")
-    private RsTidKeysService rsTidKeysService;
+    @ManagedProperty(value = "#{tidKeysService}")
+    private TidKeysService tidKeysService;
 
     private TreeNode deptOperShowRoot;
     private TreeNode currentSelectedNode;
@@ -259,14 +258,13 @@ public class DeptOperAction implements Serializable {
                     if (!submitOperPreCheck(operAdd)) {
                         return;
                     }
-                    //String md5=MD5Helper.getMD5String(tidkeysService.getTidkeysList("126").getKey());
-                    RsTidKeys rsTidKeysPara=new RsTidKeys();
-                    rsTidKeysPara.setTid("126");
-                    List<RsTidKeys> rsTidKeysList=rsTidKeysService.getRsTidKeysList(rsTidKeysPara);
-                    if(rsTidKeysList.size()>0){
-                        RsTidKeys rsTidKeysTemp=rsTidKeysList.get(0);
-                        DESHelper dESHelper = new DESHelper(rsTidKeysTemp.getEsKey());
-                        String strOperCounts=dESHelper.decrypt(rsTidKeysTemp.getOperCounts());
+                    TidKeys tidKeysPara =new TidKeys();
+                    tidKeysPara.setTid("126");
+                    List<TidKeys> tidKeysList = tidKeysService.getTidKeysList(tidKeysPara);
+                    if(tidKeysList.size()>0){
+                        TidKeys tidKeysTemp = tidKeysList.get(0);
+                        DESHelper dESHelper = new DESHelper(tidKeysTemp.getEsKey());
+                        String strOperCounts=dESHelper.decrypt(tidKeysTemp.getOperCounts());
                         int intUsersCounts=Integer.parseInt(strOperCounts);
                         Oper operTemp=new Oper();
                         int intExistRecordCountsInOperDb=deptOperService.existRecordCountsInOperDb(operTemp);
@@ -481,12 +479,12 @@ public class DeptOperAction implements Serializable {
         this.beansMap = beansMap;
     }
 
-    public RsTidKeysService getRsTidKeysService() {
-        return rsTidKeysService;
+    public TidKeysService getTidKeysService() {
+        return tidKeysService;
     }
 
-    public void setRsTidKeysService(RsTidKeysService rsTidKeysService) {
-        this.rsTidKeysService = rsTidKeysService;
+    public void setTidKeysService(TidKeysService tidKeysService) {
+        this.tidKeysService = tidKeysService;
     }
 
     public List<DeptOperShow> getDeptOperShowList() {

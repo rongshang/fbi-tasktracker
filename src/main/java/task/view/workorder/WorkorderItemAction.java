@@ -398,6 +398,14 @@ public class WorkorderItemAction {
         this.beansMap = beansMap;
     }
 
+    public String getStrWorkorderInfoPkid() {
+        return strWorkorderInfoPkid;
+    }
+
+    public void setStrWorkorderInfoPkid(String strWorkorderInfoPkid) {
+        this.strWorkorderInfoPkid = strWorkorderInfoPkid;
+    }
+
     //нд╪Ч
     public List<AttachmentModel> getAttachmentList() {
         return attachmentList;

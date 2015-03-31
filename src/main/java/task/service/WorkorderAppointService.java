@@ -48,6 +48,10 @@ public class WorkorderAppointService {
         WorkorderAppointExample example= new WorkorderAppointExample();
         WorkorderAppointExample.Criteria criteria = example.createCriteria();
         //可以为NULL的项
+        // 指派Pkid
+        if(!ToolUtil.getStrIgnoreNull(workorderAppointShowPara.getWorkorderAppointPkid()).equals("")){
+            criteria.andPkidEqualTo(workorderAppointShowPara.getWorkorderAppointPkid());
+        }
         // 工单主题
         if(!ToolUtil.getStrIgnoreNull(workorderAppointShowPara.getInfoPkid()).equals("")){
             criteria.andInfoPkidEqualTo(workorderAppointShowPara.getInfoPkid());
@@ -96,7 +100,9 @@ public class WorkorderAppointService {
     public List<WorkorderAppointShow> getMyWorkorderAppointShowListByModelShow(
             WorkorderAppointShow workorderAppointShowPara) {
        return myWorkorderAppointMapper.getWorkorderAppointShowList(
-               workorderAppointShowPara.getInfoId(),workorderAppointShowPara.getInfoName());
+               ToolUtil.getStrIgnoreNull(workorderAppointShowPara.getInfoId()),
+               ToolUtil.getStrIgnoreNull(workorderAppointShowPara.getInfoName()),
+               ToolUtil.getStrIgnoreNull(workorderAppointShowPara.getWorkorderAppointPkid()));
     }
 
     public WorkorderAppoint fromModelShowToModel(WorkorderAppointShow workorderAppointShowPara) {

@@ -47,8 +47,14 @@ public interface MyWorkorderAppointMapper {
             "     WORKORDER_APPOINT wa"+
             " on"+
             "     wa.INFO_PKID=wi.PKID" +
-
+            " where" +
+            "     wi.ID like '%'||#{infoId}||'%'" +
+            " and" +
+            "     wi.NAME like '%'||#{infoName}||'%'" +
+            " and" +
+            "     nvl(wa.PKID,' ') like '%'||#{workorderAppointPkid}||'%'" +
             " order by wi.ID,wa.FIRST_APPOINT_FLAG,wa.SEND_TASK_PART_PKID,wa.RECV_TASK_EXEC_FLAG")
     List<WorkorderAppointShow> getWorkorderAppointShowList(@Param("infoId") String infoIdPara,
-                                                           @Param("infoName") String infoNamePara);
+                                                           @Param("infoName") String infoNamePara,
+                                                           @Param("workorderAppointPkid") String workorderAppointPkidPara);
 }
